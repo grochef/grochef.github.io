@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stack</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"></script>
+    <style>
+        /* === THEME VARIABLES === */
+        :root {
+            --bg-primary: #111827;     /* Modal container (dark) */
+            --bg-secondary: #f9fafb;   /* Page background (light) */
+            --bg-card: #1f2937;        /* Modal card (dark) */
+            --text-primary: #f3f4f6;   /* Modal text (light) */
+            --text-secondary: #1f2937; /* Main app text (dark) */
+            --text-title: #e5e7eb;     /* MODAL TITLES (light) */
+            --card-bg: #808080;
+            --card-light: #FFF8DC;
+            --border-color: #374151;
+            --border-light: #d1d5db;
+            --cream: #FFFDD0;
+            --text-color: var(--text-secondary);
+        }
+
+        /* === DARK MODE === */
+        [data-theme="dark"] {
+            --bg-primary: #111827;
+            --bg-card: #1f2937;
+            --text-primary: #f3f4f6;
+            --text-title: #e5e7eb;
+        }
+        [data-theme="dark"] body {
+            background-color: var(--bg-primary);
+            color: var(--text-secondary);
+        }
+        [data-theme="dark"] .card,
+        [data-theme="dark"] .modal-content,
+        [data-theme="dark"] .stack-item,
+        [data-theme="dark"] .supplement-checkbox,
+        [data-theme="dark"] #custom-stack-list {
+            background-color: var(--card-light);
+            border-color: var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        /* === LIGHT MODE === */
+        [data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-card: #f3f4f6;
+            --text-primary: #1f2937;
+            --text-title: #1f2937;
+        }
+        [data-theme="light"] body {
+            background-color: var(--bg-secondary);
+            color: var(--text-secondary);
+        }
+        [data-theme="light"] .card,
+        [data-theme="light"] .modal-content,
+        [data-theme="light"] .stack-item,
+        [data-theme="light"] .supplement-checkbox,
+        [data-theme="light"] #custom-stack-list {
+            background-color: var(--card-bg);
+            border-color: var(--border-light);
+            color: var(--text-secondary);
+        }
+
+        /* === BASE STYLES === */
+        body { font-family: 'Inter', sans-serif; transition: all 0.3s ease; }
+        .card { border: 1px solid; border-radius: 6px; padding: 8px; }
+        .supplement-checkbox,
+        .stack-item,
+        .modal-content,
+        #custom-stack-list h3,
+        #custom-stack-list strong,
+        #custom-stack-list p,
+        #custom-stack-list li,
+        #supplement-modal-content * {
+            color: var(--text-color);
+        }
+
+        /* === BUTTONS === */
+        .remove-btn {
+            background: #ef4444; color: white !important; padding: 4px 8px; border-radius: 4px;
+            font-size: 0.75rem; cursor: pointer; border: none;
+        }
+        .remove-btn:hover { background: #dc2626; }
+        .bg-cream-100 { background-color: var(--cream); }
+
+        .stack-item {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            padding: 8px; border: 1px solid var(--border-color); border-radius: 6px;
+            background: #FFFDD0; transition: all 0.2s;
+        }
+        .stack-item:hover { background: #e5e7eb; }
+
+        .supplement-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 10px;
+        }
+        .supplement-checkbox {
+            display: flex; align-items: center; padding: 8px;
+            border: 1px solid var(--border-color); border-radius: 6px;
+            background: var(--card-light); transition: all 0.2s; cursor: pointer;
+        }
+        .supplement-checkbox:hover { background: #f3f4f6; }
+
+        .modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 50; opacity: 0; transition: opacity 0.3s; padding: 1rem;
+        }
+        .modal.show { opacity: 1; }
+
+        .modal-content {
+            background: var(--bg-primary) !important;
+            padding: 1.5rem; border-radius: 0.5rem;
+            max-width: 90vw; max-height: 90vh; overflow-y: auto;
+            color: var(--text-primary);
+        }
+
+        .modal-content h2,
+        #supplement-modal-title,
+        #modal-title,
+        #benefits-modal-title,
+        #my-schedule-modal-title {
+            color: var(--text-title) !important;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .theme-toggle {
+            cursor: pointer; padding: 0.5rem; border-radius: 50%;
+            background: rgba(255,255,255,0.1); transition: all 0.2s;
+        }
+        .theme-toggle:hover { background: rgba(255,255,255,0.2); }
+
+        @media (max-width: 640px) {
+            .supplement-grid { grid-template-columns: 1fr; }
+            .stack-item { flex-direction: column; gap: 0.5rem; text-align: left; }
+            .remove-btn { width: 100%; }
+            h1 { font-size: 1.5rem !important; }
+            .mb-6 { margin-bottom: 1.5rem !important; }
+        }
+
+        .modal-content a { color: #60a5fa !important; word-break: break-all; }
+
+        /* === TOOLTIP TERM — VISIBLE & THEME-AWARE === */
+        .tooltip-term { 
+            text-decoration: underline dotted; 
+            cursor: help; 
+            font-weight: 600;
+        }
+        [data-theme="dark"] .tooltip-term {
+            color: #a5f3fc !important;
+            text-shadow: 0 0 1px rgba(0,0,0,0.4);
+        }
+        [data-theme="light"] .tooltip-term {
+            color: #1d4ed8 !important;
+        }
+
+        /* === TOOLTIP POPUP — MOBILE-OPTIMIZED === */
+        .tooltip {
+            position: absolute;
+            background: #1f2937;
+            color: #f3f4f6;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            z-index: 50;
+            max-width: 90vw;
+            width: max-content;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            pointer-events: none;
+            white-space: normal;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            transform: translateX(-50%);
+            left: 50%;
+        }
+        .tooltip.show { opacity: 1; }
+
+        .modal-item {
+            @apply p-3 rounded;
+            background: var(--bg-card);
+            margin-bottom: 0.5rem;
+            transition: background 0.2s;
+        }
+        .modal-item:hover {
+            background: color-mix(in srgb, var(--bg-card) 90%, var(--text-primary) 10%);
+        }
+
+        .modal-content p,
+        .modal-content strong {
+            color: var(--text-primary) !important;
+        }
+    </style>
+</head>
+<body data-theme="dark">
+    <div class="card p-6 rounded-xl shadow-lg w-full max-w-md mx-4">
+        <header class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold">STACK - Nutritional Supplement Information Bank</h1>
+            <div class="theme-toggle" id="theme-toggle">
+                <svg class="h-6 w-6 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m8.485-8.485h-1m-16 0h-1m13.314-5.314l-.707.707M6.343 6.343l-.707.707m12.02 9.635l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+            </div>
+        </header>
+        <p class="text-xs text-left mb-2">1. Select a supplement from the dropdown to view its details, <br>2. Display supplements by their recommended dosage timing or benefits, <br>3. Display supplements by benefit category,<br>4. Display supplements by daily schedule or <br>5. Choose multiple supplements to build a custom stack, tailored for adults over 65.</p>
+        <p class="text-xs text-left mb-2">My intent is to provide information specific to men, 65 years old and older. Women or younger men will have different requirements.</p>
+        <p class="text-xs text-center mb-2"><b>Disclaimer:</b> This information is for educational purposes only. Consult a healthcare provider before starting any supplement.</p>
+        <!-- 1. Supplement Dropdown -->
+        <div class="mb-6">
+            <label for="supplement-select" class="block text-sm font-medium mb-2">1. Choose a Supplement:</label>
+            <select id="supplement-select" class="w-full p-3 border border-gray-600 rounded-lg bg-white text-black focus:ring-2 focus:ring-blue-500">
+                <option value="">-- Please select --</option>
+            </select>
+        </div>
+        <!-- 2. Filters: Time, Benefit, My Schedule -->
+        <div class="mb-6 space-y-4">
+            <div>
+                <label for="time-select" class="block text-sm font-medium mb-2">2. By Dosage Time:</label>
+                <select id="time-select" class="w-full p-3 border border-gray-600 rounded-lg bg-white text-black focus:ring-2 focus:ring-blue-500">
+                    <option value="">-- Select time --</option>
+                    <option value="Morning">Morning</option>
+                    <option value="Evening">Evening</option>
+                    <option value="Morning, Evening or split doses">Split Doses</option>
+                    <option value="Pre-workout or Evening">Pre-workout/Evening</option>
+                    <option value="Post-workout or Morning">Post-workout/Morning</option>
+                </select>
+            </div>
+            <div>
+                <label for="benefit-select" class="block text-sm font-medium mb-2">3. By Benefit:</label>
+                <select id="benefit-select" class="w-full p-3 border border-gray-600 rounded-lg bg-white text-black focus:ring-2 focus:ring-blue-500">
+					<option value="">-- Select benefit --</option>
+					<option value="Testosterone & Hormonal Health">Testosterone & Hormonal Health</option>
+					<option value="Muscle Health & Sarcopenia Prevention">Muscle Health & Sarcopenia Prevention</option>
+					<option value="Sleep Related Benefits">Sleep Related Benefits</option>
+					<option value="Immune Action">Immune Action</option>
+					<option value="Other Benefits">Other Benefits</option>
+				</select>
+            </div>
+            <div>
+                <label for="my-schedule-select" class="block text-sm font-medium mb-2">4. My Schedule:</label>
+                <select id="my-schedule-select" class="w-full p-3 border border-gray-600 rounded-lg bg-white text-black focus:ring-2 focus:ring-blue-500">
+                    <option value="">-- My Schedule --</option>
+                </select>
+            </div>
+        </div>
+        <!-- 3. Checkbox Matrix -->
+        <div class="mb-6">
+            <label class="block text-sm font-medium mb-2">5. Select for Stack:</label>
+            <div id="supplement-matrix" class="supplement-grid"></div>
+        </div>
+        <!-- Custom Stack -->
+        <div class="p-4 bg-cream-100 rounded-lg">
+            <h3 class="text-lg font-semibold mb-2">Custom Stack</h3>
+            <div id="custom-stack-list" class="space-y-2 max-h-48 overflow-y-auto text-sm mb-4"></div>
+            <button id="add-to-stack" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-2">Add Selected</button>
+            <button id="stack-export-button" class="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 mb-2">Export PDF</button>
+            <button id="reset-button" class="w-full px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-400">Reset</button>
+        </div>
+        <p class="text-xs text-center mt-4">By Gregg Rocheford • Grok AI • v1.76 • 11/15/2025</p>
+    </div>
+
+    <!-- === MODALS === -->
+    <div id="supplement-modal" class="modal hidden">
+        <div class="modal-content w-full max-w-md">
+            <h2 id="supplement-modal-title" class="text-xl font-bold mb-4">Details</h2>
+            <div id="supplement-modal-content" class="space-y-4 mb-4"></div>
+            <button id="supplement-modal-close" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Close</button>
+        </div>
+    </div>
+    <div id="time-modal" class="modal hidden">
+        <div class="modal-content w-full max-w-md">
+            <h2 id="modal-title" class="text-xl font-bold mb-4">Supplements</h2>
+            <div id="modal-content" class="space-y-2 mb-4"></div>
+            <button id="modal-close" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-2">Close</button>
+            <button id="time-csv-button" class="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">CSV</button>
+        </div>
+    </div>
+    <div id="benefits-modal" class="modal hidden">
+        <div class="modal-content w-full max-w-md">
+            <h2 id="benefits-modal-title" class="text-xl font-bold mb-4">Supplements by Benefit</h2>
+            <div id="benefits-modal-content" class="space-y-2 mb-4"></div>
+            <button id="benefits-modal-close" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-2">Close</button>
+            <button id="benefits-add-button" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-2">Add to Stack</button>
+            <button id="benefits-csv-button" class="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">CSV</button>
+        </div>
+    </div>
+    <div id="preview-modal" class="modal hidden">
+        <div class="modal-content w-full max-w-md">
+            <h2 class="text-xl font-bold mb-4">Preview</h2>
+            <div id="preview-content" class="space-y-2 mb-4 text-sm"></div>
+            <button id="preview-close" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-2">Close</button>
+            <button id="preview-confirm" class="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">Download</button>
+        </div>
+    </div>
+    <div id="my-schedule-modal" class="modal hidden">
+        <div class="modal-content w-full max-w-md">
+            <h2 id="my-schedule-modal-title" class="text-xl font-bold mb-4"></h2>
+            <div id="my-schedule-modal-content" class="space-y-2 mb-4"></div>
+            <button id="my-schedule-modal-close" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-2">Close</button>
+            <button id="my-schedule-csv-button" class="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">CSV</button>
+        </div>
+    </div>
+
+    <script>
+            // ==============================
+    // FULL SUPPLEMENT DATA (with My Schedule)
+    // ==============================
+const supplementData = [
+    {
+        name: "Glycine",
+        parameters: {
+            "Preferred Brand": "Not specified",
+            "Dosage/Serving": "3–5 g",
+            "Recommended Time": "Evening",
+            "With Food or Empty Stomach": "With or without food",
+            "Benefits": "Improves sleep quality (reduces time to fall asleep and enhances deep sleep) in adults over 65, supports cognitive function, and may reduce inflammation and oxidative stress. May enhance collagen synthesis and muscle repair when combined with resistance training, aiding sarcopenia prevention.",
+            "Potential Side Effects or Risks": "Generally safe; high doses may cause mild digestive upset. Consult a doctor if on medications affecting the nervous system.",
+            "Research Links": "<a href='https://grokipedia.com/page/Glycine#glycine' target='_blank' class='text-blue-400 hover:underline'>(Grokipedia)</a>",
+            "Synergism": "Enhances collagen synthesis and joint health when combined with Collagen Peptides; boosts glutathione production and antioxidant effects with NAC; improves sleep and cognitive function with Magnesium Glycinate or L-Theanine.",
+            "My Schedule": "Morning with coffee",
+            "Immune Action": "Reduces joint pain and inflammation in rheumatoid arthritis patients (clinical trials); anti-inflammatory effects in older adults via cytokine modulation (animal models)."
+        }
+    },
+	{
+        name: "Nicotinamide mononucleotide (NMN)",
+        parameters: {
+            "Preferred Brand": "Not specified",
+            "Dosage/Serving": "250–500 mg",
+            "Recommended Time": "Morning",
+            "With Food or Empty Stomach": "With or without food",
+            "Benefits": "Boosts <span><a href='https://grokipedia.com/page/Nicotinamide_adenine_dinucleotide#nicotinamide-adenine-dinucleotide' target='_blank' class='text-blue-400 hover:underline'>NAD+(Grokipedia)</a></span> levels to support cellular energy production and mitochondrial function; may improve insulin sensitivity, enhance physical performance and muscle function in older adults, promote cardiovascular health by reducing arterial stiffness, and exhibit anti-aging effects such as mitigating oxidative stress, DNA damage, and age-related cognitive decline. Preliminary studies suggest benefits for sleep quality, fatigue reduction, and metabolic health.",
+            "Potential Side Effects or Risks": "Generally well-tolerated with no documented side effects in human trials up to 1200 mg daily; mild digestive discomfort possible at higher doses. Long-term safety data is limited—consult a doctor, especially if pregnant, breastfeeding, or on medications affecting metabolism.",
+            "Research Links": "<a href='https://grokipedia.com/page/Nicotinamide_mononucleotide#nicotinamide-mononucleotide' target='_blank' class='text-blue-400 hover:underline'>NMN(Grokipedia)</a>",
+            "Synergism": "Enhances anti-aging and energy effects when combined with Resveratrol (activates sirtuins); boosts NAD+ pathways and cognitive support with TMG (betaine) for methylation; improves metabolic and cardiovascular benefits alongside exercise or CoQ10.",
+            "My Schedule": "Not specified",
+            "Immune Action": "Supports immune function by reducing inflammation and oxidative stress via NAD+ elevation (animal models); may enhance T-cell persistence and efficacy in immunotherapy contexts (preclinical studies); potential modulation of age-related immune decline through sirtuin activation (human trials ongoing)."
+}
+},
+    {
+        name: "MCT Oil",
+        parameters: {
+            "Preferred Brand": "Not Specified",
+            "Dosage/Serving": "Beginner: 5–10 mL (1 tsp to 1 tbsp) daily to build tolerance. Standard: 15–30 mL (1–2 tbsp) split into 2–3 doses.",
+            "Recommended Time": "Morning",
+            "With Food or Empty Stomach": "With food",
+            "Benefits": "MCT (medium-chain triglyceride) oil, primarily from coconut or palm kernel oil, is rapidly absorbed and converted to ketones for energy. Evidence-based benefits include:<br>1. Quick energy source: Bypasses normal fat digestion; provides immediate fuel, especially for brain and muscles (studies in Journal of Nutrition, 2018).<br>2. Weight management: Increases satiety and fat oxidation; meta-analyses (e.g., Journal of the Academy of Nutrition and Dietetics, 2015) show modest weight/fat loss (0.5–1 kg over weeks) when replacing long-chain fats.<br>3. Ketogenic support: Raises blood ketones without carbs; useful for keto diets or fasting (clinical trials in Nutrients, 2020).<br>4. Cognitive/athletic performance: May improve endurance and mental clarity in low-carb states (small RCTs in Frontiers in Physiology, 2018).<br>5. Gut health: Antimicrobial properties (lauric acid in some MCTs) may reduce harmful bacteria (Antimicrobial Agents and Chemotherapy).",
+            "Potential Side Effects or Risks": "Stomach cramps, diarrhea, nausea ('disaster pants')—minimize by starting low and taking with food.",
+            "Research Links": "<a href='https://pubmed.ncbi.nlm.nih.gov/33541567/' target='_blank' class='text-blue-400 hover:underline'>(PubMed Study)</a>",
+            "Synergism": "Amplifies ketosis; pair with low-carb meals. Enhances fat-burning and focus (bulletproof coffee). Pre-workout for endurance. May boost mitochondrial fat transport (animal data, limited human) with L-Carnitine.",
+            "My Schedule": "Morning with coffee",
+            "Immune Action": "No evidence"
+        }
+    },
+    {
+        name: "Ashwagandha",
+        parameters: {
+            "Preferred Brand": "Not specified",
+            "Dosage/Serving": "300–600 mg (standardized to 5% Withanolides)",
+            "Recommended Time": "Evening",
+            "With Food or Empty Stomach": "With food",
+            "Benefits": "Supports vitality and sarcopenia prevention in older adults. Increases testosterone levels (15–20% in men over 65), improves muscle strength (10–15% with resistance training), enhances libido, and reduces fatigue by lowering cortisol. Ashwagandha has a stronger evidence base than DIM for boosting testosterone in men, including those up to 60-70 years old, with consistent increases in total and free testosterone (10-20%) and additional benefits like improved strength and vitality.",
+            "Potential Side Effects or Risks": "May cause mild digestive upset or drowsiness. Consult a doctor if on thyroid or sedative medications.",
+            "Research Links": "<a href='https://grokipedia.com/page/Withania_somnifera#withania-somnifera' target='_blank' class='text-blue-400 hover:underline'>(Grokipedia)</a></a>",
+            "Synergism": "Enhances stress reduction and cognitive benefits with L-Theanine; boosts testosterone and muscle recovery with Tongkat Ali or Creatine; improves adaptogenic effects with Vitamin B Multi.",
+            "My Schedule": "Evening",
+            "Immune Action": "Eases arthritis pain and swelling in RA patients (clinical studies); anti-inflammatory effects on cartilage in OA (in vitro); safe in older adults but monitor for immune stimulation."
+        }
+    },
+    {
+        name: "Tongkat Ali",
+        parameters: {
+            "Preferred Brand": "Not specified",
+            "Dosage/Serving": "200–400 mg (standardized extract)",
+            "Recommended Time": "Morning",
+            "With Food or Empty Stomach": "With food",
+            "Benefits": "Boosts total testosterone (up to 37% in older men with low T), improves erectile function and muscle strength with training, and enhances energy/libido in adults over 65. Supports healthy aging and ADAM symptoms.",
+            "Potential Side Effects or Risks": "Generally safe; may cause mild insomnia or irritability at high doses. Avoid if on blood thinners.",
+            "Research Links": "<a href='https://pubmed.ncbi.nlm.nih.gov/33541567/' target='_blank' class='text-blue-400 hover:underline'>(PubMed Study)</a>",
+            "Synergism": "Enhances testosterone and libido with Ashwagandha or Fenugreek; improves vascular function and endurance with L-Arginine; boosts muscle gains with Creatine.",
+            "My Schedule": "Morning with eggs or kefir",
+            "Immune Action": "Enhances muscle strength and immunity in seniors (pilot RCT, 400 mg/day, 5 weeks); limited direct arthritis data but reduces inflammation in older adults."
+        }
+    },
+    {
+        name: "HMB (beta-hydroxy beta-methylbutyrate)",
+        parameters: {
+            "Preferred Brand": "Not specified",
+            "Dosage/Serving": "1.5–3 g",
+            "Recommended Time": "Morning, Evening or split doses",
+            "With Food or Empty Stomach": "With or without food",
+            "Benefits": "Preserves muscle mass and strength (up to 10% gains with RT) in older adults with sarcopenia, reduces frailty, and improves physical function. Enhances protein synthesis and counters muscle breakdown.",
+            "Potential Side Effects or Risks": "Generally well-tolerated; rare GI upset. Safe for long-term use in older adults.",
+            "Research Links": "<a href='https://grokipedia.com/page/%CE%92-Hydroxy_%CE%B2-methylbutyric_acid#β-hydroxy-β-methylbutyric-acid' target='_blank' class='text-blue-400 hover:underline'>(Grokipedia)</a>",
+            "Synergism": "Amplifies muscle preservation and strength gains with Creatine or Whey Protein; supports anti-inflammatory effects with probiotics (e.g., Weizmannia coagulans).",
+            "My Schedule": "Gym Stack",
+            "Immune Action": "No evidence"
+        }
+    },
+    {
+        name: "Fenugreek",
+        parameters: {
+            "Preferred Brand": "Not specified",
+            "Dosage/Serving": "500–600 mg (standardized extract)",
+            "Recommended Time": "Morning",
+            "With Food or Empty Stomach": "With food",
+            "Benefits": "Increases free testosterone (up to 20% in men over 40), supports muscle performance and libido during resistance training, and may aid fat loss in older adults. Mixed but positive for hormonal balance.",
+            "Potential Side Effects or Risks": "May cause mild GI upset or maple-syrup-like body odor. Avoid if allergic to legumes.",
+            "Research Links": "<a href='https://pubmed.ncbi.nlm.nih.gov/32048383/' target='_blank' class='text-blue-400 hover:underline'>(PubMed Meta-Analysis)</a>",
+            "Synergism": "Boosts testosterone and muscle performance with Tongkat Ali or Ashwagandha; enhances creatine uptake during resistance training.",
+            "My Schedule": "Morning with eggs or kefir",
+            "Immune Action": "No evidence"
+        }
+    },
+    {
+        name: "NAC (N-Acetyl Cysteine)",
+        parameters: {
+            "Preferred Brand": "Bulk Supplements",
+            "Dosage/Serving": "600 - 1600 mg",
+            "Recommended Time": "Morning",
+            "With Food or Empty Stomach": "Empty stomach",
+            "Benefits": "Supports liver health, acts as an antioxidant, and may help with respiratory conditions by reducing mucus.",
+            "Potential Side Effects or Risks": "May cause nausea, diarrhea, or allergic reactions in some individuals. Consult a doctor if taking nitroglycerin.",
+            "Research Links": "",
+            "Synergism": "Boosts glutathione production and antioxidant effects with Glycine; enhances immune and respiratory support with Quercetin or Vitamin C.",
+            "My Schedule": "Morning with coffee",
+            "Immune Action": "Reduces NO and FBS in RA patients (RCT); prevents OA progression in animal models; mixed results on knee OA risk in cohort studies."
+        }
+    },
+    {
+        name: "Nattokinase",
+        parameters: {
+            "Preferred Brand": "NatureBell",
+            "Dosage/Serving": "8000 FU",
+            "Recommended Time": "Morning",
+            "With Food or Empty Stomach": "Empty stomach",
+            "Benefits": "May support cardiovascular health by promoting healthy blood flow and reducing clot formation.",
+            "Potential Side Effects or Risks": "May increase bleeding risk, especially with blood thinners. Avoid before surgery.",
+            "Research Links": "<a href='https://grokipedia.com/page/Nattokinase#nattokinase' target='_blank' class='text-blue-400 hover:underline'>(Grokipedia)</a>",
+            "Synergism": "Enhances blood flow and cardiovascular health with Coenzyme Q10 or Vitamin K2 MK-7; supports lipid-lowering with Red Yeast Rice.",
+            "My Schedule": "Morning with coffee",
+            "Immune Action": "No evidence"
+        }
+    },
+    {
+        name: "Bovine Colostrum",
+        parameters: {
+            "Preferred Brand": "Hearthy Foods",
+            "Dosage/Serving": "20–60 g",
+            "Recommended Time": "Morning",
+            "With Food or Empty Stomach": "Empty stomach",
+            "Benefits": "Increases leg strength (up to 24% with resistance training) and lean mass in adults over 65, reduces bone resorption, supports recovery, and enhances immune/gut health for vitality. May boost IGF-1 for muscle repair.",
+            "Potential Side Effects or Risks": "May cause digestive upset in some individuals. Not suitable for those with dairy allergies.",
+            "Research Links": "<a href='https://pmc.ncbi.nlm.nih.gov/articles/PMC8255475/' target='_blank' class='text-blue-400 hover:underline'>(PubMed RCT)</a>",
+            "Synergism": "Boosts immune and gut health with Probiotics; enhances muscle recovery with Whey Protein or Creatine.",
+            "My Schedule": "Morning with eggs or kefir",
+            "Immune Action": "Improves metabolic changes and reduces pro-inflammatory mediators in older adults (RCT, 12 weeks); supports immune function in elderly."
+        }
+    },
+    {
+        name: "Urolithin A",
+        parameters: {
+            "Preferred Brand": "Cysto Rebalance",
+            "Dosage/Serving": "500–1000 mg",
+            "Recommended Time": "Morning",
+            "With Food or Empty Stomach": "With or without food",
+            "Benefits": "Improves muscle endurance (12–17% in hand/leg muscles) and strength in adults over 65, enhances mitochondrial efficiency via <span class='tooltip-term' data-tooltip='Mitophagy: Process of recycling damaged mitochondria to improve cellular energy.'>mitophagy</span>, and reduces inflammation. Supports sarcopenia prevention.",
+            "Potential Side Effects or Risks": "Limited data on long-term use; consult a healthcare provider for safety.",
+            "Research Links": "<a href='https://grokipedia.com/page/Urolithin_A#urolithin-a' target='_blank' class='text-blue-400 hover:underline'>(Grokipedia)</a>",
+            "Synergism": "Enhances mitochondrial health and anti-aging effects with Coenzyme Q10 or NMN; supports muscle endurance with Creatine.",
+            "My Schedule": "Morning with eggs or kefir",
+            "Immune Action": "Improves T-cell function and reduces inflammaging in middle-aged/older adults (clinical trial, 500–1000 mg/day); protects cartilage in OA models."
+        }
+    },
+    {
+        name: "Quercetin",
+        parameters: {
+            "Preferred Brand": "Nutricost",
+            "Dosage/Serving": "880 mg",
+            "Recommended Time": "Morning",
+            "With Food or Empty Stomach": "With food",
+            "Benefits": "Antioxidant and anti-inflammatory properties; may support immune health and reduce allergy symptoms.",
+            "Potential Side Effects or Risks": "May cause headaches or stomach upset in high doses. May interact with certain medications.",
+            "Research Links": "<a href='https://grokipedia.com/page/Quercetin#quercetin' target='_blank' class='text-blue-400 hover:underline'>(Grokipedia)</a>",
+            "Synergism": "Boosts immune and antioxidant effects with Vitamin C or NAC; enhances anti-inflammatory benefits with Bromelain.",
+            "My Schedule": "Morning with eggs or kefir",
+            "Immune Action": "Reduces morning stiffness and pain in RA women (RCT, 500 mg/day, 8 weeks); lowers inflammatory cytokines in elderly (meta-analyses)."
+        }
+    },
+    {
+        name: "Vitamin D3",
+        parameters: {
+            "Preferred Brand": "NatureWise",
+            "Dosage/Serving": "800–2000 IU",
+            "Recommended Time": "Morning, Evening or split doses",
+            "With Food or Empty Stomach": "With food (fat-containing)",
+            "Benefits": "Increases muscle fiber size (esp. type II) and strength (4–11% in lower body), reduces fall risk, and lowers <span class='tooltip-term' data-tooltip='Myostatin: A protein that inhibits muscle growth.'>myostatin</span> to promote muscle growth in adults over 65. Supports bone health, immune function, and mitochondrial health.",
+            "Potential Side Effects or Risks": "High doses can cause toxicity, leading to hypercalcemia. Monitor levels with a doctor.",
+            "Research Links": "<a href='https://grokipedia.com/page/Cholecalciferol#cholecalciferol' target='_blank' class='text-blue-400 hover:underline'>(Grokipedia)</a>",
+            "Synergism": "Enhances bone health and calcium absorption with Vitamin K2 MK-7 or Magnesium Glycinate; boosts immune function with Zinc or Vitamin C.",
+            "My Schedule": "Morning with eggs or kefir",
+            "Immune Action": "Reduces RA disease activity and ESR in elderly (meta-analysis); improves immune function and lowers infection risk in seniors."
+        }
+    },
+    {
+        name: "Vitamin K2 MK-7",
+        parameters: {
+            "Preferred Brand": "Healthy Origins",
+            "Dosage/Serving": "100 mcg",
+            "Recommended Time": "Morning, Evening or split doses",
+            "With Food or Empty Stomach": "With food (fat-containing)",
+            "Benefits": "Supports bone and cardiovascular health by directing calcium to bones and away from arteries.",
+            "Potential Side Effects or Risks": "Generally safe; may interact with blood thinners like warfarin.",
+            "Research Links": "<a href='https://grokipedia.com/page/Vitamin_K2#vitamin-k2' target='_blank' class='text-blue-400 hover:underline'>(Grokipedia)</a>",
+            "Synergism": "Optimizes calcium metabolism and bone health with Vitamin D3; enhances cardiovascular protection with Coenzyme Q10.",
+            "My Schedule": "Morning with eggs or kefir",
+            "Immune Action": "Reduces inflammation and disease activity in RA patients (clinical study, MK-7 form); supports bone health in older adults."
+        }
+    },
+    {
+        name: "Vitamin K2 MK-4",
+        parameters: {
+            "Preferred Brand": "Not available",
+            "Dosage/Serving": "Not recommended",
+            "Recommended Time": "Do not use",
+            "With Food or Empty Stomach": "Do not use",
+            "Benefits": "Limited use compared to MK-7; may support bone health but less bioavailable.",
+            "Potential Side Effects or Risks": "Not recommended due to short half-life and limited evidence.",
+            "Research Links": "",
+            "Synergism": "Similar to MK-7 but less effective; potential synergy with Vitamin D3 for bone health, though MK-7 is preferred.",
+            "My Schedule": "Not set",
+            "Immune Action": "No evidence"
+        }
+    },
+    {
+        name: "Coenzyme Q10",
+        parameters: {
+            "Preferred Brand": "Qunol",
+            "Dosage/Serving": "100 mg",
+            "Recommended Time": "Morning",
+            "With Food or Empty Stomach": "With food (fat-containing)",
+            "Benefits": "Supports heart health, energy production, and may reduce statin-induced muscle pain.",
+            "Potential Side Effects or Risks": "May cause digestive upset or insomnia in some individuals.",
+            "Research Links": "<a href='https://grokipedia.com/page/Coenzyme_Q10#coenzyme-q10' target='_blank' class='text-blue-400 hover:underline'>(Grokipedia)</a>",
+            "Synergism": "Enhances mitochondrial and heart health with Taurine or Urolithin A; reduces statin side effects with Vitamin E.",
+            "My Schedule": "Morning with eggs or kefir",
+            "Immune Action": "Lowers inflammatory cytokines in RA patients (RCT, 100 mg/day, 3 months); improves immune markers in older adults."
+        }
+    },
+    {
+        name: "Vitamin B Multi",
+        parameters: {
+            "Preferred Brand": "Not specified",
+            "Dosage/Serving": "Varies by formulation",
+            "Recommended Time": "Morning",
+            "With Food or Empty Stomach": "With food",
+            "Benefits": "Supports energy metabolism, nervous system health, and red blood cell formation.",
+            "Potential Side Effects or Risks": "Generally safe; high doses of certain B vitamins may cause side effects like flushing.",
+            "Research Links": "",
+            "Synergism": "Enhances energy and stress reduction with Ashwagandha; supports methylation and detox with Folate (B9) and B12.",
+            "My Schedule": "Morning with eggs or kefir",
+            "Immune Action": "B6 (100 mg/day) suppresses IL-6 and TNF-α in RA (RCT); supports immune cell proliferation in elderly (observational)."
+        }
+    },
+    {
+        name: "Selenium (Selenomethionine)",
+        parameters: {
+            "Preferred Brand": "Nutricost",
+            "Dosage/Serving": "200 mcg",
+            "Recommended Time": "Morning",
+            "With Food or Empty Stomach": "With food",
+            "Benefits": "Supports thyroid function, antioxidant activity, and immune health.",
+            "Potential Side Effects or Risks": "High doses can cause toxicity (selenosis); monitor intake.",
+            "Research Links": "<a href='https://grokipedia.com/page/Selenomethionine#selenomethionine' target='_blank' class='text-blue-400 hover:underline'>(Grokipedia)</a>",
+            "Synergism": "Boosts antioxidant and thyroid support with Vitamin E or Zinc; enhances immune function with Vitamin C.",
+            "My Schedule": "Morning with eggs or kefir",
+            "Immune Action": "Enhances immune function and reduces infection risk in seniors (clinical studies); lowers inflammation in RA (RCT);In terms of immune support, selenomethionine supplementation has been shown to improve innate immunity parameters, including increased T-cell function and reduced inflammation markers, potentially lowering infection rates in selenium-deficient populations."
+        }
+    },
+    {
+        name: "Diindolylmethane (DIM)",
+        parameters: {
+            "Preferred Brand": "Bulk Supplements",
+            "Dosage/Serving": "75–300 mg",
+            "Recommended Time": "Morning",
+            "With Food or Empty Stomach": "With food",
+            "Benefits": "**NOT SUPPORTED BY SOLID RESEARCH** <p>Supports hormonal balance, particularly estrogen metabolism. Increases testosterone levels (up to 30% over six months) in older men, especially those on TRT, by modulating estrogen without accelerating testosterone metabolism. Ashwagandha directly impacts testosterone production and cortisol, while DIM’s effects are indirect (via estrogen modulation) and less substantiated in healthy older men. Ashwagandha’s broader evidence base makes it a more reliable option.</p>",
+            "Potential Side Effects or Risks": "May cause digestive upset or headaches; consult for long-term use.",
+            "Research Links": "<a href='https://pubmed.ncbi.nlm.nih.gov/26926141/' target='_blank' class='text-blue-400 hover:underline'>(PubMed Study)</a>",
+            "Synergism": "Supports estrogen metabolism and hormonal balance with Calcium D-Glucarate; may enhance testosterone effects with Ashwagandha (though evidence is limited).",
+            "My Schedule": "Morning with eggs or kefir",
+            "Immune Action": "No evidence"
+        }
+    },
+    {
+        name: "Vitamin E",
+        parameters: {
+            "Preferred Brand": "Not specified",
+            "Dosage/Serving": "180 mg",
+            "Recommended Time": "Morning, Evening or split doses",
+            "With Food or Empty Stomach": "With food (fat-containing)",
+            "Benefits": "Antioxidant that protects cells; may support skin and heart health.",
+            "Potential Side Effects or Risks": "High doses may increase bleeding risk, especially with blood thinners.",
+            "Research Links": "<a href='https://grokipedia.com/page/Vitamin_E#vitamin-e' target='_blank' class='text-blue-400 hover:underline'>(Grokipedia)</a>",
+            "Synergism": "Enhances antioxidant protection with Selenium or Vitamin C; supports skin health with Collagen Peptides.",
+            "My Schedule": "Morning with eggs or kefir",
+            "Immune Action": "Improves T-cell function in elderly (clinical trials); reduces pain and inflammation in knee OA (RCT, 200 mg/day, 3 months)."
+        }
+    },
+    {
+        name: "Vitamin C",
+        parameters: {
+            "Preferred Brand": "Not specified",
+            "Dosage/Serving": "1000 mg",
+            "Recommended Time": "Post-workout or Morning",
+            "With Food or Empty Stomach": "With or without food",
+            "Benefits": "Supports immune function, collagen production, and antioxidant activity.",
+            "Potential Side Effects or Risks": "High doses may cause diarrhea or kidney stones in susceptible individuals.",
+            "Research Links": "<a href='https://grokipedia.com/page/Vitamin_C#vitamin-c' target='_blank' class='text-blue-400 hover:underline'>(Grokipedia)</a>",
+            "Synergism": "Boosts iron absorption with Zinc; enhances antioxidant effects with Quercetin or NAC; supports collagen synthesis with Glycine.",
+            "My Schedule": "Morning with eggs or kefir",
+            "Immune Action": "Reduces knee OA progression in older adults (longitudinal studies); supports immune function and lowers infection risk in seniors."
+        }
+    },
+    {
+        name: "L-Theanine",
+        parameters: {
+            "Preferred Brand": "Bulk Supplements",
+            "Dosage/Serving": "250 mg",
+            "Recommended Time": "Morning, Evening or split doses",
+            "With Food or Empty Stomach": "With or without food",
+            "Benefits": "Upon ingestion, it readily crosses the blood-brain barrier within 30–40 minutes, modulating neurotransmitters such as GABA, dopamine, and serotonin to promote relaxation without sedation; may improve focus when combined with caffeine. Supports better sleep quality when taken in the evening.",
+            "Potential Side Effects or Risks": "Generally safe; may cause mild headaches or drowsiness in some.",
+            "Research Links": "<a href='https://grokipedia.com/page/Theanine#theanine' target='_blank' class='text-blue-400 hover:underline'>(Grokipedia)</a>",
+            "Synergism": "Enhances focus and reduces caffeine jitters; improves relaxation and sleep with Magnesium Glycinate or Glycine.",
+            "My Schedule": "Evening",
+            "Immune Action": "No evidence"
+        }
+    },
+    {
+        name: "Collagen Peptides",
+        parameters: {
+            "Preferred Brand": "Not specified",
+            "Dosage/Serving": "10–15 g",
+            "Recommended Time": "Morning, Evening or split doses",
+            "With Food or Empty Stomach": "With or without food",
+            "Benefits": "Aids fat loss to combat sarcopenia, boosts muscle mass (1–2 kg with resistance training) and strength (10–15%) in adults over 65, and supports tendon/joint heath for mobility.",
+            "Potential Side Effects or Risks": "May cause digestive upset; not suitable for those with dairy or fish allergies.",
+            "Research Links": "<a href='https://grokipedia.com/page/Collagen#collagen' target='_blank' class='text-blue-400 hover:underline'>(Grokipedia)</a>",
+            "Synergism": "Enhances joint and skin health with Vitamin C or Glycine; supports muscle repair with HMB or Creatine.",
+            "My Schedule": "Gym Stack",
+            "Immune Action": "Reduces joint pain and improves function in knee OA elderly women (RCT, 5 g/day, 6 months); supports cartilage health."
+        }
+    },
+    {
+        name: "Zinc Picolinate",
+        parameters: {
+            "Preferred Brand": "Nutricost",
+            "Dosage/Serving": "50 mg",
+            "Recommended Time": "Evening",
+            "With Food or Empty Stomach": "Empty stomach",
+            "Benefits": "Supports immune function, skin health, and testosterone production.",
+            "Potential Side Effects or Risks": "Long-term use beyond 2-3 months should be avoided without medical supervision, as prolonged high-dose supplementation can alter copper balance and other nutrient levels; Chronic excessive intake above 40 mg/day—the tolerable upper intake level established by the Institute of Medicine—may suppress immune function, reduce high-density lipoprotein (HDL) cholesterol levels, and exacerbate copper deficiency.",
+            "Research Links": "<a href='https://grokipedia.com/page/Zinc_picolinate#zinc-picolinate' target='_blank' class='text-blue-400 hover:underline'>(Grokipedia)</a>",
+            "Synergism": "Boosts immune and antioxidant effects with Vitamin C or Selenium; enhances testosterone with Vitamin D3.",
+            "My Schedule": "Evening",
+            "Immune Action": "Enhances immune function in elderly (clinical studies); reduces inflammation in RA (observational); supports joint health."
+        }
+    },
+    {
+        name: "Magnesium Glycinate",
+        parameters: {
+            "Preferred Brand": "Nutricost",
+            "Dosage/Serving": "210 mg",
+            "Recommended Time": "Evening",
+            "With Food or Empty Stomach": "With or without food",
+            "Benefits": "Supports muscle relaxation, improves sleep quality, and may reduce migraines.",
+            "Potential Side Effects or Risks": "Generally well-tolerated; high doses may cause diarrhea.",
+            "Research Links": "<a href='https://grokipedia.com/page/Magnesium_glycinate#magnesium-glycinate' target='_blank' class='text-blue-400 hover:underline'>(Grokipedia)</a>",
+            "Synergism": "Enhances sleep and relaxation with L-Theanine or Glycine; improves bone health with Vitamin D3.",
+            "My Schedule": "Morning with eggs or kefir",
+            "Immune Action": "Lowers CRP in metabolic syndrome (linked to RA); improves immune regulation in older adults (studies)."
+        }
+    },
+    {
+        name: "Magnesium Threonate",
+        parameters: {
+            "Preferred Brand": "Bulk Supplements",
+            "Dosage/Serving": "2000 mg",
+            "Recommended Time": "Evening",
+            "With Food or Empty Stomach": "With or without food",
+            "Benefits": "May improve cognitive function and support brain health due to enhanced brain penetration. May aid sleep onset.",
+            "Potential Side Effects or Risks": "Generally safe; may cause mild digestive upset.",
+            "Research Links": "<a href='https://grokipedia.com/page/Magnesium_L-threonate#magnesium-l-threonate' target='_blank' class='text-blue-400 hover:underline'>(Grokipedia)</a>",
+            "Synergism": "Enhances cognitive and sleep benefits with L-Theanine; supports brain health with Coenzyme Q10.",
+            "My Schedule": "Evening",
+            "Immune Action": "No evidence"
+        }
+    },
+    {
+        name: "Berberine",
+        parameters: {
+            "Preferred Brand": "Not specified",
+            "Dosage/Serving": "500 mg",
+            "Recommended Time": "Morning, Evening or split doses",
+            "With Food or Empty Stomach": "With food",
+            "Benefits": "May support blood sugar control, cholesterol levels, and gut health.",
+            "Potential Side Effects or Risks": "May cause digestive upset or interact with medications like metformin.",
+            "Research Links": "<a href='https://grokipedia.com/page/Berberine#berberine' target='_blank' class='text-blue-400 hover:underline'>(Grokipedia)</a>",
+            "Synergism": "Enhances blood sugar control with Chromium or Cinnamon; supports gut health with Probiotics.",
+            "My Schedule": "Before Meals",
+            "Immune Action": "Reduces inflammatory cytokines in RA models (animal studies); supports metabolic health in elderly, indirectly benefiting immunity."
+        }
+    },
+    {
+        name: "L-Arginine",
+        parameters: {
+            "Preferred Brand": "Nutricost",
+            "Dosage/Serving": "3–6 g",
+            "Recommended Time": "Pre-workout or Evening",
+            "With Food or Empty Stomach": "Empty stomach",
+            "Benefits": "Physiologically, arginine plays pivotal roles as a precursor for nitric oxide (NO) synthesis via nitric oxide synthase enzymes, which regulates vascular tone, endothelial function, and blood flow. Additionally, arginine supports immune responses by promoting T-cell proliferation and cytokine production, aids in wound healing and tissue repair, and contributes to creatine production for muscle energy metabolism.",
+            "Potential Side Effects or Risks": "May cause digestive upset or low blood pressure in some individuals.",
+            "Research Links": "<a href='https://grokipedia.com/page/Arginine#arginine' target='_blank' class='text-blue-400 hover:underline'>(Grokipedia)</a>",
+            "Synergism": "Enhances nitric oxide and blood flow with Taurine or Pomegranate Peel; boosts endurance with Creatine.",
+            "My Schedule": "Gym Stack",
+            "Immune Action": "Enhances T-cell function and reduces infections in elderly (clinical trials); improves wound healing in arthritis (studies)."
+        }
+    },
+    {
+        name: "Taurine",
+        parameters: {
+            "Preferred Brand": "Nutricost",
+            "Dosage/Serving": "1–3 g",
+            "Recommended Time": "Pre-workout or Evening",
+            "With Food or Empty Stomach": "With or without food",
+            "Benefits": "Enhances muscle endurance and strength in adults over 65, reduces fatigue and oxidative stress, and supports mitochondrial function to combat sarcopenia.",
+            "Potential Side Effects or Risks": "Generally safe; high doses may cause mild side effects like nausea.",
+            "Research Links": "<a href='https://grokipedia.com/page/Taurine#taurine' target='_blank' class='text-blue-400 hover:underline'>(Grokipedia)</a>",
+            "Synergism": "Enhances antioxidant and mitochondrial effects with Coenzyme Q10; improves blood flow with L-Arginine.",
+            "My Schedule": "Gym Stack",
+            "Immune Action": "Reduces inflammatory cytokines in RA models (animal studies); supports macrophage function in older adults."
+        }
+    },
+    {
+        name: "Whey Protein",
+        parameters: {
+            "Preferred Brand": "Levels",
+            "Dosage/Serving": "20–30 g",
+            "Recommended Time": "Post-workout or Morning",
+            "With Food or Empty Stomach": "With or without food",
+            "Benefits": "Promotes muscle protein synthesis in adults over 65, increasing muscle mass (1–2 kg) and strength (10–20%) with resistance training. Superior for rebuilding after inactivity and reducing fall risk.",
+            "Potential Side Effects or Risks": "May cause digestive issues in lactose-intolerant individuals.",
+            "Research Links": "<a href='https://grokipedia.com/page/Whey_protein#whey-protein' target='_blank' class='text-blue-400 hover:underline'>(Grokipedia)</a>",
+            "Synergism": "Enhances muscle gains with Creatine or HMB; supports immune health with Bovine Colostrum.",
+            "My Schedule": "Gym Stack",
+            "Immune Action": "Lowers IL-6 and TNF-α in older adults (meta-analysis); reduces post-exercise inflammation in elderly."
+        }
+    },
+    {
+        name: "Creatine Monohydrate",
+        parameters: {
+            "Preferred Brand": "Not specified",
+            "Dosage/Serving": "3–5 g",
+            "Recommended Time": "Morning, Evening or split doses",
+            "With Food or Empty Stomach": "With food (carbs enhance uptake)",
+            "Benefits": "Boosts muscle mass (up to 2–3 kg) and strength (10–20%) in adults over 65, enhances endurance, counters sarcopenia, and improves bone density. Recent research (2023-2025) also shows brain health benefits, including improved cognitive performance during sleep deprivation, better memory and attention, reduced depressive symptoms, and reduced brain fog in long COVID.",
+            "Potential Side Effects or Risks": "May cause water retention or digestive upset in some individuals.",
+            "Research Links": "<a href='https://grokipedia.com/page/Creatine#creatine' target='_blank' class='text-blue-400 hover:underline'>(Grokipedia)</a>",
+            "Synergism": "Enhances muscle strength and endurance with HMB, Beta-Alanine, or Whey Protein; improves cognitive effects with L-Theanine.",
+            "My Schedule": "Gym Stack",
+            "Immune Action": "Improves muscle strength in knee OA postmenopausal women (RCT, 5 g/day, 12 weeks); enhances immune markers in seniors."
+        }
+    },
+    {
+        name: "Raw Cacao Powder",
+        parameters: {
+            "Preferred Brand": "Not specified",
+            "Dosage/Serving": "10–20 g",
+            "Recommended Time": "Morning, Evening or split doses",
+            "With Food or Empty Stomach": "With food",
+            "Benefits": "May increase testosterone levels in older men, especially when combined with pomegranate peel, enhancing sexual function, vitality, and nitric oxide production for better circulation and heart health.",
+            "Potential Side Effects or Risks": "Generally safe, but high doses may cause jitteriness due to theobromine or digestive upset.",
+            "Research Links": "<a href='https://pubmed.ncbi.nlm.nih.gov/32223536/' target='_blank' class='text-blue-400 hover:underline'>(PubMed Study)</a>",
+            "Synergism": "Enhances testosterone and nitric oxide with Pomegranate Peel; boosts antioxidant effects with Vitamin C or Coenzyme Q10.",
+            "My Schedule": "Morning with eggs or kefir",
+            "Immune Action": "Reduces inflammation via flavanols in older adults (crossover studies); supports immune modulation."
+        }
+    },
+    {
+        name: "Pomegranate Peel",
+        parameters: {
+            "Preferred Brand": "Not specified",
+            "Dosage/Serving": "500–1000 mg extract",
+            "Recommended Time": "Morning, Evening or split doses",
+            "With Food or Empty Stomach": "With food",
+            "Benefits": "Increases testosterone levels (up to 24% in studies) in older men, supports sexual function, healthy aging, and may improve grip strength when combined with cacao.",
+            "Potential Side Effects or Risks": "Generally safe, but may cause digestive upset in high doses or interact with medications.",
+            "Research Links": "<a href='https://pubmed.ncbi.nlm.nih.gov/35957378/' target='_blank' class='text-blue-400 hover:underline'>(PubMed Study)</a>",
+            "Synergism": "Boosts testosterone and vascular health with Raw Cacao Powder or L-Arginine; enhances antioxidant effects with Quercetin.",
+            "My Schedule": "Morning with eggs or kefir",
+            "Immune Action": "Reduces CRP and IL-6 in RA patients (clinical trial); enhances macrophage function and reduces arthritis in models."
+        }
+    }
+];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // === ELEMENTS ===
+            const themeToggle = document.getElementById('theme-toggle');
+            const html = document.documentElement;
+            const selectEl = document.getElementById('supplement-select');
+            const matrixEl = document.getElementById('supplement-matrix');
+            const addBtn = document.getElementById('add-to-stack');
+            const stackList = document.getElementById('custom-stack-list');
+            const resetBtn = document.getElementById('reset-button');
+            const exportBtn = document.getElementById('stack-export-button');
+            const timeSelect = document.getElementById('time-select');
+            const benefitSelect = document.getElementById('benefit-select');
+            const myScheduleSelect = document.getElementById('my-schedule-select');
+            const suppModal = document.getElementById('supplement-modal');
+            const suppTitle = document.getElementById('supplement-modal-title');
+            const suppContent = document.getElementById('supplement-modal-content');
+            const suppClose = document.getElementById('supplement-modal-close');
+            const timeModal = document.getElementById('time-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalContent = document.getElementById('modal-content');
+            const modalClose = document.getElementById('modal-close');
+            const csvBtn = document.getElementById('time-csv-button');
+            const benefitsModal = document.getElementById('benefits-modal');
+            const benefitsModalTitle = document.getElementById('benefits-modal-title');
+            const benefitsModalContent = document.getElementById('benefits-modal-content');
+            const benefitsModalClose = document.getElementById('benefits-modal-close');
+            const benefitsAddBtn = document.getElementById('benefits-add-button');
+            const benefitsCsvBtn = document.getElementById('benefits-csv-button');
+            const previewModal = document.getElementById('preview-modal');
+            const previewContent = document.getElementById('preview-content');
+            const previewClose = document.getElementById('preview-close');
+            const previewConfirm = document.getElementById('preview-confirm');
+            const myScheduleModal = document.getElementById('my-schedule-modal');
+            const myScheduleModalTitle = document.getElementById('my-schedule-modal-title');
+            const myScheduleModalContent = document.getElementById('my-schedule-modal-content');
+            const myScheduleModalClose = document.getElementById('my-schedule-modal-close');
+            const myScheduleCsvBtn = document.getElementById('my-schedule-csv-button');
+            let customStack = [];
+            let currentMySchedule = '';
+            let currentMyScheduleList = [];
+            const timeOrder = {
+                "Morning": 1,
+                "Post-workout or Morning": 2,
+                "Morning, Evening or split doses": 3,
+                "Pre-workout or Evening": 4,
+                "Evening": 5,
+                "Do not use": 6
+            };
+
+            // === TOOLTIP SYSTEM — MOBILE-OPTIMIZED ===
+            let tooltipEl = null;
+
+            function createTooltip() {
+                if (tooltipEl) return;
+                tooltipEl = document.createElement('div');
+                tooltipEl.className = 'tooltip';
+                document.body.appendChild(tooltipEl);
+            }
+
+            function showTooltip(e) {
+                const term = e.target;
+                const text = term.getAttribute('data-tooltip');
+                if (!text) return;
+
+                createTooltip();
+                tooltipEl.textContent = text;
+                tooltipEl.classList.add('show');
+
+                const termRect = term.getBoundingClientRect();
+                const tooltipRect = tooltipEl.getBoundingClientRect();
+
+                let x = termRect.left + termRect.width / 2;
+                let y = termRect.bottom + 8;
+
+                if (x + tooltipRect.width / 2 > window.innerWidth) {
+                    x = window.innerWidth - tooltipRect.width / 2 - 10;
+                }
+                if (x - tooltipRect.width / 2 < 0) {
+                    x = tooltipRect.width / 2 + 10;
+                }
+                if (y + tooltipRect.height > window.innerHeight) {
+                    y = termRect.top - tooltipRect.height - 8;
+                }
+
+                tooltipEl.style.left = `${x}px`;
+                tooltipEl.style.top = `${y}px`;
+            }
+
+            function hideTooltip() {
+                if (tooltipEl) {
+                    tooltipEl.classList.remove('show');
+                    setTimeout(() => {
+                        if (tooltipEl && !tooltipEl.classList.contains('show')) {
+                            tooltipEl.textContent = '';
+                        }
+                    }, 200);
+                }
+            }
+
+            function initTooltips() {
+                document.querySelectorAll('.tooltip-term').forEach(term => {
+                    term.removeEventListener('mouseenter', showTooltip);
+                    term.removeEventListener('mousemove', showTooltip);
+                    term.removeEventListener('mouseleave', hideTooltip);
+                    term.removeEventListener('click', handleClick);
+
+                    term.addEventListener('mouseenter', showTooltip);
+                    term.addEventListener('mousemove', showTooltip);
+                    term.addEventListener('mouseleave', hideTooltip);
+                    term.addEventListener('click', handleClick);
+                });
+            }
+
+            function handleClick(e) {
+                e.preventDefault();
+                showTooltip(e);
+                setTimeout(hideTooltip, 3000);
+            }
+
+            function truncateText(text, max) {
+                const clean = text.replace(/<[^>]+>/g, '');
+                return clean.length > max ? clean.substring(0, max) + '...' : clean;
+            }
+
+            // === THEME TOGGLE ===
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            html.setAttribute('data-theme', savedTheme);
+            updateToggleIcon(savedTheme);
+            themeToggle.addEventListener('click', () => {
+                const current = html.getAttribute('data-theme');
+                const next = current === 'dark' ? 'light' : 'dark';
+                html.setAttribute('data-theme', next);
+                localStorage.setItem('theme', next);
+                updateToggleIcon(next);
+            });
+            function updateToggleIcon(theme) {
+                const svg = themeToggle.querySelector('svg');
+                if (theme === 'light') {
+                    svg.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />`;
+                    svg.classList.replace('text-yellow-400', 'text-gray-700');
+                } else {
+                    svg.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m8.485-8.485h-1m-16 0h-1m13.314-5.314l-.707.707M6.343 6.343l-.707.707m12.02 9.635l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />`;
+                    svg.classList.replace('text-gray-700', 'text-yellow-400');
+                }
+            }
+
+            // === POPULATE DROPDOWNS ===
+            function populate() {
+                selectEl.innerHTML = '<option value="">-- Please select --</option>';
+                [...supplementData].sort((a,b) => a.name.localeCompare(b.name)).forEach(s => {
+                    const opt = document.createElement('option');
+                    opt.value = s.name; opt.textContent = s.name;
+                    selectEl.appendChild(opt);
+                });
+                matrixEl.innerHTML = '';
+                [...supplementData].sort((a,b) => a.name.localeCompare(b.name)).forEach(s => {
+                    const div = document.createElement('div');
+                    div.className = 'supplement-checkbox';
+                    div.innerHTML = `<input type="checkbox" id="${s.name}" value="${s.name}" class="mr-2"><label for="${s.name}" class="text-sm">${s.name}</label>`;
+                    matrixEl.appendChild(div);
+                });
+                const schedules = [...new Set(supplementData
+                    .map(s => s.parameters["My Schedule"] || "Not set")
+                    .filter(s => s && s !== "Not set")
+                )].sort();
+                myScheduleSelect.innerHTML = '<option value="">-- My Schedule --</option>';
+                schedules.forEach(sch => {
+                    const opt = document.createElement('option');
+                    opt.value = sch; opt.textContent = sch;
+                    myScheduleSelect.appendChild(opt);
+                });
+            }
+
+            // === MY SCHEDULE MODAL ===
+            myScheduleSelect.addEventListener('change', e => {
+                const val = e.target.value;
+                if (!val) return;
+                displayMySchedule(val);
+            });
+            function displayMySchedule(schedule) {
+                myScheduleModalContent.innerHTML = '';
+                myScheduleModalTitle.textContent = `My Schedule: ${schedule}`;
+                currentMySchedule = schedule;
+                const list = supplementData.filter(s =>
+                    (s.parameters["My Schedule"] || "Not set") === schedule
+                ).sort((a,b) => a.name.localeCompare(b.name));
+                currentMyScheduleList = list;
+                if (!list.length) {
+                    myScheduleModalContent.innerHTML = '<p class="text-gray-400">No supplements for this schedule.</p>';
+                } else {
+                    list.forEach(s => {
+                        const div = document.createElement('div');
+                        div.className = 'modal-item';
+                        div.innerHTML = `
+                            <p class="font-semibold">${s.name}</p>
+                            <p class="text-sm">
+                                <strong>Dosage:</strong> ${s.parameters["Dosage/Serving"]}<br>
+                                <strong>Recommended:</strong> ${s.parameters["Recommended Time"]}<br>
+                                <strong>My Schedule:</strong> ${s.parameters["My Schedule"] || "Not set"}
+                            </p>
+                        `;
+                        myScheduleModalContent.appendChild(div);
+                    });
+                }
+                myScheduleModal.classList.remove('hidden');
+                myScheduleModal.classList.add('show');
+                document.body.classList.add('modal-open');
+                initTooltips();
+            }
+            myScheduleCsvBtn.addEventListener('click', () => {
+                const schedule = currentMySchedule || 'Unknown';
+                const list = currentMyScheduleList || [];
+                const headers = ['Name','Dosage/Serving','Recommended Time','My Schedule'];
+                let csv = headers.join(',') + '\n';
+                if (!list.length) {
+                    csv += `"No supplements for ${schedule}","","",""\n`;
+                } else {
+                    list.forEach(s => {
+                        csv += [
+                            `"${s.name.replace(/"/g,'""')}"`,
+                            `"${s.parameters["Dosage/Serving"].replace(/"/g,'""')}"`,
+                            `"${s.parameters["Recommended Time"].replace(/"/g,'""')}"`,
+                            `"${(s.parameters["My Schedule"] || "Not set").replace(/"/g,'""')}"`
+                        ].join(',') + '\n';
+                    });
+                }
+                csv += `"Consult a healthcare provider","","",""\n`;
+                const blob = new Blob([csv], {type:'text/csv'});
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = `My-Schedule-${schedule.replace(/ /g,'-')}.csv`;
+                a.click();
+                URL.revokeObjectURL(a.href);
+            });
+
+            // === MODAL CLOSE HELPERS ===
+            function closeSuppModal() { suppModal.classList.remove('show'); setTimeout(() => { suppModal.classList.add('hidden'); suppContent.innerHTML=''; document.body.classList.remove('modal-open'); }, 300); selectEl.value = ''; }
+            function closeTimeModal() { timeModal.classList.remove('show'); setTimeout(() => { timeModal.classList.add('hidden'); modalContent.innerHTML=''; document.body.classList.remove('modal-open'); }, 300); timeSelect.value = ''; }
+            function closeBenefitsModal() { benefitsModal.classList.remove('show'); setTimeout(() => { benefitsModal.classList.add('hidden'); benefitsModalContent.innerHTML=''; document.body.classList.remove('modal-open'); }, 300); benefitSelect.value = ''; }
+            function closePreview() { previewModal.classList.remove('show'); setTimeout(() => { previewModal.classList.add('hidden'); previewContent.innerHTML=''; document.body.classList.remove('modal-open'); }, 300); }
+            function closeMyScheduleModal() { myScheduleModal.classList.remove('show'); setTimeout(() => { myScheduleModal.classList.add('hidden'); myScheduleModalContent.innerHTML=''; document.body.classList.remove('modal-open'); myScheduleSelect.value = ''; }, 300); }
+            function closeAllModals() { closeSuppModal(); closeTimeModal(); closeBenefitsModal(); closePreview(); closeMyScheduleModal(); }
+            [suppModal, timeModal, benefitsModal, previewModal, myScheduleModal].forEach(m => {
+                m.addEventListener('click', e => e.target === m && (
+                    m === myScheduleModal ? closeMyScheduleModal() :
+                    m === suppModal ? closeSuppModal() :
+                    m === timeModal ? closeTimeModal() :
+                    m === benefitsModal ? closeBenefitsModal() : closePreview()
+                ));
+            });
+            suppClose.addEventListener('click', closeSuppModal);
+            modalClose.addEventListener('click', closeTimeModal);
+            benefitsModalClose.addEventListener('click', closeBenefitsModal);
+            previewClose.addEventListener('click', closePreview);
+            myScheduleModalClose.addEventListener('click', closeMyScheduleModal);
+
+            // === CUSTOM STACK ===
+            function updateCustomStack() {
+                stackList.innerHTML = '';
+                if (customStack.length === 0) return;
+                const testosterone = [], muscle = [], sleep = [], other = [];
+                customStack.forEach(s => {
+                    const raw = s.parameters["Benefits"];
+                    const synergism = s.parameters["Synergism"];
+                    const clean = raw.replace(/<[^>]+>/g, '');
+                    const cleanSynergism = synergism.replace(/<[^>]+>/g, '');
+                    const dosage = s.parameters["Dosage/Serving"];
+                    const name = s.name;
+                    const mySchedule = s.parameters["My Schedule"] || "Not set";
+                    const item = document.createElement('div');
+                    item.className = 'stack-item';
+                    item.innerHTML = `
+                        <div>
+                            <strong class="font-semibold">${name}</strong> <span class="text-xs">(${dosage})</span>
+                            <p class="text-xs text-gray-600">${truncateText(clean, 60)}</p>
+                            <p class="text-xs text-gray-600"><strong>Synergism:</strong> ${truncateText(cleanSynergism, 60)}</p>
+                            <p class="my-schedule">Take: ${mySchedule}</p>
+                        </div>
+                        <button class="remove-btn">Remove</button>
+                    `;
+                    item.querySelector('.remove-btn').addEventListener('click', () => {
+                        customStack = customStack.filter(x => x.name !== name);
+                        const cb = document.getElementById(name);
+                        if (cb) cb.checked = false;
+                        updateCustomStack();
+                    });
+                    stackList.appendChild(item);
+                    const entry = `<strong class="font-semibold text-gray-900 dark:text-white">${name}</strong> (${dosage}): ${truncateText(clean, 100)}<br><strong class="font-semibold text-gray-900 dark:text-white">Synergism:</strong> ${truncateText(cleanSynergism, 100)}`;
+                    const lower = clean.toLowerCase();
+                    if (/testosterone|libido|hormonal/i.test(clean)) testosterone.push(entry);
+                    if (/muscle|sarcopenia|strength|repair/i.test(lower)) muscle.push(entry);
+                    if (/sleep/i.test(lower)) sleep.push(entry);
+                    if (!/testosterone|libido|hormonal|muscle|sarcopenia|strength|repair|sleep/i.test(lower)) other.push(entry);
+                });
+                const summary = document.createElement('div');
+                summary.className = 'mt-4 text-sm';
+                let html = '<h4 class="font-semibold">Benefits Summary</h4>';
+                const add = (title, arr) => {
+                    if (!arr.length) return;
+                    html += `<p class="font-medium mt-2">${title}:</p><ul class="list-disc ml-5">`;
+                    arr.forEach(i => html += `<li>${i}</li>`);
+                    html += '</ul>';
+                };
+                add("Testosterone & Hormonal Health", testosterone);
+                add("Muscle Health & Sarcopenia Prevention", muscle);
+                add("Sleep Related Benefits", sleep);
+                add("Other Benefits", other);
+                html += '<p class="italic text-gray-600 mt-2">Combine with resistance training 2–3x/week and 1.2–1.6g protein/kg body weight. Consult a doctor before use.</p>';
+                summary.innerHTML = html;
+                stackList.appendChild(summary);
+                initTooltips();
+            }
+            addBtn.addEventListener('click', () => {
+                const checked = document.querySelectorAll('#supplement-matrix input:checked');
+                if (!checked.length) return alert('Select at least one supplement.');
+                let added = 0;
+                checked.forEach(cb => {
+                    const name = cb.value;
+                    const s = supplementData.find(x => x.name === name);
+                    if (s && !customStack.some(x => x.name === name)) {
+                        customStack.push(s);
+                        added++;
+                    }
+                });
+                if (added) {
+                    updateCustomStack();
+                    alert(`${added} supplement(s) added.`);
+                } else {
+                    alert('All selected are already in stack.');
+                }
+            });
+            resetBtn.addEventListener('click', () => {
+                customStack = [];
+                document.querySelectorAll('#supplement-matrix input').forEach(c => c.checked = false);
+                selectEl.value = '';
+                timeSelect.value = '';
+                benefitSelect.value = '';
+                myScheduleSelect.value = '';
+                updateCustomStack();
+                closeAllModals();
+            });
+
+            // === TIME MODAL ===
+            timeSelect.addEventListener('change', e => {
+                const val = e.target.value;
+                if (!val) return;
+                displayByTime(val);
+            });
+            function displayByTime(time) {
+                modalContent.innerHTML = '';
+                modalTitle.textContent = `Supplements for ${time}`;
+                window.currentTime = time;
+                const norm = time.toLowerCase();
+                let list = [];
+                if (norm === 'morning' || norm === 'evening') {
+                    list = supplementData.filter(s => s.parameters["Recommended Time"].toLowerCase().includes(norm) && s.parameters["Recommended Time"] !== 'Do not use');
+                } else {
+                    list = supplementData.filter(s => s.parameters["Recommended Time"] === time);
+                }
+                list.sort((a,b) => {
+                    const ta = timeOrder[a.parameters["Recommended Time"]] || 999;
+                    const tb = timeOrder[b.parameters["Recommended Time"]] || 999;
+                    return ta === tb ? a.name.localeCompare(b.name) : ta - tb;
+                });
+                window.currentList = list;
+                if (!list.length) {
+                    modalContent.innerHTML = '<p class="text-gray-400">None for this time.</p>';
+                } else {
+                    list.forEach(s => {
+                        const div = document.createElement('div');
+                        div.className = 'modal-item';
+                        div.innerHTML = `
+                            <p class="font-semibold">${s.name} (${s.parameters["Recommended Time"]})</p>
+                            <p class="text-sm">${s.parameters["Benefits"]}</p>
+                        `;
+                        modalContent.appendChild(div);
+                    });
+                }
+                timeModal.classList.remove('hidden');
+                timeModal.classList.add('show');
+                document.body.classList.add('modal-open');
+                initTooltips();
+            }
+            csvBtn.addEventListener('click', () => {
+                const time = window.currentTime || 'Unknown';
+                const list = window.currentList || [];
+                const headers = ['Name','Dosage/Serving','Recommended Time','My Schedule','Benefits'];
+                let csv = headers.join(',') + '\n';
+                if (!list.length) {
+                    csv += `"No supplements for ${time}","","","",""\n`;
+                } else {
+                    list.forEach(s => {
+                        csv += [
+                            `"${s.name.replace(/"/g,'""')}"`,
+                            `"${s.parameters["Dosage/Serving"].replace(/"/g,'""')}"`,
+                            `"${s.parameters["Recommended Time"].replace(/"/g,'""')}"`,
+                            `"${(s.parameters["My Schedule"] || "Not set").replace(/"/g,'""')}"`,
+                            `"${s.parameters["Benefits"].replace(/<[^>]+>/g,'').replace(/"/g,'""')}"`
+                        ].join(',') + '\n';
+                    });
+                }
+                csv += `"Consult a healthcare provider","","","",""\n`;
+                const blob = new Blob([csv], {type:'text/csv'});
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = `Supplements-for-${time.replace(/, /g,'-')}.csv`;
+                a.click();
+                URL.revokeObjectURL(a.href);
+            });
+
+
+    // === BENEFITS MODAL (updated) ===
+    benefitSelect.addEventListener('change', e => {
+        const val = e.target.value;
+        if (!val) return;
+        displayByBenefit(val);
+    });
+
+function displayByBenefit(benefit) {
+    benefitsModalContent.innerHTML = '';
+    benefitsModalTitle.textContent = `Supplements for ${benefit}`;
+    window.currentBenefit = benefit;
+
+    const lowerBenefit = benefit.toLowerCase();
+    let list = [];
+
+    if (lowerBenefit.includes('immune action')) {
+        // === SPECIAL CASE: Immune Action ===
+        list = supplementData
+            .filter(s => {
+                const immune = s.parameters["Immune Action"];
+                return immune && immune.trim() && immune.trim() !== "No evidence";
+            })
+            .sort((a, b) => a.name.localeCompare(b.name));
+        
+        if (list.length === 0) {
+            benefitsModalContent.innerHTML = '<p class="text-gray-400">No supplements with confirmed immune benefits.</p>';
+        } else {
+            list.forEach(s => {
+                const div = document.createElement('div');
+                div.className = 'modal-item';
+                div.innerHTML = `
+                    <p class="font-semibold">${s.name} (${s.parameters["Dosage/Serving"]})</p>
+                    <p class="text-sm mt-2"><strong class="text-green-600">Immune Action:</strong> ${s.parameters["Immune Action"]}</p>
+                    <p class="text-xs text-gray-500 mt-1">Synergism: ${s.parameters["Synergism"].replace(/<[^>]+>/g, '').substring(0, 500)}</p>
+                `;
+                benefitsModalContent.appendChild(div);
+            });
+        }
+
+    } else {
+        // === ORIGINAL BENEFIT CATEGORIES ===
+        supplementData.forEach(s => {
+            const clean = s.parameters["Benefits"].replace(/<[^>]+>/g, '');
+            const lower = clean.toLowerCase();
+            let match = false;
+
+            if (lowerBenefit.includes('testosterone') && /testosterone|libido|hormonal/i.test(clean)) match = true;
+            if (lowerBenefit.includes('muscle') && /muscle|sarcopenia|strength|repair/i.test(lower)) match = true;
+            if (lowerBenefit.includes('sleep') && /sleep/i.test(lower)) match = true;
+            if (lowerBenefit.includes('other') && !/testosterone|libido|hormonal|muscle|sarcopenia|strength|repair|sleep/i.test(lower)) match = true;
+
+            if (match) list.push(s);
+        });
+
+        list.sort((a, b) => a.name.localeCompare(b.name));
+
+        if (!list.length) {
+            benefitsModalContent.innerHTML = '<p class="text-gray-400">No supplements for this benefit.</p>';
+        } else {
+            list.forEach(s => {
+                const div = document.createElement('div');
+                div.className = 'modal-item';
+
+                let html = `
+                    <p class="font-semibold">${s.name} (${s.parameters["Dosage/Serving"]})</p>
+                    <p class="text-sm">${s.parameters["Benefits"]}</p>
+                `;
+
+                // Add Immune Action if present (bonus polish)
+                const immune = s.parameters["Immune Action"];
+                if (immune && immune.trim() && immune.trim() !== "No evidence") {
+                    html += `<p class="text-sm mt-2"><strong class="text-green-600">Immune Action:</strong> ${immune}</p>`;
+                }
+
+                div.innerHTML = html;
+                benefitsModalContent.appendChild(div);
+            });
+        }
+    }
+
+    window.currentBenefitList = list;
+    benefitsModal.classList.remove('hidden');
+    benefitsModal.classList.add('show');
+    document.body.classList.add('modal-open');
+    initTooltips();
+}
+
+
+            // === SUPPLEMENT DETAIL MODAL ===
+            selectEl.addEventListener('change', e => displaySupplement(e.target.value));
+            function displaySupplement(name) {
+                if (!name) return closeSuppModal();
+                const s = supplementData.find(x => x.name === name);
+                if (!s) return;
+                suppTitle.textContent = `${s.name} Details`;
+                suppContent.innerHTML = '';
+                const order = [
+                    "My Schedule",
+                    "Dosage/Serving",
+                    "Recommended Time",
+                    "With Food or Empty Stomach",
+                    "Benefits",
+					"Immune Action",
+                    "Synergism",
+                    "Potential Side Effects or Risks",
+                    "Preferred Brand",
+                    "Research Links"
+                ];
+                const ul = document.createElement('div');
+                ul.className = 'space-y-4';
+                order.forEach(key => {
+                    const val = s.parameters[key];
+                    if (!val || val === "Not specified" || val === "Not recommended" || val === "Do not use") return;
+                    const li = document.createElement('div');
+                    li.className = 'flex justify-between items-start border-b border-gray-600 pb-3';
+                    const k = document.createElement('p');
+                    k.className = 'font-semibold text-gray-100 text-sm w-2/5';
+                    k.textContent = key === "Research Links" ? "Research Links:" : key;
+                    const v = document.createElement('p');
+                    v.className = 'text-gray-300 text-sm w-3/5 text-right';
+                    v.innerHTML = key === "Research Links" ? (val.trim() || "—") : val;
+                    li.appendChild(k); li.appendChild(v); ul.appendChild(li);
+                });
+                suppContent.appendChild(ul);
+                suppModal.classList.remove('hidden');
+                suppModal.classList.add('show');
+                document.body.classList.add('modal-open');
+                initTooltips();
+            }
+
+            // === PDF EXPORT ===
+            exportBtn.addEventListener('click', async () => {
+                if (customStack.length === 0) {
+                    alert('Add supplements to your stack first.');
+                    return;
+                }
+                let html = '<div style="font-family: Arial, sans-serif; padding: 20px; color: #000; background: #fff;">';
+                html += '<h1 style="text-align: center; font-size: 24px; margin-bottom: 20px;">Custom Stack Summary</h1>';
+                const testosterone = [], muscle = [], sleep = [], other = [];
+                customStack.forEach(s => {
+                    const clean = s.parameters["Benefits"].replace(/<[^>]+>/g, '');
+                    const synergism = s.parameters["Synergism"].replace(/<[^>]+>/g, '');
+                    const dosage = s.parameters["Dosage/Serving"];
+                    const time = s.parameters["Recommended Time"];
+                    const mySchedule = s.parameters["My Schedule"] || "Not set";
+                    const entry = `<strong>${s.name}</strong> (${dosage})<br>` +
+                                  `<small style="color:#1f2937;">Recommended: ${time} • <strong style="color:#2563eb;">My Schedule: ${mySchedule}</strong></small><br>` +
+                                  `${clean}<br><span style="color:#4B5563;"><strong>Synergism:</strong> ${synergism}</span>`;
+                    const lower = clean.toLowerCase();
+                    if (/testosterone|libido|hormonal/i.test(clean)) testosterone.push(entry);
+                    if (/muscle|sarcopenia|strength|repair/i.test(lower)) muscle.push(entry);
+                    if (/sleep/i.test(lower)) sleep.push(entry);
+                    if (!/testosterone|libido|hormonal|muscle|sarcopenia|strength|repair|sleep/i.test(lower)) other.push(entry);
+                });
+                const addSection = (title, items) => {
+                    if (!items.length) return '';
+                    return `<p style="font-weight: bold; margin-top: 15px;">${title}:</p><ul style="margin: 8px 0 15px 20px;">${items.map(i => `<li>${i}</li>`).join('')}</ul>`;
+                };
+                html += addSection("Testosterone & Hormonal Health", testosterone);
+                html += addSection("Muscle Health & Sarcopenia Prevention", muscle);
+                html += addSection("Sleep Related Benefits", sleep);
+                html += addSection("Other Benefits", other);
+                html += '<p style="font-style: italic; margin-top: 20px; font-size: 14px;">Combine with resistance training 2–3x/week and 1.2–1.6g protein/kg body weight. Consult a doctor before use.</p>';
+                html += '</div>';
+                previewContent.innerHTML = html;
+                previewModal.classList.remove('hidden');
+                previewModal.classList.add('show');
+                document.body.classList.add('modal-open');
+                const generatePDF = async () => {
+                    const element = document.getElementById('preview-content');
+                    const canvas = await html2canvas(element, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+                    const imgData = canvas.toDataURL('image/png');
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'a4' });
+                    const imgWidth = 550;
+                    const pageHeight = 800;
+                    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                    let heightLeft = imgHeight;
+                    let position = 40;
+                    pdf.setFillColor(255, 255, 255);
+                    pdf.rect(0, 0, 595, 842, 'F');
+                    pdf.addImage(imgData, 'PNG', 20, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                    while (heightLeft >= 0) {
+                        position = heightLeft - imgHeight + 40;
+                        pdf.addPage();
+                        pdf.setFillColor(255, 255, 255);
+                        pdf.rect(0, 0, 595, 842, 'F');
+                        pdf.addImage(imgData, 'PNG', 20, position, imgWidth, imgHeight);
+                        heightLeft -= pageHeight;
+                    }
+                    pdf.save('Supplement-Stack-Summary.pdf');
+                    closePreview();
+                };
+                previewConfirm.onclick = () => {
+                    generatePDF();
+                    previewConfirm.onclick = null;
+                };
+            });
+
+            // === INIT ===
+            populate();
+            updateCustomStack();
+            initTooltips();
+        });
+    </script>
+</body>
+</html>

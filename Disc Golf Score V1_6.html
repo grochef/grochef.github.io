@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disc Golf Score Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {font-family:"Inter",sans-serif;background:#f7f7f7;}
+        #score-grid-container::-webkit-scrollbar{width:8px;height:8px;}
+        #score-grid-container::-webkit-scrollbar-thumb{background:#4b5563;border-radius:4px;}
+        #score-grid-container::-webkit-scrollbar-track{background:#e5e7eb;border-radius:4px;}
+        input[type=number]::-webkit-outer-spin-button,
+        input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+        input[type=number]{-moz-appearance:textfield;text-align:center;}
+    </style>
+    <script>
+        tailwind.config={theme:{extend:{colors:{primary:'#4b5563',secondary:'#9ca3af',accent:'#10b981',birdie:'#10b981',bogey:'#ef4444'},fontFamily:{sans:['Inter','sans-serif']}}}};
+    </script>
+</head>
+<body class="p-4 sm:p-8 min-h-screen">
+    <div class="max-w-4xl mx-auto">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-extrabold text-primary mb-2">Disc Golf Score Tracker</h1>
+            <p class="text-gray-600">Set up your round, set your pars, and track scores in real-time.</p>
+            <p class="text-gray-600">For course maps, use <span><a href="https://udisc.com/" target="_blank" class="text-blue-400 hover:underline"><strong>UDisc</strong></a></span></p>
+        </header>
+        <div id="app-container" class="bg-white p-6 rounded-xl shadow-2xl transition-all duration-300">
+            <!-- Setup Section -->
+            <div id="setup-section">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">Round Details</h2>
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <div class="col-span-2 lg:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700">Date</label>
+                        <input type="date" id="round-date" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm p-3 border focus:ring-primary focus:border-primary">
+                    </div>
+                    <div class="col-span-2 lg:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700">Course Name</label>
+                        <input type="text" id="course-name" placeholder="E.g., Maple Hill" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm p-3 border focus:ring-primary focus:border-primary">
+                    </div>
+                    <div><label class="block text-sm font-medium text-gray-700">State</label>
+                        <input type="text" id="course-state" placeholder="MA" maxlength="2" class="mt-1 block max-w-[70px] rounded-lg border-gray-300 shadow-sm p-3 border focus:ring-primary focus:border-primary uppercase">
+                    </div>
+                    <div><label class="block text-sm font-medium text-gray-700">Holes (Max 22)</label>
+                        <input type="number" id="num-holes" value="18" min="1" max="22" class="mt-1 block max-w-[70px] rounded-lg border-gray-300 shadow-sm p-3 border text-center focus:ring-primary focus:border-primary">
+                    </div>
+                    <div><label class="block text-sm font-medium text-gray-700">Players (Max 4)</label>
+                        <input type="number" id="num-players" value="1" min="1" max="4" onchange="renderPlayerInputs()" class="mt-1 block max-w-[70px] rounded-lg border-gray-300 shadow-sm p-3 border text-center focus:ring-primary focus:border-primary">
+                    </div>
+                    <div><label class="block text-sm font-medium text-gray-700">Default Par</label>
+                        <input type="number" id="default-par" value="3" min="1" max="7" class="mt-1 block max-w-[70px] rounded-lg border-gray-300 shadow-sm p-3 border text-center focus:ring-primary focus:border-primary">
+                    </div>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-1">Players</h3>
+                <div id="player-inputs" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6"></div>
+                <button onclick="startGame()" class="w-full bg-accent hover:bg-emerald-600 text-white font-semibold py-3 px-4 rounded-lg transition duration-150 ease-in-out shadow-lg transform hover:scale-[1.01] active:scale-[0.99]">
+                    Start Round
+                </button>
+            </div>
+            <!-- Scorecard Section -->
+            <div id="scorecard-section" class="hidden mt-8">
+                <div id="scorecard-header" class="mb-4 p-4 bg-gray-100 rounded-lg shadow-inner">
+                    <h2 class="text-xl font-bold text-gray-800" id="round-title"></h2>
+                    <p class="text-sm text-gray-600" id="round-subtitle"></p>
+                </div>
+                <div id="score-grid-container" class="max-h-[400px] overflow-auto rounded-lg shadow-xl border border-gray-200">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-accent text-white sticky top-0 z-10">
+                            <tr id="scorecard-header-row"></tr>
+                        </thead>
+                        <tbody id="scorecard-body" class="bg-white divide-y divide-gray-200"></tbody>
+                        <tfoot class="bg-emerald-100 border-t-2 border-accent sticky bottom-0 z-10">
+                            <tr id="scorecard-total-row" class="font-bold text-gray-900">
+                                <td class="px-3 py-3 whitespace-nowrap text-sm text-center">TOTAL</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div id="total-scores-display" class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+                <div class="flex flex-col sm:flex-row gap-4 mt-6">
+                    <button onclick="exportToCSV()" class="flex-1 bg-accent hover:bg-emerald-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-150 ease-in-out shadow-md">
+                        Export to CSV
+                    </button>
+                    <button onclick="clearAllAndReset()" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-150 ease-in-out shadow-md">
+                        Clear All
+                    </button>
+                </div>
+            </div>
+            <center><p>Concept by Gregg Rocheford<br>Date: November 15, 2025<br>Version: 1.6 (Raw Throws + Vs Par + Bug Fixes)</p></center>
+        </div>
+    </div>
+
+    <script>
+        let state = {courseName:'',courseState:'',numHoles:0,numPlayers:0,players:[],scores:[],parScores:[]};
+
+        function saveState(){localStorage.setItem('discGolfScoreState',JSON.stringify(state));}
+        function loadState(){
+            const s=localStorage.getItem('discGolfScoreState');
+            if(s){try{const p=JSON.parse(s);
+                Object.assign(state,{courseName:p.courseName||'',courseState:p.courseState||'',numHoles:p.numHoles||0,
+                    numPlayers:p.numPlayers||0,players:p.players||[],scores:p.scores||[],parScores:p.parScores||[]});
+                return true;
+            }catch(e){console.warn(e);} }
+            return false;
+        }
+
+        /* --------------------------------------------------- */
+        /* 1. CLEAR ALL – now also resets the form fields      */
+        /* --------------------------------------------------- */
+        function clearAllAndReset(){
+            if(!confirm('Clear all scores and start fresh?')) return;
+
+            // Remove saved state
+            localStorage.removeItem('discGolfScoreState');
+
+            // Reset form inputs
+            document.getElementById('round-date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('course-name').value = '';
+            document.getElementById('course-state').value = '';
+            document.getElementById('num-holes').value = 18;
+            document.getElementById('num-players').value = 1;
+            document.getElementById('default-par').value = 3;
+            document.getElementById('player-inputs').innerHTML = '';
+
+            // Reset internal state
+            state = {courseName:'',courseState:'',numHoles:0,numPlayers:0,players:[],scores:[],parScores:[]};
+
+            // Show setup, hide scorecard
+            document.getElementById('setup-section').classList.remove('hidden');
+            document.getElementById('scorecard-section').classList.add('hidden');
+
+            renderPlayerInputs();   // rebuild player name fields
+        }
+
+        function formatRelativeScore(s){return s===0?'E':s>0?`+${s}`:s;}
+        function getScoreClass(s){return s<0?'text-birdie font-bold':s>0?'text-bogey font-bold':'text-gray-700 font-semibold';}
+
+        function setup(){
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('round-date').value = today;
+            renderPlayerInputs();
+
+            document.getElementById('num-players').addEventListener('input', (e) => {
+                let val = parseInt(e.target.value);
+                if (val < 1) val = 1;
+                if (val > 4) val = 4;
+                e.target.value = val;
+                renderPlayerInputs();
+            });
+
+            document.getElementById('num-holes').addEventListener('input', (e) => {
+                let val = parseInt(e.target.value);
+                if (val < 1) val = 1;
+                if (val > 22) val = 22;
+                e.target.value = val;
+            });
+
+            document.getElementById('default-par').addEventListener('input', (e) => {
+                let val = parseInt(e.target.value);
+                if (val < 1) val = 1;
+                if (val > 7) val = 7;
+                e.target.value = val;
+            });
+        }
+
+        function renderPlayerInputs() {
+            const numPlayers = parseInt(document.getElementById('num-players').value || 1);
+            const container = document.getElementById('player-inputs');
+            const currentNames = [];
+            for (let i = 0; i < state.numPlayers; i++) {
+                const input = document.getElementById(`player-name-${i}`);
+                currentNames[i] = input ? input.value.trim() : '';
+            }
+
+            container.innerHTML = '';
+            for (let i = 0; i < numPlayers; i++) {
+                const savedName = (i < currentNames.length) ? currentNames[i] : '';
+                const placeholder = `Player ${i + 1}`;
+                const div = document.createElement('div');
+                div.innerHTML = `
+                    <label for="player-name-${i}" class="block text-sm font-medium text-gray-700">Player ${i + 1} Name</label>
+                    <input type="text" 
+                           id="player-name-${i}" 
+                           value="${savedName}" 
+                           placeholder="${placeholder}" 
+                           class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm p-3 border focus:ring-secondary focus:border-secondary">
+                `;
+                container.appendChild(div);
+            }
+
+            container.className = `grid gap-4 mb-6 ${
+                numPlayers === 1 ? 'grid-cols-1' :
+                numPlayers === 2 ? 'grid-cols-2' :
+                numPlayers === 3 ? 'grid-cols-3' :
+                'grid-cols-2 md:grid-cols-4'
+            }`;
+        }
+
+        /* --------------------------------------------------- */
+        /* 2. START GAME – now ALWAYS renders the grid        */
+        /* --------------------------------------------------- */
+        function startGame(){
+            const course = document.getElementById('course-name').value.trim();
+            const holes  = parseInt(document.getElementById('num-holes').value || 0);
+            const players= parseInt(document.getElementById('num-players').value || 0);
+            const defPar = parseInt(document.getElementById('default-par').value || 3);
+
+            if(!course){alertUser('Enter a Course Name.','bg-red-100 text-red-800');return;}
+            if(holes<1||holes>22){alertUser('Holes 1-22.','bg-red-100 text-red-800');return;}
+            if(players<1||players>4){alertUser('Players 1-4.','bg-red-100 text-red-800');return;}
+
+            state.courseName = course;
+            state.courseState = document.getElementById('course-state').value.trim() || 'N/A';
+            state.numHoles    = holes;
+            state.numPlayers  = players;
+            state.players     = [];
+            for(let i=0;i<players;i++){
+                const n = document.getElementById(`player-name-${i}`).value.trim();
+                state.players.push(n || `Player ${i+1}`);
+            }
+
+            const newScores=[], newPars=[];
+            for(let h=0;h<holes;h++){
+                newPars[h] = state.parScores[h] || defPar;
+                newScores[h] = [];
+                for(let p=0;p<players;p++) newScores[h][p] = state.scores[h] ? state.scores[h][p] : 0;
+            }
+            state.scores    = newScores;
+            state.parScores = newPars;
+
+            // ---- SHOW SCORECARD ----
+            document.getElementById('setup-section').classList.add('hidden');
+            document.getElementById('scorecard-section').classList.remove('hidden');
+
+            // ---- RENDER EVERYTHING ----
+            renderScorecard();
+            renderTotalsDisplay();
+            updateTotalScores();
+            saveState();
+        }
+
+        function updateParScore(hole,value){
+            const i = hole-1;
+            let p = parseInt(value||0); if(isNaN(p)||p<1) p=1;
+            state.parScores[i]=p;
+            renderPlayerScores(); updateTotalScores(); saveState();
+        }
+
+        function updateScore(hole,player,value){
+            const i = hole-1;
+            let s = parseInt(value||0);
+            if(isNaN(s)||s<0) s=0;
+            else if(s===0&&value.trim()!=='') s=1;
+            state.scores[i][player]=s;
+
+            const par = state.parScores[i];
+            const rel = s - par;
+            const relEl = document.getElementById(`rel-${i}-${player}`);
+            if(relEl){
+                relEl.textContent = formatRelativeScore(rel);
+                relEl.className = `text-xs ${getScoreClass(rel)}`;
+            }
+            updateTotalScores(); saveState();
+        }
+
+        function renderPlayerScores(){
+            const tbody = document.getElementById('scorecard-body');
+            let html = '';
+            for(let h=1; h<=state.numHoles; h++){
+                const i = h-1, par = state.parScores[i];
+                html += `<tr class="${h%2===0?'bg-gray-50':'bg-white'} hover:bg-gray-100 transition duration-100">`;
+                html += `<td class="px-3 py-2 whitespace-nowrap text-sm font-medium text-gray-900 text-center bg-gray-100 border-r border-gray-200 sticky left-0 z-5 shadow-md">
+                            <div class="font-bold text-base">Hole ${h}</div>
+                            <div class="mt-1 flex items-center justify-center">
+                                <span class="text-xs text-gray-600 mr-1">Par:</span>
+                                <input type="number" min="1" value="${par}" oninput="updateParScore(${h},this.value)"
+                                       class="w-10 p-0.5 rounded-md border text-center border-gray-400 focus:ring-secondary focus:border-secondary shadow-sm text-xs font-bold bg-white">
+                            </div>
+                        </td>`;
+                for(let p=0; p<state.numPlayers; p++){
+                    const strokes = state.scores[i][p] || '';
+                    const rel = strokes ? strokes - par : 0;
+                    html += `<td class="px-3 py-1 whitespace-nowrap text-sm text-center">
+                                <input type="number" min="1" value="${strokes>0?strokes:''}" oninput="updateScore(${h},${p},this.value)"
+                                       class="w-16 p-1 rounded-md border text-center border-gray-300 focus:ring-accent focus:border-accent shadow-sm font-bold">
+                                <div class="mt-1"><span id="rel-${i}-${p}" class="text-xs ${getScoreClass(rel)}">${formatRelativeScore(rel)}</span></div>
+                            </td>`;
+                }
+                html += '</tr>';
+            }
+            tbody.innerHTML = html;
+        }
+
+        function renderScorecard(){
+            const hdr = document.getElementById('scorecard-header-row');
+            hdr.innerHTML = `<th scope="col" class="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider bg-emerald-600 rounded-tl-lg sticky left-0 z-10 shadow-md">Hole & Par</th>`;
+            state.players.forEach((n,i)=>{
+                const th=document.createElement('th'); th.scope='col';
+                th.className=`px-3 py-3 text-center text-xs font-semibold uppercase tracking-wider ${i===state.players.length-1?'rounded-tr-lg':''}`;
+                th.textContent=n; hdr.appendChild(th);
+            });
+
+            renderPlayerScores();
+
+            const total = document.getElementById('scorecard-total-row');
+            total.innerHTML = `<td class="px-3 py-3 whitespace-nowrap text-sm text-center bg-emerald-200 border-r border-accent/40 sticky left-0 z-10 shadow-md">TOTAL</td>`;
+            for(let p=0; p<state.numPlayers; p++){
+                total.innerHTML += `<td id="total-throws-p${p}" class="px-3 py-3 whitespace-nowrap text-sm text-center font-extrabold bg-emerald-100 text-lg">0</td>`;
+            }
+
+            const date = document.getElementById('round-date').value;
+            const totalPar = state.parScores.reduce((a,b)=>a+b,0);
+            document.getElementById('round-title').textContent = `${state.courseName} (${state.courseState})`;
+            document.getElementById('round-subtitle').textContent = `Date: ${date} | Holes: ${state.numHoles} | Players: ${state.numPlayers} | Total Par: ${totalPar}`;
+        }
+
+        function updateTotalScores(){
+            const totalPar = state.parScores.reduce((a,b)=>a+b,0);
+            const throws = new Array(state.numPlayers).fill(0);
+            const rels   = new Array(state.numPlayers).fill(0);
+            let leader = Infinity, leaders = [];
+
+            for(let p=0; p<state.numPlayers; p++){
+                let strokes = 0;
+                for(let h=0; h<state.numHoles; h++) strokes += state.scores[h][p] || 0;
+                throws[p] = strokes;
+                const r = strokes - totalPar; rels[p] = r;
+
+                const throwsEl = document.getElementById(`total-throws-p${p}`);
+                if(throwsEl) throwsEl.textContent = strokes;
+
+                const relEl = document.querySelector(`#total-scores-display > div:nth-child(${p+1}) span.text-3xl`);
+                if(relEl){
+                    relEl.textContent = formatRelativeScore(r);
+                    relEl.className = `text-3xl font-extrabold ${getScoreClass(r)}`;
+                }
+            }
+
+            rels.forEach((r,i)=>{if(r<leader){leader=r;leaders=[i];}else if(r===leader)leaders.push(i);});
+            const cards = document.querySelectorAll('#total-scores-display > div');
+            cards.forEach((c,idx)=>{
+                const isLead = leaders.includes(idx);
+                c.className = isLead
+                    ? 'p-4 rounded-lg shadow-md bg-accent/10 border-accent border-t-4 shadow-xl ring-2 ring-accent'
+                    : 'p-4 rounded-lg shadow-md bg-white border-primary border-t-4';
+                c.querySelector('h4').textContent = (isLead?'Trophy ':'') + state.players[idx];
+            });
+
+            document.getElementById('round-subtitle').textContent =
+                `Date: ${document.getElementById('round-date').value} | Holes: ${state.numHoles} | Players: ${state.numPlayers} | Total Par: ${totalPar}`;
+        }
+
+        function renderTotalsDisplay(){
+            const c = document.getElementById('total-scores-display'); c.innerHTML = '';
+            state.players.forEach(n=>{
+                c.innerHTML += `
+                    <div class="p-4 rounded-lg shadow-md bg-white border-primary border-t-4">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-lg font-semibold text-gray-700">${n}</h4>
+                            <span class="text-3xl font-extrabold text-gray-400">E</span>
+                        </div>
+                        <p class="text-sm text-gray-500">Score vs. Par</p>
+                    </div>`;
+            });
+        }
+
+        function exportToCSV(){
+            const totalPar = state.parScores.reduce((a,b)=>a+b,0);
+            const date = document.getElementById('round-date').value;
+            const fn = `${state.courseName.replace(/[^a-z0-9]/gi,'_')}_${date}_Scorecard.csv`;
+            let csv = `Disc Golf Scorecard Export\nCourse: "${state.courseName} (${state.courseState})"\nDate: ${date}\n\n`;
+            const names = state.players.map(n=>`"${n}"`);
+            csv += ['Hole','Par',...names].join(',')+'\n';
+
+            const totals = new Array(state.numPlayers).fill(0);
+            for(let h=1; h<=state.numHoles; h++){
+                const i = h-1, row = [h, state.parScores[i]];
+                for(let p=0; p<state.numPlayers; p++){
+                    const s = state.scores[i][p]||0;
+                    row.push(s); totals[p] += s;
+                }
+                csv += row.join(',')+'\n';
+            }
+            csv += '\n' + ['Total Throws',totalPar,...totals].join(',')+'\n';
+            const vsPar = ['Score vs Par',''];
+            for(let p=0; p<state.numPlayers; p++) vsPar.push(formatRelativeScore(totals[p]-totalPar));
+            csv += vsPar.join(',')+'\n';
+
+            const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'});
+            const a = document.createElement('a');
+            if(a.download!==undefined){
+                const url = URL.createObjectURL(blob); a.href=url; a.download=fn; a.style.visibility='hidden';
+                document.body.appendChild(a); a.click(); document.body.removeChild(a);
+                alertUser('Exported to CSV!','bg-gray-100 text-accent');
+            }else alertUser('Export not supported.','bg-red-100 text-red-800');
+        }
+
+        function alertUser(msg,cls){
+            let box=document.getElementById('custom-alert');
+            if(!box){box=document.createElement('div');box.id='custom-alert';
+                box.className='fixed top-0 left-1/2 -translate-x-1/2 mt-4 p-4 rounded-lg shadow-lg z-50 transition-opacity duration-300';
+                document.body.appendChild(box);}
+            box.className=`fixed top-0 left-1/2 -translate-x-1/2 mt-4 p-4 rounded-lg shadow-lg z-50 transition-opacity duration-300 ${cls}`;
+            box.textContent=msg;box.style.opacity='1';
+            setTimeout(()=>{box.style.opacity='0';},3000);
+        }
+
+        window.onload = function(){
+            setup();
+            if(loadState() && state.courseName){
+                document.getElementById('setup-section').classList.add('hidden');
+                document.getElementById('scorecard-section').classList.remove('hidden');
+                renderScorecard(); renderTotalsDisplay(); updateTotalScores();
+            }
+        };
+    </script>
+</body>
+</html>

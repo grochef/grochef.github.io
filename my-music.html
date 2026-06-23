@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7PM7Z3RF7Z"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-7PM7Z3RF7Z');
+</script>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gregg's Tunes | Lyric-Driven AI Collaborations</title>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fffff8;
+      --text: #2c1a0d;
+      --accent: #b85c38;
+      --light-line: #e8e0d8;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Crimson Text', Georgia, serif;
+      line-height: 1.7;
+    }
+    a { color: var(--accent); text-decoration: none; transition: 0.3s; }
+    a:hover { opacity: 0.8; }
+
+    /* ===== SHARED NAVIGATION ===== */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: rgba(255, 255, 248, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--light-line);
+      z-index: 1000;
+      padding: 0.8rem 1rem;
+      font-family: 'Playfair Display', serif;
+    }
+    .nav-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .site-title a { color: var(--accent); font-size: 1.4rem; }
+    .nav-links { display: flex; gap: 1.5rem; }
+    .nav-links a { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text); }
+
+    /* ——— PARALLAX HEADER ——— */
+    header.hero {
+      position: relative;
+      height: 60vh;
+      min-height: 400px;
+      background-image: url('images/tent in mountains2.jpg'); 
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: white;
+    }
+    header.hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 100%);
+    }
+    .header-content { position: relative; z-index: 2; padding: 20px; }
+    .header-content h1 { font-family: 'Playfair Display', serif; font-size: 4rem; margin: 0; }
+    .header-content p { font-style: italic; font-size: 1.4rem; opacity: 0.9; }
+
+    /* ——— TECH TOOLKIT ——— */
+    .tech-section {
+      max-width: 1000px;
+      margin: -60px auto 4rem;
+      padding: 3rem;
+      background: white;
+      position: relative;
+      z-index: 10;
+      border-radius: 12px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+      border: 1px solid var(--light-line);
+    }
+    .tech-section h2 { font-family: 'Playfair Display', serif; color: var(--accent); margin-top: 0; }
+    .tech-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-top: 2rem; }
+    .tech-item h4 { font-family: 'Playfair Display', serif; color: var(--text); margin: 0 0 0.5rem; border-bottom: 1px solid var(--accent); display: inline-block; }
+
+    /* ——— SONG DIRECTORY ——— */
+    .song-nav {
+      max-width: 1000px;
+      margin: 0 auto 4rem;
+      text-align: center;
+      padding: 1rem;
+      border-top: 1px solid var(--light-line);
+      border-bottom: 1px solid var(--light-line);
+    }
+    .song-nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      font-size: 0.9rem;
+    }
+
+    /* ——— SONG DISPLAY ——— */
+    main { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+    .song {
+      margin-bottom: 8rem;
+      padding-bottom: 4rem;
+      border-bottom: 1px dashed var(--light-line);
+      scroll-margin-top: 120px;
+      text-align: center;
+    }
+    .song:last-child { border-bottom: none; }
+    .song h2 { font-family: 'Playfair Display', serif; font-size: 2.8rem; margin: 1.5rem 0 0.5rem; color: var(--accent); }
+    .meta { opacity: 0.6; font-size: 0.95rem; margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 1px; }
+
+    .img-song {
+      width: 200px;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 50%;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      margin: 0 auto;
+    }
+
+    .audio-container {
+      background: rgba(184, 92, 56, 0.03);
+      padding: 2rem;
+      border-radius: 12px;
+      margin: 2rem auto;
+      max-width: 600px;
+    }
+    .audio-container h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; margin-bottom: 1rem; }
+
+    .video-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 1.5rem;
+      padding: 10px 24px;
+      background: var(--accent);
+      color: white !important;
+      border-radius: 30px;
+      font-family: 'Playfair Display', serif;
+      font-size: 0.9rem;
+      text-decoration: none !important;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(184, 92, 56, 0.2);
+    }
+    .video-link:hover {
+      background: var(--text);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+    }
+    .video-link::before { content: '▶'; font-size: 0.7rem; }
+
+    .lyrics {
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 3rem auto;
+      white-space: pre-line;
+      text-align: left;
+      border-left: 2px solid var(--light-line);
+      padding-left: 2rem;
+    }
+
+    .note {
+      max-width: 600px;
+      margin: 2rem auto 0;
+      font-style: italic;
+      opacity: 0.7;
+      font-size: 1rem;
+    }
+
+    #backToTop {
+      display: none; position: fixed; bottom: 30px; right: 30px; z-index: 1001;
+      border: none; background: var(--accent); color: white; cursor: pointer;
+      padding: 12px 18px; border-radius: 50%; font-size: 1.2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    footer { text-align: center; padding: 5rem 0; opacity: 0.6; font-size: 0.9rem; border-top: 1px solid var(--light-line); }
+
+    @media (max-width: 768px) {
+      header.hero { height: 40vh; background-attachment: scroll; }
+      .header-content h1 { font-size: 2.5rem; }
+      .tech-section { margin-top: -30px; padding: 1.5rem; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-container">
+      <h2 class="site-title"><a href="index.html">Gregg's Home</a></h2>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="videos.html">Videos</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="header-content">
+      <h1>Gregg's Tunes</h1>
+      <p>Original lyrics meeting the precision of generative sound</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="tech-section" id="tech-toolkit">
+      <h2>The Musical Process</h2>
+      <p>These songs are driven entirely by narrative intent. The process involves drafting original lyrics and iteratively prompt-tuning the AI to capture a specific emotional landscape.</p>
+      <div class="tech-grid">
+        <div class="tech-item">
+          <h4>Lyric Composition</h4>
+          <p>Hand-crafted verses focusing on personal history, philosophy, and the people who inspire me.</p>
+        </div>
+        <div class="tech-item">
+          <h4>Mureka (Originals) • Suno (Remixing)</h4>
+          <p>Used to synthesize instrumentation and vocals by defining vocals, genre, mood, and rhythmic arrangements.</p>
+        </div>
+        <div class="tech-item">
+          <h4>Visual Integration</h4>
+          <p>Several tracks feature the archived versions of some songs to create cinematic music videos, bridging the gap between sound and visual storytelling.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="song-nav">
+      <div class="song-nav-links">
+        <a href="#beaverton-angel">Beaverton Angel</a> • 
+        <a href="#hunk-of-steel">Hunk of Steel</a> • 
+        <a href="#open-road">Open Road</a> • 
+        <a href="#outside-in">Outside In</a> • 
+        <a href="#shackles-of-love">Shackles of Love</a> • 
+        <a href="#trapped-in-a-dream">Trapped in a Dream</a> • 
+        <a href="#survival">Survival</a> •  
+        <a href="#everything-is-gone">And Everything is Gone</a> • 
+        <a href="#minnehaha">Minnehaha</a> • 
+		<a href="#lousiana">Louisiana Saturday Night</a> • 
+		<a href="#creature">The Creature</a>
+      </div>
+    </div>
+
+    <section class="song" id="beaverton-angel">
+      <img class="img-song" src="images/beaverton-angel.jpg" alt="Beaverton Angel artwork"> 
+      <h2>Beaverton Angel</h2>
+      <div class="meta">2025/2026 (Remix) • Folk/Bluegrass</div>
+      <div class="audio-container">
+        <audio controls preload="none">
+          <source src="audio/Beaverton Angel (2026 Suno Remix).mp3" type="audio/mpeg">
+        </audio>
+      </div>
+      <div class="note">My first song. Written for Elaine, who lived in Beaverton, Oregon as a child.</div>
+      <div class="lyrics">
+Verse 1:
+This stretch of highway
+printed on the Wyoming plain
+Is drier than an old man's arm
+Yeah, and I've been in love
+But the harvests never paid off
+In the soul of this man's farm
+
+Chorus:
+Through a cloud break
+Comes a guiding light
+Leading straight to you
+And feeling oh so right
+
+Beaverton Angel
+How could I repay
+My Beaverton Angel
+You save my life each day
+
+Verse 2:
+Now on this journey
+I won't be alone
+Not with you by my side
+The love I'd only dreamed of
+And never thought I'd find
+Is ours for the rest of this ride
+
+Chorus:
+Through a cloud break
+Comes a guiding light
+Leading straight to you
+And feeling oh so right
+
+Beaverton Angel
+How could I repay
+My Beaverton Angel
+You save my life each day
+
+Verse 3:
+With more road behind me
+Than what I’ve left to go
+I’m at peace with the path I chose
+I have the one thing
+The last face I want to see
+When this life’s curtains finally close
+
+Chorus:
+Through a cloud break
+Comes a guiding light
+Leading straight to you
+And feeling oh so right
+
+Beaverton Angel
+How could I repay
+My Beaverton Angel
+You save my life each day</div>
+    </section>
+
+    <section class="song" id="hunk-of-steel">
+      <img class="img-song" src="images/hunk-of-steel.png" alt="Hunk of Steel artwork"> 
+      <h2>Hunk of Steel</h2>
+      <div class="meta">2025/2026(Remix) • Blues</div>
+      <div class="audio-container">
+        <h3>Blues Version</h3>
+        <audio controls preload="none">
+          <source src="audio/Hunk Of Steel (2026 Suno).mp3" type="audio/mpeg">
+        </audio>
+      </div>
+      <div class="note">Another song for Elaine. Originally written with a Blues tune in mind. This remixed version really sounds great.</div>
+      <div class="lyrics">
+[Verse]
+Hey now baby, I need you to know.
+Unless you ask me to, I won’t go.
+Oh baby
+I promised you for real.
+'Cause you’re my magnet,
+I’m your hunk of steel.
+
+[Verse]
+I’m tellin’ you woman, I hope you can see.
+You don’t ever have to worry ‘bout me.
+Oh, baby
+You know the way I feel.
+You’re my magnet, honey.
+I’m your hunk of steel.
+
+[Verse]
+I told you baby, sick or well
+The day they rang that wedding bell.
+Oh baby
+With you I made a deal
+You’re my magnet
+I’m your hunk of steel.
+
+[lead solo]
+
+[Verse]
+Some say metals are bound to rust.
+But I’ll never, ever break your trust
+No baby.
+This paint will never peel
+You’re my magnet,
+I’m your hunk of steel
+
+[Verse]
+If I don't go to heaven, If I wind up below
+I swear I'll love you 'till the cold winds blow
+My baby
+Cupid's wound will never heal
+You’re my magnet,
+I’m your hunk of steel</div>
+    </section>
+
+    <section class="song" id="open-road">
+      <img class="img-song" src="images/open-road.jpg" alt="Open Road artwork"> 
+      <h2>Open Road</h2>
+      <div class="meta">2024/2026 (Remix) • 1980s Rock</div>
+      <div class="audio-container">
+        <audio controls preload="none">
+          <source src="audio/Open Road (2026 Suno Remix).mp3" type="audio/mpeg">
+        </audio>
+      </div>
+      <div class="note">I wrote this for myself. Being a "Boomer", I grew up with cars. I love to drive and I love nature, away from people. For the Remix, I used the original to capture the melody.</div>
+      <div class="lyrics">
+[Verse]
+For those with social leanings
+the night life hustle calls
+But I can't take the city
+with all those concrete walls
+Not that I don't like people
+and yet, I think it is
+I guess there's no right answer
+this ain't no college quiz
+
+[Chorus]
+I can only open up
+when on the open road
+Leaving all my cares behind
+before my head explodes
+If there's a destination
+Then I might drive straight through
+But I won't miss the exit
+that leads me home to you
+
+[Verse]
+My windshield is a cinema
+my mind is free to drift
+Each milepost behind me
+I feel my spirits lift
+When driving with my loved one
+my hand upon her knee
+In silence or conversation
+this is the best of me
+
+[Chorus]
+I can only open up
+when on the open road
+Leaving all my cares behind
+before my head explodes
+If there's a destination
+Then I might drive straight through
+But I won't miss the exit
+that leads me home to you
+
+[bridge]
+[Verse]
+Those old cowpokes regale us
+with stories of the West
+Of fenceless open prairies
+and burdens off their chests
+I might not have a saddle
+I might not have a horse
+But winding roads and canyons
+guide me to my source
+
+[Chorus]
+I can only open up
+when on the open road
+Leaving all my cares behind
+before my head explodes
+If there's a destination
+Then I might drive straight through
+But I won't miss the exit
+that leads me home to you</div>
+    </section>
+
+    <section class="song" id="outside-in">
+      <img class="img-song" src="images/ham-hock-jar.jpg" alt="Outside In artwork"> 
+      <h2>Outside In</h2>
+      <div class="meta">2025/2026 (Remix) • Contemporary</div>
+      <div class="audio-container">
+        <audio controls preload="none">
+          <source src="audio/Outside In (2026 Suno Remix).mp3" type="audio/mpeg">
+        </audio>
+      </div>
+      <div class="note">This is mostly reminiscent of my many heartbreaks in my previous life. Again, I used the original to keep the melody and the emotion.</div>
+      <div class="lyrics">
+[Verse]
+I punch the snooze
+Crawl out of bed
+Drive through this city
+With the working dead
+
+I find my desk
+Your photo's there
+There's nothing for me
+In this cold white glare
+
+[Chorus]
+I'm doin' okay on the outside
+But I'm fallin' apart 
+from the outside in
+Not really sure where I am goin'
+But I wanna go back 
+to where I've been
+
+[Verse]
+So it's happy hour
+I'm holding a beer
+Of all these people
+I wish you were here
+
+I count the bottles
+Behind the bar
+I catch my reflection
+In the ham hock jar
+
+[Chorus]
+I'm doin' okay on the outside
+But I'm fallin' apart 
+from the outside in
+Not really sure where I am goin'
+But I wanna go back 
+to where I've been
+
+[Verse]
+I go to parties
+Don't wanna go
+Go through the motions
+Put on a show
+
+I do my dishes
+I make my bed
+I can't get your face
+out of my head
+
+[Chorus]
+I'm doin' okay on the outside
+But I'm fallin' apart 
+from the outside in
+Not really sure where I am goin'
+But I wanna go back 
+to where I've been</div>
+    </section>
+
+    <section class="song" id="shackles-of-love">
+      <img class="img-song" src="images/shakles-of-love.png" alt="Shakles of Love artwork"> 
+      <h2>Shackles of Love</h2>
+      <div class="meta">2025/2026 (Remix) • Gospel</div>
+      <div class="audio-container">
+        <audio controls preload="none">
+          <source src="audio/Shackles of Love (2026 Suno).mp3" type="audio/mpeg">
+        </audio>
+      </div>
+      <div class="note">I heard this clearly in my head as an old gospel tune.  The remix really rocks the house!</div>
+      <div class="lyrics">
+[Verse]
+I said now baby
+I'll be gone for a while
+you know that I'll miss you
+When I've gone half a mile
+
+She said to me "baby"
+you know I'll be here
+whether you're absent
+a day or a year
+
+[Chorus]
+We're on the same wavelength
+We're on the same team
+I guess you could say
+that we're livin' the dream
+
+'Cause we are...
+bound by...
+bound by...
+the shackles of love
+Yes, we are
+bound by...
+bound by...
+the shackles of love
+
+[Verse]
+She's got some girlfriends
+Who were off to the coast
+I told her, "get goin'
+I love you the most"
+
+They'll get to have you
+For a couple of days
+But I get to have you
+Forever, Always
+
+[Chorus]
+We're on the same wavelength
+We're on the same team
+I guess you could say
+that we're livin' the dream
+
+'Cause we are...
+bound by...
+bound by...
+the shackles of love
+Yes, we are
+bound by...
+bound by...
+the shackles of love
+
+[bridge]
+
+[Verse]
+The forces that bind us
+Are stronger than steel
+The strength is increased
+By the love that we feel
+
+We love each other
+and we love freedom too
+By love we are bound
+Through love we are true
+
+[Chorus]
+We're on the same wavelength
+We're on the same team
+I guess you could say
+that we're livin' the dream
+
+'Cause we are...
+bound by...
+bound by...
+the shackles of love
+Yes, we are
+bound by...
+bound by...
+the shackles of love</div>
+    </section>
+
+    <section class="song" id="trapped-in-a-dream">
+      <img class="img-song" src="images/trapped-in-a-dream.png" alt="Trapped in a Dream artwork"> 
+      <h2>Trapped in a Dream</h2>
+      <div class="meta">2025/2026 (Remix) • Big Band • Jazzy</div>
+      <div class="audio-container">
+        <h3>Big Band Version V.1</h3>
+        <audio controls preload="none">
+          <source src="audio/Trapped in a Dream(2026 Suno Remix).mp3" type="audio/mpeg">
+        </audio>        
+      </div>
+      <div class="note">I liked the original Big Band version since that is what I was looking to create.  The Remix really captures a Harry Connick Jr. vibe.</div>
+      <div class="lyrics">
+[Verse]
+Something is strange here,
+I don't understand.
+All of my teeth,
+In a pile, In my hand
+
+I lose my grip,
+While climbing a wall.
+I'm frozen in terror,
+As I wake from a fall.
+
+[Chorus]
+
+How is this happening?
+I'm losing my grip.
+Was I poisoned at dinner?
+Is this a bad trip?
+
+Some sort of evil.
+Some nefarious scheme.
+Someone please help me.
+I'm trapped in a dream!
+
+[Verse]
+Crowds all around me,
+Oh, how can this be?
+I stand without clothing,
+all eyes are on me.
+
+Who is this driving?
+Why did they swerve?
+They're losing control,
+I'm losing my nerve.
+
+[Chorus]
+How is this happening?
+I'm losing my grip.
+Was I poisoned at dinner?
+Is this a bad trip?
+
+Some sort of evil.
+Some nefarious scheme.
+Someone please help me.
+I'm trapped in a dream!
+
+[Bridge]
+In some dreams I'm laughing.
+In some dreams I scream.
+Each night brings a movie.
+The magic of dreams.
+
+Can I change this outcome?
+The way this dream ends.
+The unsettling answer comes...
+"Well, that depends".
+
+[Verse]
+Stairways to nowhere.
+I run with lead feet.
+The creature behind me,
+it's large, and it's Fleet.
+
+What's going on now?
+I've been here before.
+If I walk through this doorway.
+I'll fall through the floor.
+
+[Chorus]
+How is this happening?
+I'm losing my grip.
+Was I poisoned at dinner?
+Is this a bad trip?
+
+Some sort of evil.
+Some nefarious scheme.
+Someone please help me.
+I'm trapped in a dream!</div>
+    </section>
+
+    <section class="song" id="survival">
+      <img class="img-song" src="images/survival.jpg" alt="Survival artwork"> 
+      <h2>Survival</h2>
+      <div class="meta">2025/2026 (Remix) • Contemporary</div>
+      <div class="audio-container">
+        <audio controls preload="none">
+          <source src="audio/Survival (2026 Suno Remix).mp3" type="audio/mpeg">
+        </audio>
+      </div>
+      <div class="note">Great lyrics and another ode to Elaine, "My shining pulsar".  The original version ended oddly and prematurely.  I used the original for the melody and emotion.  The Remix result is very good.</div>
+      <div class="lyrics">
+[verse]
+The Phoenix of the forest
+Conifers need flame
+The mother tree consumed
+Only ashes remain
+
+But rising from the ashes
+An emerald sprout breaks through
+It reaches for the heavens
+As I reach out to you
+
+[chorus]
+You are my shining pulsar
+Though not a distant star
+A light of such intensity
+For me, that's what you are
+
+I'm driven toward survival
+My fears, they melt away
+Knowing you're beside me
+I head into the fray.
+
+[verse]
+The will of life force surges
+The chick attacks the shell
+It breaks into the sunlight
+To what, it cannot tell
+
+But instinct draws it outward
+A fragile, awkward wretch
+It grows to soar the heavens
+With glowing, trailing fletch
+
+[chorus]
+You are my shining pulsar
+Though not a distant star
+A light of such intensity
+For me, that's what you are
+
+I'm driven toward survival
+My fears, they melt away
+Knowing you're beside me
+I head into the fray.
+
+[Bridge]
+As naked, helpless creatures
+We stumble through our lives
+With hopeful perseverance
+Life's force within us thrives.
+
+[verse]
+A monarch starts its journey
+Within a silken tomb
+Once it breaks its confines
+its graceful wings will bloom
+
+It won't survive its journey
+a continent away
+And yet it battles gravity
+to live another day
+
+[chorus]
+You are my shining pulsar
+Though not a distant star
+A light of such intensity
+For me, that's what you are
+
+I'm driven toward survival
+My fears, they melt away
+Knowing you're beside me
+I head into the fray.</div>
+    </section>
+<!--
+    <section class="song" id="rap-is-crap">
+      <img class="img-song" src="images/gang.jpg" alt="Rap is Crap artwork"> 
+      <h2>Rap is Crap</h2>
+      <div class="meta">2025 • Satirical Rap</div>
+      <div class="audio-container">
+        <audio controls preload="none">
+          <source src="audio/Rap is Crap (Long Version).mp3" type="audio/mpeg">
+        </audio>
+      </div>
+      <div class="note">I wrote this to gain some perspective while driving home my opinion on the genre.</div>
+      <div class="lyrics">
+[verse]
+If you think this is music, you're a moron
+A solicitation that I will close my door on
+If that's too mean, I've just begun, so let me pour on
+It is trash that I wouldn't wipe my feet on
+
+Crime and guns and drug addiction are the main themes
+Gang violence is glorified, a frickin war scene
+Misogynistic, hateful lyrics from a bad dream
+A repetitious melody that makes my head scream
+
+[chorus]
+Please don't call rap art 
+It's just the consequence of no fathers around
+Neighborhoods ripped apart
+A culture of hate that puts a life in the ground. 
+
+[verse]
+Teachers think it's cute to teach our kids rap
+Kids are groomed and led into a frickin death trap
+It is art we hear them say, but no it is crap
+It is obvious but teachers need a road map
+
+If you haven't been convinced, you've got to hear it
+That kind of criminality you've got to fear it
+Call it out for what it is, and don't revere it
+That's my warning, and I hope that you will cheer it
+
+[chorus]
+Please don't call rap art 
+It's just the consequence of no fathers around
+Neighborhoods ripped apart
+A culture of hate that puts a life in the ground.
+
+[verse]
+Rising violence supported by the left side
+Paid for billionaires like Soros, they cannot hide
+The USA is the country that they deride 
+They don't give a shit about those who have died
+
+White guilted liberals try to signal virtue.
+By stating claims that are virtually untrue.
+In actuality, they think they're better than you
+But hateful rhetoric is all that's on their menu.
+
+[chorus]
+Please don't call rap art 
+It's just the consequence of no fathers around
+Neighborhoods ripped apart
+A culture of hate that puts a life in the ground.</div>
+    </section>-->
+
+    <section class="song" id="everything-is-gone">
+      <img class="img-song" src="images/mushroom-cloud.jpg" alt="And Everything is Gone artwork"> 
+      <h2>And Everything is Gone</h2>
+      <div class="meta">2025/2026 (Remix) • Bluesy Rock</div>
+      <div class="audio-container">
+        <audio controls preload="none">
+          <source src="audio/And Everything is gone (2026 Suno).mp3" type="audio/mpeg">
+        </audio>
+        <!--<br>
+        <a href="videos.html#music-videos" class="video-link">Watch the Music Video</a>-->
+      </div>
+      <div class="note">Humanity is finally freed, from this awful mess. Inspired by "The Fourth Turning".</div>
+      <div class="lyrics">
+[verse]
+Lying deep in ambush on a Serengeti plain.
+Wearing sweat soaked pelts of leather and of mane.
+Their stone tipped spears beside them,
+As they watch their foes advance.
+The battle leaves one standing,
+In a soon repeated dance.
+
+[chorus]
+Wherever groups assemble,
+An irresistible need,
+Leads us to be violent.
+The consequence of greed. 
+ 
+Can we not remember?
+Can we not recall?
+This sequence in our genome,
+Will bring about our fall.
+
+[verse]
+Whatever they can carry, pitch fork, club or sword.
+They charge into the carnage of bodies stomped and gored.
+Though hatred is the fuel,
+Its purpose is arcane.
+Survivors will in earnest,
+Go on to fight again.
+
+[chorus]
+Wherever groups assemble,
+An irresistible need,
+Leads us to be violent.
+The consequence of greed.
+ 
+Can we not remember?
+Can we not recall?
+This sequence in our genome,
+Will bring about our fall.
+
+[verse]
+Their muskets packed and ready, the bugle makes the call.
+They race into a wall of smoke, where most of them will fall.
+By the generals it is touted,
+as strategy and means.
+So the pattern is repeated,
+while red blood soaks the greens.
+
+[break]
+
+[bridge]
+We're told we are the apex,
+Of consciousness and thought.
+We escalate our methods,
+From battles we have fought.
+We're destined for extinction,
+Yet our leaders spur us on.
+To mushroom clouds and fire,
+And everything is gone.
+
+[verse]
+Sitting in a bunker a mile underground.
+A screen alerts the viewer to something it has found.
+A button red and blinking, 
+a shaking hand will press.
+Humanity is finally freed, 
+from this awful mess.
+
+[chorus]
+Wherever groups assemble,
+An irresistible need,
+Leads us to be violent.
+The consequence of greed.
+ 
+Can we not remember?
+Can we not recall?
+This sequence in our genome,
+Will bring about our fall.</div>
+    </section>
+
+    <section class="song" id="minnehaha">
+      <img class="img-song" src="images/hiawatha-minnehaha.jpg" alt="Minnehaha artwork">
+      <h2>Minnehaha</h2>
+      <div class="meta">2025/ 2026 (Remix) • Folk</div>
+      <div class="audio-container">
+        <audio controls preload="none">
+          <source src="audio/Minnehaha (2026 Suno Remix).mp3" type="audio/mpeg">
+        </audio>
+      </div>
+      <div class="note">A song about my childhood and the Minnehaha creek that cuts through Minneapolis. I used the original as a template again.</div>
+      <div class="lyrics">
+[verse]
+When I was a Cub scout,
+I was stranded on a ledge.
+Too scared to move up or down.
+I clung onto the edge.
+Through the kindness of a young man,
+who was with us on that day.
+He plucked me from the precipice,
+and scared the ghosts away.
+
+[chorus]
+Where the Minnehaha tumbles
+A depiction made of brass
+Shows Hiawatha carry her
+To the safety of the grass
+
+The Mississippi takes her in
+And carries her along
+From Minnesota to the Gulf
+Where oceans sing her song
+
+[verse]
+Lying in a snowbank.
+In a blizzard, in the dark.
+Drinking Snowshoe Grog and grinning.
+Acting on a lark.
+Minnehaha's tears were frozen,
+And we crawled around behind.
+Slipping on the forming ice,
+To see what we might find.
+
+[bridge]
+Fifty years of memories
+From bugs and rain and snow
+I was sculpted by an artists hand
+To be the man you know
+
+[chorus]
+Where the Minnehaha tumbles
+A depiction made of brass
+Shows Hiawatha carry her
+To the safety of the grass
+
+The Mississippi takes her in
+And carries her along
+From Minnesota to the Gulf
+Where oceans sing her song
+
+[verse]
+I've walked along her sandy base,
+Crayfish in reverse.
+From Minnetonka where she's born,
+I've paddled and immersed.
+To a growing boy she offered up,
+an urban life escape.
+And as a man my preference lies,
+In Nature's vast landscape.
+
+[chorus]
+Where the Minnehaha tumbles
+A depiction made of brass
+Shows Hiawatha carry her
+To the safety of the grass
+
+The Mississippi takes her in
+And carries her along
+From Minnesota to the Gulf
+Where oceans sing her song</div>
+    </section>
+	<section class="song" id="lousiana">
+      <img class="img-song" src="images/louisiana-saturday-night.png" alt="Louisiana artwork">
+      <h2>Louisiana Saturday Night</h2>
+      <div class="meta">2026 • Bluegrass/Hillbilly</div>
+      <div class="audio-container">
+        <audio controls preload="none">
+          <source src="audio/Louisiana Saturday Night (Remix).mp3" type="audio/mpeg">
+        </audio>
+      </div>
+      <div class="note">I heard some country music and I started thinking of silly lyrics.  This ended up being kind of a neat song.</div>
+      <div class="lyrics">
+[Verse]
+My name is Nancy, with a silent “N”
+If you don’t understand me, then I’ll say it again
+Or I can write it down, with a fountain pen
+On a Louisiana Saturday Night
+
+[Chorus]
+Raised up on the bayou
+Where the cypress grow
+The gators, they sunnin’
+Tails to and fro
+
+I learned survival
+In the swamp and heat
+Don’t mess with me
+‘Cause you gonna get beat
+
+[Verse]
+I could’a had a good life, but I don’t know when
+I was an orphan, at the age of ten
+I lost my virtue, to a guy named Ben
+On a Louisiana Saturday Night
+
+[Chorus]
+Raised up on the bayou
+Where the cypress grow
+The gators, they sunnin’
+Tails to and fro
+
+I learned survival
+In the swamp and heat
+Don’t mess with me
+‘Cause you gonna get beat
+
+[Verse]
+I go to church, and I say, “Amen”
+If you don’t like it, then you ain’t my fren
+I ain’t too restless, and I ain’t quite Zen
+On a Louisiana Saturday Night
+
+[Chorus]
+Raised up on the bayou
+Where the cypress grow
+The gators, they sunnin’
+Tails to and fro
+
+I learned survival
+In the swamp and heat
+Don’t mess with me
+‘Cause you gonna get beat
+I said,
+Don’t mess with me
+‘Cause you gonna get beat</div>
+    </section>
+	<section class="song" id="creature">
+      <img class="img-song" src="images/TheCreatureCover.png" alt="Creature artwork">
+      <h2>The Creature</h2>
+      <div class="meta">2026 • Techno/SiFi/Dark</div>
+      <div class="audio-container">
+        <audio controls preload="none">
+          <source src="audio/The Creature.mp3" type="audio/mpeg">
+        </audio>
+      </div>
+      <div class="note">A bleak song about a possible future.  I wrote this at breakfast.  I tried it as Techno and then made it dark, and boy, that did the trick.</div>
+      <div class="lyrics">
+[Verse]
+The creature makes its way along the sterile bleak landscape
+Its shuffling feet kick up dust, its crusted mouth agape
+What happened here it can't recall and even if it could
+The past is gone, to wish it back would simply do no good
+
+[Chorus]
+Did they ever think about the power they possessed?
+Bravado and control issues no matter how they dressed.
+They pushed each other to the brink just to make a stand.
+The results are clear the Earth is now just a ball of sand.
+
+[Verse]
+The creature doesn't have a mate it likely dies alone
+There is no food or water here to nourish skin and bone
+And still it searches night and day to find food or drink
+But in this state of malnutrition it can barely think
+
+[Chorus]
+Did they ever think about the power they possessed?
+Bravado and control issues no matter how they dressed.
+They pushed each other to the brink just to make a stand.
+The results are clear the Earth is now just a ball of sand.
+
+[Bridge]
+What will the end be like
+And will the end be fast?
+Is our fate to only learn
+As we breathe our last?
+
+[Verse]
+And now the creature stops to rest its body starts to fail
+It doesn't know just where it is because it lost the trail
+It tightly grasps a plastic card a face is printed on
+And as it takes its final breath it says,  "My name is John!"
+
+[Chorus]
+Did they ever think about the power they possessed?
+Bravado and control issues no matter how they dressed.
+They pushed each other to the brink just to make a stand.
+The results are clear the Earth is now just a ball of sand.</div>
+    </section>
+  </main>
+
+  <button id="backToTop" title="Go to top">↑</button>
+
+  <footer>
+    © 2026 Gregg Rocheford • All songs written and copyrighted by me.<br>
+    Lyrics first, melodies refined through AI collaboration.
+  </footer>
+
+  <script>
+    const topBtn = document.getElementById("backToTop");
+    window.onscroll = function() {
+      if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+        topBtn.style.display = "block";
+      } else {
+        topBtn.style.display = "none";
+      }
+    };
+    topBtn.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  </script>
+</body>
+</html>

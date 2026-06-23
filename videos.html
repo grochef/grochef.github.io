@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7PM7Z3RF7Z"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-7PM7Z3RF7Z');
+</script>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gregg's Videos | AI Collaborations</title>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fffff8;
+      --text: #2c1a0d;
+      --accent: #b85c38;
+      --light-line: #e8e0d8;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Crimson Text', Georgia, serif;
+      line-height: 1.7;
+    }
+
+    a { color: var(--accent); text-decoration: none; transition: 0.3s; }
+    a:hover { opacity: 0.8; }
+
+    /* ===== SHARED NAVIGATION ===== */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: rgba(255, 255, 248, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--light-line);
+      z-index: 1000;
+      padding: 0.8rem 1rem;
+      font-family: 'Playfair Display', serif;
+    }
+    .nav-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .site-title a { color: var(--accent); font-size: 1.4rem; }
+    .nav-links { display: flex; gap: 1.5rem; }
+    .nav-links a { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text); }
+
+    /* ——— PARALLAX HEADER ——— */
+    header.hero {
+      position: relative;
+      height: 60vh;
+      min-height: 400px;
+      background-image: url('images/projector.jpg'); 
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: white;
+    }
+    header.hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 100%);
+    }
+    .header-content { position: relative; z-index: 2; padding: 20px; }
+    .header-content h1 { font-family: 'Playfair Display', serif; font-size: 4rem; margin: 0; }
+    .header-content p { font-style: italic; font-size: 1.4rem; opacity: 0.9; }
+
+    /* ——— TECH TOOLKIT ——— */
+    .tech-section {
+      max-width: 1000px;
+      margin: -60px auto 6rem;
+      padding: 3rem;
+      background: white;
+      position: relative;
+      z-index: 10;
+      border-radius: 12px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+      border: 1px solid var(--light-line);
+    }
+    .tech-section h2 { font-family: 'Playfair Display', serif; color: var(--accent); margin-top: 0; }
+    .tech-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-top: 2rem; }
+    .tech-item h4 { font-family: 'Playfair Display', serif; color: var(--text); margin: 0 0 0.5rem; border-bottom: 1px solid var(--accent); display: inline-block; }
+
+    /* ——— VIDEO GALLERY ——— */
+    main { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+    .category-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.8rem;
+      text-align: center;
+      color: var(--accent);
+      margin: 4rem 0 2rem;
+      scroll-margin-top: 100px;
+    }
+    
+    .video-card {
+      margin-bottom: 6rem;
+      padding-bottom: 4rem;
+      border-bottom: 1px solid var(--light-line);
+      text-align: center;
+    }
+    .video-card:last-child { border-bottom: none; }
+    .video-card h2 { font-family: 'Playfair Display', serif; font-size: 2.2rem; margin: 0 0 0.5rem; }
+    .meta { opacity: 0.6; font-size: 0.9rem; margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 1px; }
+
+    .responsive-video {
+      width: 100%;
+      max-width: 900px;
+      aspect-ratio: 16 / 9;
+      background: #000;
+      border-radius: 8px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+      margin: 0 auto;
+      display: block;
+    }
+
+    /* ——— AUDIO LINK BUTTON ——— */
+    .audio-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 1.5rem;
+      padding: 10px 24px;
+      background: rgba(184, 92, 56, 0.05);
+      color: var(--accent) !important;
+      border: 1px solid var(--accent);
+      border-radius: 30px;
+      font-family: 'Playfair Display', serif;
+      font-size: 0.9rem;
+      text-decoration: none !important;
+      transition: all 0.3s ease;
+    }
+    .audio-link:hover {
+      background: var(--accent);
+      color: white !important;
+      transform: translateY(-2px);
+    }
+    .audio-link::before {
+      content: '♫';
+      font-size: 1rem;
+    }
+
+    .note {
+      max-width: 700px;
+      margin: 2rem auto 0;
+      font-style: italic;
+      opacity: 0.8;
+      font-size: 1.05rem;
+    }
+
+    /* ——— BACK TO TOP ——— */
+    #backToTop {
+      display: none; position: fixed; bottom: 30px; right: 30px; z-index: 1001;
+      border: none; background: var(--accent); color: white; cursor: pointer;
+      padding: 12px 18px; border-radius: 50%; font-size: 1.2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    footer { text-align: center; padding: 5rem 0; opacity: 0.6; font-size: 0.9rem; border-top: 1px solid var(--light-line); }
+
+    @media (max-width: 768px) {
+      header.hero { height: 40vh; background-attachment: scroll; }
+      .header-content h1 { font-size: 2.5rem; }
+      .tech-section { margin-top: -30px; padding: 1.5rem; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-container">
+      <h2 class="site-title"><a href="index.html">Gregg's Home</a></h2>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="#music-videos">Music Videos</a>
+        <a href="#ai-videos">Shorts</a>
+        <a href="my-music.html">My Music</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="header-content">
+      <h1>The Virtual Theater</h1>
+      <p>Cinematic collaborations between human intent and AI synthesis</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="tech-section" id="tech-toolkit">
+      <h2>The Technical Toolkit</h2>
+      <p>My workflow bridges the gap between traditional development and AI synthesis. These videos represent a collaboration between my creative intent and advanced generative tools.</p>
+      <div class="tech-grid">
+        <div class="tech-item">
+          <h4>Visual Synthesis</h4>
+          <p>Utilizing <strong>Gemini</strong>, <strong>Grok</strong>, and <strong>ChatGPT</strong> for scene ideation, complex scriptwriting, and generating high-fidelity video segments.</p><p><strong>DaVinci Resolve</strong> to edit and assemble the video segments and audio.</p>
+        </div>
+        <div class="tech-item">
+          <h4>Audio Landscapes</h4>
+          <p>Leveraging <strong>Mureka</strong> to compose music that follows specific emotional arcs and rhythmic requirements for my lyrics.</p>
+        </div>
+        <div class="tech-item">
+          <h4>Hybrid Production</h4>
+          <p>Transforming stylus sketches and mobile drawings into 3D environments and cinematic sequences through iterative prompting.</p>
+        </div>
+      </div>
+    </section>
+
+    <h2 class="category-title" id="music-videos">Music Videos</h2>
+
+    <section class="video-card">
+      <h2>...and everything is gone</h2>
+      <div class="meta">2026 • Music Video</div>
+      <video class="responsive-video" controls preload="none" poster="images/mushroom-cloud.jpg">
+        <source src="video/And Everything is Gone.mp4" type="video/mp4">
+      </video>
+      <br>
+      <a href="my-music.html#everything-is-gone" class="audio-link">Listen to Original Audio & Lyrics</a>
+      <div class="note">I'm learning much more about AI video generation. Scripting is so vital to the final outcome and fine-tuning of those scripts through multiple iterations takes hours. I think this is my most polished music video, related to getting almost exactly what I was intending.<br><br>This song is not a happy one and, unfortunately, it is not confined to just this point in our history. The big difference is that those of us alive have not only forgotten what total war looks like, but some seem to welcome it for profit. This may not end well.</div>
+    </section>
+	
+    <section class="video-card">
+      <h2>Survival</h2>
+      <div class="meta">2026 • Music Video</div>
+      <video class="responsive-video" controls preload="none" poster="images/survival.jpg">
+        <source src="video/Survival_(Remix).mp4" type="video/mp4">
+      </video>
+      <br>
+      <a href="my-music.html#survival" class="audio-link">Listen to Original Audio & Lyrics</a>
+      <div class="note">My first music video. This creation takes one of my favorite songs from the collection of music that I have composed and creates a music video.</div>
+    </section>
+
+    <section class="video-card">
+      <h2>Open Road</h2>
+      <div class="meta">2026 • Music Video</div>
+      <video class="responsive-video" controls preload="none" poster="images/open-road.jpg">
+        <source src="video/Open _Road_(Remix).mp4" type="video/mp4">
+      </video>
+      <br>
+      <a href="my-music.html#open-road" class="audio-link">Listen to Original Audio & Lyrics</a>
+      <div class="note">My second music video. This on balances my need for getting away from the hustle of cities with my love for Elaine.</div>
+    </section>
+	
+    <section class="video-card">
+      <h2>Outside In</h2>
+      <div class="meta">2026 • Music Video</div>
+      <video class="responsive-video" controls preload="none" poster="images/Outside_In.jpg">
+        <source src="video/Outside_In.mp4" type="video/mp4">
+      </video>
+      <br>
+      <a href="my-music.html#outside-in" class="audio-link">Listen to Original Audio & Lyrics</a>
+      <div class="note">My third music video. This video is about how it feels when a relationship ends. I did not use any real images for this video since it is about the end of a relationship. And that is not a story that I want to revisit.</div>
+    </section>
+	
+    <h2 class="category-title" id="ai-videos">Short AI Assisted Videos</h2>
+
+    <section class="video-card">
+      <h2>Luca and Vinnie Go Fishing</h2>
+      <div class="meta">2026 • Narrative Short</div>
+      <video class="responsive-video" controls preload="none" poster="images/LVlogo.png">
+        <source src="video/Luca_And_Vinnie_Fishing.mp4" type="video/mp4">
+      </video>
+      <div class="note">The first video in the "Luca and Vinnie" series. Another venture into playing with AI. I created a drawing of a cabin in the mountains on my phone while getting ready to sleep. That cabin is where Luca and Vinnie live. The video was pieced together from numerous 6-10 second clips that were generated from my descriptions.</div>
+    </section>
+	
+    <section class="video-card">
+      <h2>Luca and Vinnie Go Camping</h2>
+      <div class="meta">2026 • Narrative Short</div>
+      <video class="responsive-video" controls preload="none" poster="images/LVlogo.png">
+        <source src="video/Luca_Vinnie_Camping.mp4" type="video/mp4">
+      </video>
+      <div class="note">The second video in the "Luca and Vinnie" series. This video has no dialog, since the AI voices were both inconsistent and obnoxious. </div>
+    </section>
+	<!-- Invisible for now
+    <section class="video-card">
+      <h2>Warrior Full v.3</h2>
+      <div class="meta">2026 • Experimental Short</div>
+      <video class="responsive-video" controls preload="none" poster="images/warrior-thumbnail.jpg">
+        <source src="video/Warrior_Full_v.3.mp4" type="video/mp4">
+      </video>
+      <div class="note">This short video started from a photo of me in our back yard with a chainsaw. I used Google Gemini to create 6 second videos. It took a few hours to describe the scenes and how the video should evolve and then piece them together. The music was created with <a href="https://www.mureka.ai/create" target="_blank">Mureka</a> music generator.</div>
+    </section>
+
+    <section class="video-card">
+      <h2>Castle Drawing Transformation</h2>
+      <div class="meta">2026 • Experimental Short</div>
+      <video class="responsive-video" controls preload="none" poster="images/castle-thumbnail.jpg">
+        <source src="video/Castle_Transformation.mp4" type="video/mp4">
+      </video>
+      <div class="note">This video began as a crude drawing on my Samsung phone with a stylus. I transformed the drawing to a 3D drawing, then passed that to Google Gemini to create a 6 second video. I then used the end frames from each 6 second video to begin the next one. The end scene used the end frame of the princess with descriptive text of the prince climbing into the tower window.<br><br>I created the music with a description of a storyline in Mureka music generator.<br><br>I thought it was interesting how the story goes from the crude drawing, to an animated scene and princess, to a lifelike man in a boat and back to animation. Fun stuff.</div>
+    </section>
+     Invisible for now -->
+  </main>
+
+  <footer>
+    © 2026 Gregg Rocheford • All videos created and copyrighted by me.<br>
+    Hand-crafted with AI assistance.
+  </footer>
+
+  <button id="backToTop" title="Go to top">↑</button>
+
+  <script>
+    const topBtn = document.getElementById("backToTop");
+    window.onscroll = function() {
+      if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+        topBtn.style.display = "block";
+      } else {
+        topBtn.style.display = "none";
+      }
+    };
+    topBtn.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  </script>
+</body>
+</html>

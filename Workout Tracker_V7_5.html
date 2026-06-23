@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workout Tracker v7.5</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #1a202c; color: #e2e8f0; min-height: 100vh; padding: 1rem; padding-bottom: 5rem; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .btn { border-radius: 0.5rem; transition: all 0.2s ease-in-out; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); }
+        #favoritesPanel.collapsed { max-height: 0; padding: 0; opacity: 0; overflow: hidden; border-top-width: 0; }
+        #favoritesPanel { transition: all 0.3s ease-out; }
+        #restTimerContainer { position: fixed; bottom: 1rem; right: 1rem; z-index: 100; background: #2d3748; border: 2px solid #4a5568; box-shadow: 0 10px 25px rgba(0,0,0,0.5); width: 140px; border-radius: 1rem; }
+        #volumeSummary { position: fixed; bottom: 1rem; left: 1rem; z-index: 100; background: #2d3748; border: 2px solid #48bb78; padding: 0.75rem; border-radius: 1rem; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        @media (min-width: 768px) { #restTimerContainer { bottom: 2rem; right: 2rem; width: 192px; } #volumeSummary { bottom: 2rem; left: 2rem; } }
+        .pb-glow { color: #facc15; text-shadow: 0 0 8px rgba(250, 204, 21, 0.6); font-weight: 800; }
+        .timer-urgent { color: #f56565; animation: pulse 1s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+        #autoSaveStatus { position: fixed; top: 0.5rem; right: 1rem; font-size: 9px; color: #4a5568; pointer-events: none; }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200">
+
+    <div id="autoSaveStatus">Last saved: Never</div>
+
+    <div id="restTimerContainer" class="p-3 md:p-4 text-center">
+        <div id="timerDisplay" class="text-2xl md:text-4xl font-mono font-bold mb-2">00:00</div>
+        <div class="grid grid-cols-2 gap-1">
+            <button onclick="startTimer(60)" class="bg-gray-700 py-1 rounded text-[10px] hover:bg-gray-600">60s</button>
+            <button onclick="stopTimer()" class="bg-red-900/40 py-1 rounded text-[10px] hover:bg-red-900/60">Reset</button>
+        </div>
+    </div>
+
+    <div id="volumeSummary" class="text-center">
+        <div class="text-[9px] text-gray-400 uppercase font-bold tracking-tighter">Total Tonnage</div>
+        <div id="totalVolumeDisplay" class="text-xl font-bold text-green-400">0 lbs</div>
+    </div>
+
+    <div class="container bg-gray-800 p-4 md:p-8 rounded-2xl shadow-xl flex flex-col space-y-4">
+        <h1 class="text-3xl font-bold text-center text-white">Workout Tracker <span class="text-blue-500">v7.5</span></h1>
+        
+        <div class="bg-gray-700/50 rounded-xl border border-gray-600">
+            <button id="toggleFavBtn" class="w-full p-3 flex justify-between items-center text-sm text-white">
+                <span class="font-semibold">⭐ Manage Favorites</span>
+                <span id="favChevron">▼</span>
+            </button>
+            <div id="favoritesPanel" class="p-4 border-t border-gray-600 collapsed">
+                <div id="favoritesGrid" class="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs text-white"></div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <label class="text-[10px] uppercase text-gray-400 font-bold mb-1 block">Date</label>
+                <input type="date" id="workoutDateInput" class="w-full bg-gray-700 border-gray-600 p-2 rounded text-sm text-white focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+            <div>
+                <label class="text-[10px] uppercase text-gray-400 font-bold mb-1 block">Split</label>
+                <select id="workoutTypeSelect" class="w-full bg-gray-700 border-gray-600 p-2 rounded text-sm text-white">
+                    <option>Full Body</option>
+                    <option>Back and Biceps</option>
+                    <option>Chest and Triceps</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="exercisesContainer" class="space-y-4"></div>
+
+        <div class="flex flex-wrap justify-center gap-3 pt-4">
+            <button id="addExerciseBtn" class="bg-blue-600 py-2 px-4 btn text-sm font-bold text-white">+ Add</button>
+            <button id="loadLastBtn" class="bg-purple-600 py-2 px-4 btn text-sm font-bold text-white">↺ Load Last</button>
+            <button id="importCsvBtn" class="bg-orange-600 py-2 px-4 btn text-sm font-bold text-white">📂 Import CSV/TXT</button>
+            <button id="saveCsvBtn" class="bg-green-600 py-2 px-6 btn text-sm font-bold text-white">💾 Export & Save</button>
+            <input type="file" id="csvFileInput" accept=".csv,.txt,text/csv,text/plain" class="hidden">
+        </div>
+
+        <div class="mt-4 bg-gray-900/50 p-4 rounded-xl border border-gray-700">
+            <h2 class="text-sm font-bold mb-2 text-green-400 uppercase tracking-widest text-center">Recent Sessions</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-[11px]">
+                    <tbody id="historyTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+        <p class="text-xs text-gray-500 text-center">Version 7.5 (Android Import/Export Fix)</p>
+    </div>
+
+    <script>
+        const ALL_EXERCISES = ['1.0-Push-Ups', '1.1-Pull-Ups', '1.2-Row Seated (Narrow)', '1.3-Row Seated (Wide Straps)', '1.4-Lat Pulldown (HS)', '1.5-DB Hammer Curls', '1.6-DB Cross-Body Curls', '1.7-Seated Hammer Curls', '1.8-Cable Curls', '1.9-Cable Cross-Body Curls', '3.1-Cable Abdominal Crunches', '3.2-Hip Thrust (HS)', '3.3-Hack Squat (HS)', '3.4-Leg Press (HS)', '3.5-Leg Press Cybex', '2.1-Bench Press', '2.2-Chest Press Seated (HS)', '2.3-Cable Chest Press', '2.4-Military Press (Standing)', '2.5-DB Press Seated', '2.6-DB Chest Press', '2.7-DB Center Press', '2.8-Triceps Ext Standing (Straps)', '2.9-Triceps Ext Standing (Short Bar)', '2.10-Lat Pull Straight Arm (Straps)'];
+        const EXERCISE_GROUPS = { 
+            'Back and Biceps': ['1.0-Push-Ups', '1.1-Pull-Ups', '1.2-Row Seated (Narrow)', '1.3-Row Seated (Wide Straps)', '1.4-Lat Pulldown (HS)', '1.5-DB Hammer Curls', '1.6-DB Cross-Body Curls', '1.7-Seated Hammer Curls', '1.8-Cable Curls', '1.9-Cable Cross-Body Curls', '3.1-Cable Abdominal Crunches', '3.2-Hip Thrust (HS)', '3.3-Hack Squat (HS)', '3.4-Leg Press (HS)', '3.5-Leg Press Cybex'], 
+            'Chest and Triceps': ['1.0-Push-Ups', '2.1-Bench Press', '2.2-Chest Press Seated (HS)', '2.3-Cable Chest Press', '2.4-Military Press (Standing)', '2.5-DB Press Seated', '2.6-DB Chest Press', '2.7-DB Center Press', '2.8-Triceps Ext Standing (Straps)', '2.9-Triceps Ext Standing (Short Bar)', '2.10-Lat Pull Straight Arm (Straps)', '3.1-Cable Abdominal Crunches', '3.2-Hip Thrust (HS)', '3.3-Hack Squat (HS)', '3.4-Leg Press (HS)', '3.5-Leg Press Cybex'], 
+            'Full Body': ALL_EXERCISES 
+        };
+
+        const numSort = (a, b) => a.localeCompare(b, undefined, { numeric: true });
+        let favorites = JSON.parse(localStorage.getItem('workoutFavorites')) || [...ALL_EXERCISES];
+        let sessionHistory = JSON.parse(localStorage.getItem('workoutVolumeHistory')) || [];
+        let personalBests = JSON.parse(localStorage.getItem('personalBests')) || {};
+
+        function calculatePlates(plateWeight) {
+            if (plateWeight <= 0) return "";
+            let perSide = plateWeight / 2;
+            const plates = [45, 25, 10, 5, 2.5];
+            let result = [];
+            plates.forEach(p => {
+                let count = Math.floor(perSide / p);
+                if (count > 0) { result.push(`${count}x${p}`); perSide -= count * p; }
+            });
+            return result.length ? `Side: ${result.join(', ')}` : "";
+        }
+
+        function refreshRowCalculation(inputEl) {
+            const row = inputEl.closest('.set-row');
+            const block = inputEl.closest('.exercise-block');
+            const exName = block.querySelector('.ex-select').value;
+            const bar = parseFloat(block.querySelector('.bar-wt-in').value) || 0;
+            const plates = parseFloat(row.querySelector('.wt-val').value) || 0;
+            const reps = parseFloat(row.querySelector('.rep-val').value) || 0;
+            const total = bar + plates;
+
+            row.querySelector('.total-wt-display').textContent = total;
+            row.querySelector('.plate-hint').textContent = calculatePlates(plates);
+
+            if (reps > 0 && total > 0) {
+                const est1RM = reps > 20 ? "Endurance" : Math.round(total * (1 + (reps / 30)));
+                row.querySelector('.rm-display').textContent = reps > 20 ? est1RM : `Est. 1RM: ${est1RM}`;
+            } else {
+                row.querySelector('.rm-display').textContent = "";
+            }
+
+            const displaySpan = row.querySelector('.total-wt-display');
+            if (total > (personalBests[exName] || 0)) {
+                displaySpan.className = "total-wt-display pb-glow";
+                row.querySelector('.pb-badge').textContent = "⭐ PB";
+            } else {
+                displaySpan.className = "total-wt-display text-green-400";
+                row.querySelector('.pb-badge').textContent = "";
+            }
+            calculateTotalVolume();
+        }
+
+        function calculateTotalVolume() {
+            let total = 0;
+            document.querySelectorAll('.exercise-block').forEach(block => {
+                const bar = parseFloat(block.querySelector('.bar-wt-in').value) || 0;
+                block.querySelectorAll('.set-row').forEach(row => {
+                    total += (parseFloat(row.querySelector('.rep-val').value) || 0) * (bar + (parseFloat(row.querySelector('.wt-val').value) || 0));
+                });
+            });
+            document.getElementById('totalVolumeDisplay').textContent = total.toLocaleString() + ' lbs';
+            return total;
+        }
+
+        function sortExerciseBlocks() {
+            const container = document.getElementById('exercisesContainer');
+            const blocks = Array.from(container.querySelectorAll('.exercise-block'));
+            blocks.sort((a, b) => numSort(a.querySelector('.ex-select').value, b.querySelector('.ex-select').value));
+            blocks.forEach(block => container.appendChild(block));
+        }
+
+        function getSessionSnapshot() {
+            const data = [];
+            document.querySelectorAll('.exercise-block').forEach(el => {
+                const setsData = [];
+                el.querySelectorAll('.set-row').forEach(s => {
+                    setsData.push({ 
+                        reps: s.querySelector('.rep-val').value, 
+                        platesWeight: s.querySelector('.wt-val').value 
+                    });
+                });
+                data.push({ 
+                    name: el.querySelector('.ex-select').value, 
+                    barWeight: el.querySelector('.bar-wt-in').value, 
+                    notes: el.querySelector('.notes-in').value, 
+                    setsData 
+                });
+            });
+            return data;
+        }
+
+        function createExerciseSection(init = null) {
+            const div = document.createElement('div');
+            div.className = 'exercise-block p-4 bg-gray-700 rounded-xl border border-gray-600 space-y-3';
+            div.innerHTML = `
+                <div class="flex justify-between items-center gap-2">
+                    <select class="ex-select bg-gray-600 p-2 rounded w-full text-sm text-white focus:outline-none focus:ring-1 focus:ring-blue-400"></select>
+                    <button class="text-red-400 hover:text-red-300 transition-colors px-2" onclick="this.parentElement.parentElement.remove(); calculateTotalVolume();">✕</button>
+                </div>
+                <div class="flex items-center gap-3 bg-gray-800/50 p-2 rounded-lg justify-between">
+                    <div class="flex items-center gap-1">
+                        <label class="text-[9px] uppercase text-gray-400 font-bold">Sets</label>
+                        <input type="number" class="sets-in bg-gray-600 p-1 rounded w-10 text-center text-white text-sm">
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <label class="text-[9px] uppercase text-gray-400 font-bold">Bar/Sled</label>
+                        <input type="number" class="bar-wt-in bg-gray-600 p-1 rounded w-14 text-center text-white text-sm" value="0">
+                    </div>
+                </div>
+                <div class="sets-list space-y-2"></div>
+                <textarea placeholder="Notes..." class="notes-in bg-gray-600 p-2 rounded w-full h-12 text-white text-xs focus:outline-none"></textarea>
+            `;
+
+            const exSelect = div.querySelector('.ex-select');
+            const setsIn = div.querySelector('.sets-in');
+            const barIn = div.querySelector('.bar-wt-in');
+
+            const split = document.getElementById('workoutTypeSelect').value;
+            const allowed = (EXERCISE_GROUPS[split] || ALL_EXERCISES).sort(numSort);
+            allowed.filter(ex => favorites.includes(ex)).forEach(ex => {
+                const opt = document.createElement('option');
+                opt.value = opt.textContent = ex;
+                exSelect.appendChild(opt);
+            });
+
+            exSelect.onchange = () => { sortExerciseBlocks(); div.querySelectorAll('.wt-val').forEach(i => refreshRowCalculation(i)); };
+            barIn.oninput = () => div.querySelectorAll('.wt-val').forEach(i => refreshRowCalculation(i));
+
+            setsIn.oninput = () => {
+                const count = Math.min(parseInt(setsIn.value) || 0, 99);
+                const list = div.querySelector('.sets-list');
+                const currentData = Array.from(list.querySelectorAll('.set-row')).map(row => ({
+                    reps: row.querySelector('.rep-val').value,
+                    plates: row.querySelector('.wt-val').value
+                }));
+
+                list.innerHTML = '';
+                for (let i = 0; i < count; i++) {
+                    const s = document.createElement('div');
+                    s.className = 'set-row flex flex-col border-b border-gray-600/30 pb-2';
+                    s.innerHTML = `
+                        <div class="flex gap-2 items-center">
+                            <span class="text-[10px] text-gray-500 w-4 font-bold">#${i+1}</span>
+                            <input type="number" placeholder="Reps" class="rep-val bg-gray-800 p-1 rounded w-full text-white text-xs focus:ring-1 focus:ring-green-500 outline-none" oninput="refreshRowCalculation(this)">
+                            <input type="number" placeholder="+Plates" class="wt-val bg-gray-800 p-1 rounded w-full text-white text-xs focus:ring-1 focus:ring-blue-500 outline-none" oninput="refreshRowCalculation(this)">
+                            <div class="w-20 text-right leading-tight">
+                                <div class="text-[10px] font-bold"><span class="total-wt-display">0</span> lbs</div>
+                                <div class="pb-badge text-[8px] text-yellow-500 font-black italic"></div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center ml-6 mt-1">
+                            <div class="plate-hint text-[9px] text-blue-400 italic"></div>
+                            <div class="rm-display text-[9px] text-gray-500 font-bold"></div>
+                        </div>
+                    `;
+                    if(currentData[i]) {
+                        s.querySelector('.rep-val').value = currentData[i].reps;
+                        s.querySelector('.wt-val').value = currentData[i].plates;
+                    }
+                    list.appendChild(s);
+                    refreshRowCalculation(s.querySelector('.wt-val'));
+                }
+                calculateTotalVolume();
+            };
+
+            if (init) {
+                exSelect.value = init.name;
+                barIn.value = init.barWeight || 0;
+                setsIn.value = init.setsData.length;
+                setsIn.oninput();
+                div.querySelectorAll('.set-row').forEach((row, i) => {
+                    row.querySelector('.rep-val').value = init.setsData[i].reps;
+                    row.querySelector('.wt-val').value = init.setsData[i].platesWeight;
+                    refreshRowCalculation(row.querySelector('.wt-val'));
+                });
+                div.querySelector('.notes-in').value = init.notes || "";
+            }
+            return div;
+        }
+
+        document.getElementById('saveCsvBtn').onclick = () => {
+            const data = getSessionSnapshot();
+            data.forEach(ex => {
+                ex.setsData.forEach(s => {
+                    const total = (parseFloat(ex.barWeight)||0) + (parseFloat(s.platesWeight)||0);
+                    if (total > (personalBests[ex.name] || 0)) personalBests[ex.name] = total;
+                });
+            });
+
+            localStorage.setItem('personalBests', JSON.stringify(personalBests));
+            localStorage.setItem('lastFullSnapshot', JSON.stringify(data));
+
+            const date = document.getElementById('workoutDateInput').value;
+            const split = document.getElementById('workoutTypeSelect').value;
+            const vol = calculateTotalVolume();
+
+            let csv = "Date,Split,Exercise,Set,Reps,Bar,Plates,Total,Vol,Notes\n";
+            data.forEach(ex => { ex.setsData.forEach((s, i) => {
+                const total = (parseFloat(ex.barWeight)||0) + (parseFloat(s.platesWeight)||0);
+                csv += `"${date}","${split}","${ex.name}","${i+1}","${s.reps}","${ex.barWeight}","${s.platesWeight}","${total}","${(parseFloat(s.reps)||0)*total}","${ex.notes.replace(/"/g, '""')}"\n`;
+            });});
+
+            if (vol > 0) { sessionHistory.push({ date, split, volume: vol }); localStorage.setItem('workoutVolumeHistory', JSON.stringify(sessionHistory)); updateHistoryTable(); }
+            
+            const filename = date ? `workout_${date}.csv` : 'workout_export.csv';
+            // FIXED: Android/Mobile specific Blob download logic
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); 
+            a.href = url; 
+            a.download = filename; 
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        };
+
+        document.getElementById('importCsvBtn').onclick = () => document.getElementById('csvFileInput').click();
+
+        document.getElementById('csvFileInput').onchange = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const lines = event.target.result.split(/\r?\n/).filter(l => l.trim().length > 0);
+                    const headers = lines[0].split(',').map(h => h.replace(/^"|"$/g, '').trim());
+                    
+                    const idx = { 
+                        date: headers.indexOf('Date'), split: headers.indexOf('Split'), 
+                        ex: headers.indexOf('Exercise'), reps: headers.indexOf('Reps'), 
+                        bar: headers.indexOf('Bar'), plates: headers.indexOf('Plates'), 
+                        notes: headers.indexOf('Notes') 
+                    };
+
+                    const imported = {};
+                    for (let i = 1; i < lines.length; i++) {
+                        const row = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(s => s.replace(/^"|"$/g, '').trim());
+                        if (row.length < 5) continue;
+                        
+                        const exName = row[idx.ex];
+                        if (!imported[exName]) {
+                            imported[exName] = { name: exName, barWeight: row[idx.bar] || 0, notes: row[idx.notes] || "", setsData: [] };
+                            document.getElementById('workoutDateInput').value = row[idx.date];
+                            document.getElementById('workoutTypeSelect').value = row[idx.split];
+                        }
+                        imported[exName].setsData.push({ reps: row[idx.reps], platesWeight: row[idx.plates] });
+                    }
+                    const container = document.getElementById('exercisesContainer');
+                    container.innerHTML = '';
+                    Object.values(imported).forEach(ex => container.appendChild(createExerciseSection(ex)));
+                    sortExerciseBlocks();
+                    calculateTotalVolume();
+                    e.target.value = '';
+                } catch (err) { alert("Import Error: Make sure CSV is valid."); }
+            };
+            reader.readAsText(file);
+        };
+
+        document.getElementById('addExerciseBtn').onclick = () => {
+            document.getElementById('exercisesContainer').appendChild(createExerciseSection());
+            sortExerciseBlocks();
+        };
+
+        document.getElementById('loadLastBtn').onclick = () => {
+            const last = JSON.parse(localStorage.getItem('lastFullSnapshot'));
+            if (!last) return alert("No history found.");
+            document.getElementById('exercisesContainer').innerHTML = '';
+            last.forEach(d => document.getElementById('exercisesContainer').appendChild(createExerciseSection(d)));
+            sortExerciseBlocks();
+            calculateTotalVolume();
+        };
+
+        let timerInterval;
+        function startTimer(s) { 
+            clearInterval(timerInterval); let t = s; 
+            const disp = document.getElementById('timerDisplay'); 
+            const upd = () => { 
+                const m = Math.floor(t/60); const sec = t%60; 
+                disp.textContent = `${m.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`; 
+                t <= 10 ? disp.classList.add('timer-urgent') : disp.classList.remove('timer-urgent'); 
+            }; 
+            upd(); 
+            timerInterval = setInterval(() => { t--; upd(); if(t<=0){ clearInterval(timerInterval); disp.textContent="DONE!"; }}, 1000); 
+        }
+        function stopTimer() { clearInterval(timerInterval); document.getElementById('timerDisplay').textContent = "00:00"; }
+
+        function updateHistoryTable() {
+            const b = document.getElementById('historyTableBody'); b.innerHTML = '';
+            sessionHistory.slice(-5).reverse().forEach((s, i) => {
+                const idx = sessionHistory.length - 1 - i;
+                const row = document.createElement('tr'); row.className = 'border-b border-gray-800 text-gray-400';
+                row.innerHTML = `<td class="py-2">${s.date}</td><td>${s.split}</td><td class="text-right font-bold text-green-500">${s.volume.toLocaleString()}</td><td class="text-right"><button onclick="deleteHistoryItem(${idx})">🗑️</button></td>`;
+                b.appendChild(row);
+            });
+        }
+        window.deleteHistoryItem = (i) => { if(confirm("Delete?")){ sessionHistory.splice(i,1); localStorage.setItem('workoutVolumeHistory', JSON.stringify(sessionHistory)); updateHistoryTable(); }};
+
+        document.getElementById('workoutDateInput').valueAsDate = new Date();
+        document.getElementById('toggleFavBtn').onclick = () => { 
+            const p = document.getElementById('favoritesPanel'); 
+            p.classList.toggle('collapsed'); 
+            document.getElementById('favChevron').textContent = p.classList.contains('collapsed') ? '▼' : '▲'; 
+        };
+
+        ALL_EXERCISES.sort(numSort).forEach(ex => {
+            const d = document.createElement('div');
+            d.innerHTML = `<label class="flex items-center gap-2 cursor-pointer hover:bg-gray-600 p-1 rounded"><input type="checkbox" ${favorites.includes(ex)?'checked':''}> ${ex}</label>`;
+            d.querySelector('input').onchange = (e) => {
+                if(e.target.checked) favorites.push(ex);
+                else favorites = favorites.filter(f => f !== ex);
+                localStorage.setItem('workoutFavorites', JSON.stringify(favorites));
+            };
+            document.getElementById('favoritesGrid').appendChild(d);
+        });
+
+        window.onload = () => {
+            const recovery = localStorage.getItem('active_recovery_backup');
+            if (recovery && confirm("Restore session?")) {
+                const data = JSON.parse(recovery);
+                document.getElementById('exercisesContainer').innerHTML = '';
+                data.forEach(d => document.getElementById('exercisesContainer').appendChild(createExerciseSection(d)));
+                sortExerciseBlocks();
+            } else {
+                document.getElementById('exercisesContainer').appendChild(createExerciseSection());
+            }
+            updateHistoryTable();
+            calculateTotalVolume();
+        };
+
+        setInterval(() => {
+            const data = getSessionSnapshot();
+            if (data.length) {
+                localStorage.setItem('active_recovery_backup', JSON.stringify(data));
+                document.getElementById('autoSaveStatus').textContent = `Last auto-saved: ${new Date().toLocaleTimeString()}`;
+            }
+        }, 30000);
+    </script>
+</body>
+</html>

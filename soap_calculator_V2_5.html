@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lye Soap Calculator</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Define a custom font */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7fafc;
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #2d3748;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4a5568;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-gray-800 shadow-xl rounded-2xl p-8 max-w-3xl w-full text-gray-200">
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-100 mb-2 text-center">Soap Calculator</h1>
+        <p class="text-gray-400 mb-8 text-center">Calculate the lye (NaOH) and water needed for your homemade soap recipe.</p>
+        
+        <!-- Unit Selection -->
+        <div class="flex items-center justify-end mb-4">
+            <div class="w-full sm:w-1/2">
+                <label for="unit-select" class="block text-sm font-medium text-gray-300">Measurement Unit</label>
+                <select id="unit-select" class="mt-1 block w-full py-2 px-3 border border-gray-600 bg-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    <option value="g">Grams (g)</option>
+                    <option value="oz" selected>Ounces (oz)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Dynamic Fat Inputs Section -->
+        <div id="fat-inputs-container">
+            <!-- Initial Fat Input Row is added here dynamically -->
+        </div>
+
+        <button id="add-fat-btn" class="max-w-xs mx-auto w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200 ease-in-out">
+            Add Another Fat
+        </button>
+
+        <button id="calculate-btn" class="max-w-xs mx-auto w-full flex justify-center py-3 px-4 mt-4 border border-transparent rounded-md shadow-sm text-lg font-bold text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200 ease-in-out">
+            Calculate
+        </button>
+
+        <hr class="my-8 border-gray-600">
+
+        <!-- Lye and Water Discount Section -->
+        <div class="flex flex-col sm:flex-row gap-4 mb-6">
+            <div class="w-full sm:w-1/2">
+                <label for="lye-discount" class="block text-sm font-medium text-gray-300">Lye Discount / Superfat (%)</label>
+                <input type="number" id="lye-discount" value="5" placeholder="e.g., 5" readonly class="mt-1 block w-full py-2 px-3 border border-gray-600 rounded-md shadow-sm bg-gray-700 cursor-not-allowed sm:text-sm">
+            </div>
+            <div class="w-full sm:w-1/2">
+                <label for="water-discount" class="block text-sm font-medium text-gray-300">Water Ratio (%)</label>
+                <input type="number" id="water-discount" value="38" placeholder="e.g., 38" readonly class="mt-1 block w-full py-2 px-3 border border-gray-600 rounded-md shadow-sm bg-gray-700 cursor-not-allowed sm:text-sm">
+            </div>
+        </div>
+        
+        <!-- Toggle Lock Button -->
+        <div class="flex justify-center mb-6">
+            <button id="toggle-lock-btn" class="flex items-center justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-gray-100 bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 transition-colors duration-200 ease-in-out">
+                <svg id="lock-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2h2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                </svg>
+                <svg id="unlock-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 hidden" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M10 2a5 5 0 00-5 5v2a2 2 0 00-2 2v5a2 2 0 002 2h10a2 2 0 002-2v-5a2 2 0 00-2-2H7V7a3 3 0 015.905-.75L15 4.583A5.002 5.002 0 0010 2z" />
+                </svg>
+                <span id="lock-text">Unlock Fields</span>
+            </button>
+        </div>
+        
+        <hr class="my-8 border-gray-600">
+        
+        <!-- Result Section -->
+        <div id="results-container" class="mt-8 bg-gray-900 rounded-lg p-6 border border-dashed border-gray-600">
+            <h2 class="text-2xl font-bold text-gray-100 mb-4 text-center">Results</h2>
+            <div class="space-y-4">
+                <div class="flex items-center justify-between p-4 bg-gray-700 rounded-md shadow-sm">
+                    <span class="text-lg font-medium text-gray-300">Lye (NaOH) Needed:</span>
+                    <span id="lye-result" class="text-2xl font-bold text-blue-400">0 oz</span>
+                </div>
+                <div class="flex items-center justify-between p-4 bg-gray-700 rounded-md shadow-sm">
+                    <span class="text-lg font-medium text-gray-300">Water Needed:</span>
+                    <span id="water-result" class="text-2xl font-bold text-blue-400">0 oz</span>
+                </div>
+            </div>
+            
+            <hr class="my-4 border-gray-600">
+            
+            <h3 class="text-xl font-bold text-gray-100 mb-4 text-center">Final Soap Qualities (Based on Total Recipe)</h3>
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-4 bg-orange-950 rounded-md p-4">
+                <div class="flex flex-col items-center p-4 bg-gray-700 rounded-md shadow-sm">
+                    <span id="hardness-result" class="text-lg font-bold text-gray-100">0</span>
+                    <span class="text-sm font-medium text-gray-300">Hardness</span>
+                </div>
+                <div class="flex flex-col items-center p-4 bg-gray-700 rounded-md shadow-sm">
+                    <span id="cleansing-result" class="text-lg font-bold text-gray-100">0</span>
+                    <span class="text-sm font-medium text-gray-300">Cleansing</span>
+                </div>
+                <div class="flex flex-col items-center p-4 bg-gray-700 rounded-md shadow-sm">
+                    <span id="conditioning-result" class="text-lg font-bold text-gray-100">0</span>
+                    <span class="text-sm font-medium text-gray-300">Conditioning</span>
+                </div>
+                <div class="flex flex-col items-center p-4 bg-gray-700 rounded-md shadow-sm">
+                    <span id="bubbly-result" class="text-lg font-bold text-gray-100">0</span>
+                    <span class="text-sm font-medium text-gray-300">Bubbly</span>                        
+                </div>
+                <div class="flex flex-col items-center p-4 bg-gray-700 rounded-md shadow-sm">
+                    <span id="creamy-result" class="text-lg font-bold text-gray-100">0</span>
+                    <span class="text-sm font-medium text-gray-300">Creamy</span>                            
+                </div>
+            </div>
+        </div>
+
+        <!-- Custom Modal for Errors/Messages -->
+        <div id="message-box" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg shadow-lg hidden z-50" role="alert">
+            <strong class="font-bold">Error!</strong>
+            <span id="message-text" class="block sm:inline ml-2"></span>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-4 mt-8">
+            <button id="save-text-btn" class="max-w-xs mx-auto w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-bold text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-colors duration-200 ease-in-out">
+                Save as Text
+            </button>
+        </div>
+        <p class="text-sm font-small text-gray-400 text-center"> 
+        <br>Functional concepts by: Gregg Rocheford 
+        <br>Program code generated by Gemini AI (8/30/2025)
+		<br>Version 2.0</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // Helper function for showing messages
+            function showMessage(text, isError = true) {
+                const messageBox = document.getElementById('message-box');
+                const messageText = document.getElementById('message-text');
+                const titleElement = messageBox.querySelector('strong');
+                messageText.textContent = text;
+                if (isError) {
+                    messageBox.classList.remove('bg-green-100', 'border-green-400', 'text-green-700');
+                    messageBox.classList.add('bg-red-100', 'border-red-400', 'text-red-700');
+                    titleElement.textContent = 'Error!';
+                } else {
+                    messageBox.classList.remove('bg-red-100', 'border-red-400', 'text-red-700');
+                    messageBox.classList.add('bg-green-100', 'border-green-400', 'text-green-700');
+                    titleElement.textContent = 'Success!';
+                }
+                messageBox.classList.remove('hidden');
+                setTimeout(() => {
+                    messageBox.classList.add('hidden');
+                }, 3000); // Hide after 3 seconds
+            }
+
+            // Saponification values (SAP) for NaOH, in grams of NaOH per gram of fat.
+            const saponificationValues = {
+                lardPork: 0.140,
+                beefTallow: 0.128,
+                coconutOil: 0.190,
+                castorOil: 0.128,
+                avocadoOil: 0.133,
+                oliveOil: 0.135,
+                essentialOil: 0 // Essential oil does not saponify, so its SAP value is 0.
+            };
+
+            // Soap qualities (based on SAP values, scaled for a 1-100 range)
+            const soapQualities = {
+                lardPork: { hardness: 50, cleansing: 1, conditioning: 48, bubbly: 1, creamy: 49 },
+                beefTallow: { hardness: 50, cleansing: 1, conditioning: 48, bubbly: 1, creamy: 49 },
+                coconutOil: { hardness: 45, cleansing: 67, conditioning: 1, bubbly: 67, creamy: 1 },
+                castorOil: { hardness: 0, cleansing: 1, conditioning: 83, bubbly: 90, creamy: 80 },
+                avocadoOil: { hardness: 30, cleansing: 3, conditioning: 65, bubbly: 10, creamy: 55 },
+                oliveOil: { hardness: 17, cleansing: 0, conditioning: 85, bubbly: 0, creamy: 85 },
+                essentialOil: { hardness: 0, cleansing: 0, conditioning: 0, bubbly: 0, creamy: 0 }
+            };
+
+            const fatInputsContainer = document.getElementById('fat-inputs-container');
+            const addFatBtn = document.getElementById('add-fat-btn');
+            const calculateBtn = document.getElementById('calculate-btn');
+            const saveTextBtn = document.getElementById('save-text-btn');
+            const lyeResultSpan = document.getElementById('lye-result');
+            const waterResultSpan = document.getElementById('water-result');
+            const lyeDiscountInput = document.getElementById('lye-discount');
+            const waterDiscountInput = document.getElementById('water-discount');
+            const unitSelect = document.getElementById('unit-select');
+            const toggleLockBtn = document.getElementById('toggle-lock-btn');
+            const lockIcon = document.getElementById('lock-icon');
+            const unlockIcon = document.getElementById('unlock-icon');
+            const lockText = document.getElementById('lock-text');
+            
+            const hardnessResultSpan = document.getElementById('hardness-result');
+            const cleansingResultSpan = document.getElementById('cleansing-result');
+            const conditioningResultSpan = document.getElementById('conditioning-result');
+            const bubblyResultSpan = document.getElementById('bubbly-result');
+            const creamyResultSpan = document.getElementById('creamy-result');
+            
+            let fatInputCounter = 0;
+            const GRAMS_PER_OUNCE = 28.3495;
+
+            // Function to handle locking and unlocking of fields
+            function toggleLockFields() {
+                const isLocked = lyeDiscountInput.readOnly;
+                
+                if (isLocked) {
+                    lyeDiscountInput.readOnly = false;
+                    waterDiscountInput.readOnly = false;
+                    lyeDiscountInput.classList.remove('bg-gray-700', 'cursor-not-allowed');
+                    waterDiscountInput.classList.remove('bg-gray-700', 'cursor-not-allowed');
+                    lockText.textContent = 'Lock Fields';
+                    lockIcon.classList.add('hidden');
+                    unlockIcon.classList.remove('hidden');
+                } else {
+                    lyeDiscountInput.readOnly = true;
+                    waterDiscountInput.readOnly = true;
+                    lyeDiscountInput.classList.add('bg-gray-700', 'cursor-not-allowed');
+                    waterDiscountInput.classList.add('bg-gray-700', 'cursor-not-allowed');
+                    lockText.textContent = 'Unlock Fields';
+                    lockIcon.classList.remove('hidden');
+                    unlockIcon.classList.add('hidden');
+                }
+            }
+
+            toggleLockBtn.addEventListener('click', () => {
+                toggleLockFields();
+            });
+
+            // Function to generate the qualities display for a single fat
+            function generateFatQualities(fatType) {
+                const qualities = soapQualities[fatType] || {};
+                const nameMap = { hardness: 'Hardness', cleansing: 'Cleansing', conditioning: 'Conditioning', bubbly: 'Bubbly', creamy: 'Creamy' };
+                // Hide qualities section for essential oil
+                if (fatType === 'essentialOil') {
+                     return `<div class="mt-2 p-2 bg-orange-950 rounded-lg hidden"></div>`;
+                }
+
+                const qualityHtml = Object.keys(qualities).map(key => {
+                    return `
+                        <div class="flex flex-col items-center">
+                            <span class="text-sm text-gray-300">${nameMap[key]}</span>
+                            <span class="text-sm font-semibold">${qualities[key]}</span>
+                        </div>
+                    `;
+                }).join('');
+                return `
+                    <div class="mt-2 p-2 bg-orange-950 rounded-lg grid grid-cols-2 sm:grid-cols-5 gap-2">
+                        ${qualityHtml}
+                    </div>
+                `;
+            }
+
+            // Function to create a new fat input row
+            function createFatInputRow(fatType = 'lardPork', fatAmount = '') {
+                const newRow = document.createElement('div');
+                newRow.className = 'mb-6 p-4 border border-gray-600 rounded-lg bg-gray-900';
+                newRow.dataset.fatRow = fatInputCounter;
+                
+                const currentUnit = unitSelect.value;
+                const fatOptions = Object.keys(saponificationValues).map(key => {
+                    const selected = key === fatType ? 'selected' : '';
+                    const display = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                    return `<option value="${key}" ${selected}>${display.replace('Lard Pork', 'Lard (Pork)').replace('Essential Oil', 'Essential Oil (Fragrance)')}</option>`;
+                }).join('');
+
+                newRow.innerHTML = `
+                    <div class="flex flex-col sm:flex-row items-end gap-4 mb-4">
+                        <div class="w-full sm:w-1/2">
+                            <label for="fat-type-${fatInputCounter}" class="block text-sm font-medium text-gray-300">Fat Type</label>
+                            <select id="fat-type-${fatInputCounter}" class="mt-1 block w-full py-2 px-3 border border-gray-600 bg-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                ${fatOptions}
+                            </select>
+                        </div>
+                        <div class="w-full sm:w-1/2 flex items-center gap-2">
+                            <label for="fat-amount-${fatInputCounter}" class="block text-sm font-medium text-gray-300 whitespace-nowrap">Amount (${currentUnit})</label>
+                            <input type="number" id="fat-amount-${fatInputCounter}" value="${fatAmount}" placeholder="e.g., 500" class="mt-1 block w-full py-2 px-3 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-700">
+                            <button class="remove-fat-btn p-2 text-gray-400 hover:text-red-500 transition-colors duration-200" type="button" data-id="${fatInputCounter}">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.033 21H7.967a2 2 0 01-1.99-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Soap qualities are now a sibling of the input row div -->
+                    ${generateFatQualities(fatType)}
+                `;
+                fatInputsContainer.appendChild(newRow);
+                fatInputCounter++;
+            }
+
+            // Event listener for the "Add Another Fat" button
+            addFatBtn.addEventListener('click', () => createFatInputRow());
+
+            // Event listener for removing a fat input row
+            fatInputsContainer.addEventListener('click', (event) => {
+                if (event.target.closest('.remove-fat-btn')) {
+                    const btn = event.target.closest('.remove-fat-btn');
+                    const rowToRemove = btn.closest('[data-fat-row]');
+                    if (rowToRemove && fatInputsContainer.querySelectorAll('[data-fat-row]').length > 1) {
+                        rowToRemove.remove();
+                    }
+                }
+            });
+
+            // Event listener for fat type change
+            fatInputsContainer.addEventListener('change', (event) => {
+                const selectElement = event.target.closest('select[id^="fat-type-"]');
+                if (selectElement) {
+                    const fatType = selectElement.value;
+                    // Find the parent fat row and then the qualities container within it
+                    const parentRow = selectElement.closest('[data-fat-row]');
+                    const qualitiesContainer = parentRow.querySelector('.grid.gap-2'); // Use a specific class to select it
+                    qualitiesContainer.outerHTML = generateFatQualities(fatType);
+                }
+            });
+
+            // Event listener for the "Calculate" button
+            calculateBtn.addEventListener('click', () => {
+                let totalLyeNeeded = 0;
+                let totalFatAmountInGrams = 0;
+                let totalHardness = 0;
+                let totalCleansing = 0;
+                let totalConditioning = 0;
+                let totalBubbly = 0;
+                let totalCreamy = 0;
+                let isValid = true;
+                const unit = unitSelect.value;
+                
+                const fatInputRows = document.querySelectorAll('[data-fat-row]');
+
+                if (fatInputRows.length === 0) {
+                    showMessage("Please add at least one fat type.");
+                    isValid = false;
+                    return;
+                }
+
+                fatInputRows.forEach(row => {
+                    const id = row.dataset.fatRow;
+                    const fatType = document.getElementById(`fat-type-${id}`).value;
+                    const fatAmount = parseFloat(document.getElementById(`fat-amount-${id}`).value);
+
+                    if (isNaN(fatAmount) || fatAmount <= 0) {
+                        showMessage("Please enter a valid amount for all fats.");
+                        isValid = false;
+                        return;
+                    }
+                    
+                    const fatAmountInGrams = (unit === 'oz') ? fatAmount * GRAMS_PER_OUNCE : fatAmount;
+                    totalFatAmountInGrams += fatAmountInGrams;
+                    const sapValue = saponificationValues[fatType];
+                    totalLyeNeeded += fatAmountInGrams * sapValue;
+
+                    totalHardness += soapQualities[fatType].hardness * fatAmountInGrams;
+                    totalCleansing += soapQualities[fatType].cleansing * fatAmountInGrams;
+                    totalConditioning += soapQualities[fatType].conditioning * fatAmountInGrams;
+                    totalBubbly += soapQualities[fatType].bubbly * fatAmountInGrams;
+                    totalCreamy += soapQualities[fatType].creamy * fatAmountInGrams;
+                });
+
+                if (!isValid) {
+                    return;
+                }
+                
+                // Exclude essential oil weight for hardness, cleansing, conditioning, bubbly, and creamy calculations
+                let totalSaponifiableFatInGrams = 0;
+                fatInputRows.forEach(row => {
+                    const id = row.dataset.fatRow;
+                    const fatType = document.getElementById(`fat-type-${id}`).value;
+                    const fatAmount = parseFloat(document.getElementById(`fat-amount-${id}`).value);
+                    if (fatType !== 'essentialOil') {
+                        totalSaponifiableFatInGrams += (unit === 'oz') ? fatAmount * GRAMS_PER_OUNCE : fatAmount;
+                    }
+                });
+
+                const lyeDiscount = parseFloat(lyeDiscountInput.value) || 0;
+                const waterDiscount = parseFloat(waterDiscountInput.value) || 38;
+
+                if (isNaN(lyeDiscount) || lyeDiscount < 0) {
+                    showMessage("Lye discount must be a non-negative number.");
+                    return;
+                }
+                
+                if (isNaN(waterDiscount) || waterDiscount <= 0) {
+                    showMessage("Water ratio must be a positive number.");
+                    return;
+                }
+
+                const finalLyeGrams = totalLyeNeeded * (1 - lyeDiscount / 100);
+                const finalWaterGrams = totalFatAmountInGrams * (waterDiscount / 100);
+
+                const finalLye = (unit === 'oz') ? finalLyeGrams / GRAMS_PER_OUNCE : finalLyeGrams;
+                const finalWater = (unit === 'oz') ? finalWaterGrams / GRAMS_PER_OUNCE : finalWaterGrams;
+
+                lyeResultSpan.textContent = `${finalLye.toFixed(2)} ${unit}`;
+                waterResultSpan.textContent = `${finalWater.toFixed(2)} ${unit}`;
+                
+                hardnessResultSpan.textContent = totalSaponifiableFatInGrams > 0 ? (totalHardness / totalSaponifiableFatInGrams).toFixed(0) : 0;
+                cleansingResultSpan.textContent = totalSaponifiableFatInGrams > 0 ? (totalCleansing / totalSaponifiableFatInGrams).toFixed(0) : 0;
+                conditioningResultSpan.textContent = totalSaponifiableFatInGrams > 0 ? (totalConditioning / totalSaponifiableFatInGrams).toFixed(0) : 0;
+                bubblyResultSpan.textContent = totalSaponifiableFatInGrams > 0 ? (totalBubbly / totalSaponifiableFatInGrams).toFixed(0) : 0;
+                creamyResultSpan.textContent = totalSaponifiableFatInGrams > 0 ? (totalCreamy / totalSaponifiableFatInGrams).toFixed(0) : 0;
+            });
+
+            // Function to save the recipe as a text file
+            saveTextBtn.addEventListener('click', () => {
+                if (lyeResultSpan.textContent === '0 oz' || waterResultSpan.textContent === '0 oz') {
+                    showMessage("Please calculate the recipe first to generate a text file.");
+                    return;
+                }
+
+                const recipeNameInput = document.getElementById('recipe-name-input');
+                let recipeName = '';
+                if (recipeNameInput) {
+                    recipeName = recipeNameInput.value.trim() || 'Untitled Recipe';
+                } else {
+                    recipeName = 'Untitled Recipe';
+                }
+
+                const unit = unitSelect.value;
+
+                let textContent = `--- Recipe: ${recipeName} ---\n\n`;
+
+                textContent += `Soap Ingredients:\n`;
+                const fatInputRows = document.querySelectorAll('[data-fat-row]');
+                fatInputRows.forEach(row => {
+                    const id = row.dataset.fatRow;
+                    const fatType = document.getElementById(`fat-type-${id}`).value;
+                    const fatAmount = parseFloat(document.getElementById(`fat-amount-${id}`).value);
+                    const formattedFatType = fatType.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()).replace('Lard Pork', 'Lard (Pork)').replace('Essential Oil', 'Essential Oil (Fragrance)');
+                    textContent += `- ${formattedFatType}: ${fatAmount} ${unit}\n`;
+                });
+
+                textContent += `- Lye (NaOH) Needed: ${lyeResultSpan.textContent}\n`;
+                textContent += `- Water Needed: ${waterResultSpan.textContent}\n\n`;
+
+                textContent += `Soap Qualities:\n`;
+                textContent += `- Hardness: ${hardnessResultSpan.textContent}\n`;
+                textContent += `- Cleansing: ${cleansingResultSpan.textContent}\n`;
+                textContent += `- Conditioning: ${conditioningResultSpan.textContent}\n`;
+                textContent += `- Bubbly: ${bubblyResultSpan.textContent}\n`;
+                textContent += `- Creamy: ${creamyResultSpan.textContent}\n\n`;
+
+                textContent += `Discount/Ratio:\n`;
+                textContent += `- Lye Discount / Superfat: ${lyeDiscountInput.value}%\n`;
+                textContent += `- Water Ratio: ${waterDiscountInput.value}%\n`;
+
+                const blob = new Blob([textContent], { type: 'text/plain' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = `${recipeName.replace(/\s/g, '_')}_recipe.txt`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                showMessage("Recipe text file downloaded!", false);
+            });
+            
+            // Update amount labels when unit is changed
+            unitSelect.addEventListener('change', () => {
+                const unit = unitSelect.value;
+                const labels = document.querySelectorAll('label[for^="fat-amount-"]');
+                labels.forEach(label => {
+                    label.textContent = `Amount (${unit})`;
+                });
+            });
+
+            createFatInputRow();
+        });
+    </script>
+</body>
+</html>

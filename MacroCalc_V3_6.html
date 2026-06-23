@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Macro Tracker v3.6 - Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f1f5f9; }
+        .progress-bar { height: 10px; border-radius: 9999px; background-color: #1e293b; overflow: hidden; }
+        .progress-bar-fill { height: 100%; transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .qty-input::-webkit-outer-spin-button, .qty-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .remove-btn {
+            background-color: #7f1d1d; color: white; border-radius: 10px;
+            width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s; border: 1px solid #991b1b;
+        }
+        .remove-btn:active { transform: scale(0.9); background-color: #dc2626; }
+        select { -webkit-appearance: none; appearance: none; }
+    </style>
+</head>
+<body class="min-h-screen p-4 flex justify-center items-start">
+
+    <div class="w-full max-w-md bg-slate-900 rounded-[2.5rem] shadow-2xl border border-slate-800 p-6 sm:p-8">
+        
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h1 class="text-2xl font-black text-white tracking-tighter uppercase">Macros</h1>
+                <p class="text-[10px] text-indigo-400 font-bold uppercase tracking-widest">v3.6 Mobile Final</p>
+            </div>
+            <input type="date" id="app-date-selector" class="bg-slate-800 text-xs text-white font-bold border border-slate-700 rounded-xl p-2 outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+
+        <div class="mb-4">
+            <button id="toggle-settings" class="w-full flex justify-between items-center bg-slate-800 hover:bg-slate-700 p-4 rounded-2xl transition-all border border-slate-700">
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Set Targets</span>
+                <svg id="settings-chevron" class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div id="settings-content" class="hidden mt-3 space-y-4 p-4 bg-slate-800/30 rounded-2xl border border-slate-800">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] text-slate-500 uppercase font-black ml-1">Weight (lbs)</label>
+                        <input type="number" id="input-weight" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-indigo-300 font-bold" value="150">
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-slate-500 uppercase font-black ml-1">Protein g/lb</label>
+                        <input type="number" id="input-gpl" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-indigo-300 font-bold" value="1" step="0.1">
+                    </div>
+                </div>
+                <div class="bg-indigo-500/10 p-3 rounded-xl border border-indigo-500/20 text-center">
+                    <label class="text-[10px] text-indigo-400 uppercase font-black">Calculated Protein Goal (g)</label>
+                    <input type="number" id="target-p" class="w-full bg-transparent text-xl font-black text-white outline-none text-center" value="150">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="text-[10px] text-slate-500 uppercase font-black ml-1">Fat Goal (g)</label><input type="number" id="target-f" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm" value="150"></div>
+                    <div><label class="text-[10px] text-slate-500 uppercase font-black ml-1">Carb Goal (g)</label><input type="number" id="target-c" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm" value="30"></div>
+                </div>
+                <div><label class="text-[10px] text-slate-500 uppercase font-black ml-1">Calorie Goal</label><input type="number" id="target-cal" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm" value="1600"></div>
+            </div>
+        </div>
+
+        <div class="mb-6">
+            <button id="toggle-progress" class="w-full bg-indigo-600 p-5 rounded-[2rem] text-left shadow-xl hover:bg-indigo-500 transition-all">
+                <div class="flex justify-between items-center">
+                    <span class="text-[10px] font-black text-indigo-100 uppercase">Live Progress</span>
+                    <span id="smart-summary" class="text-sm font-black text-white">0g P / 0 Cal</span>
+                </div>
+                <div id="progress-content" class="mt-5 space-y-4 hidden border-t border-indigo-400/30 pt-4">
+                    <div>
+                        <div class="flex justify-between text-[10px] mb-2 font-black text-indigo-100 uppercase"><span>Protein</span><span id="p-text">0/150</span></div>
+                        <div class="progress-bar bg-indigo-900/50"><div id="p-bar" class="progress-bar-fill bg-white" style="width:0%"></div></div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-[10px] mb-2 font-black text-indigo-100 uppercase"><span>Fat</span><span id="f-text">0/150</span></div>
+                        <div class="progress-bar bg-indigo-900/50"><div id="f-bar" class="progress-bar-fill bg-amber-400" style="width:0%"></div></div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-[10px] mb-2 font-black text-indigo-100 uppercase"><span>Carbs</span><span id="c-text">0/30</span></div>
+                        <div class="progress-bar bg-indigo-900/50"><div id="c-bar" class="progress-bar-fill bg-emerald-400" style="width:0%"></div></div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-[10px] mb-2 font-black text-indigo-100 uppercase"><span>Calories</span><span id="cal-text">0/1600</span></div>
+                        <div class="progress-bar bg-indigo-900/50"><div id="cal-bar" class="progress-bar-fill bg-rose-400" style="width:0%"></div></div>
+                    </div>
+                </div>
+            </button>
+        </div>
+
+        <div class="space-y-3 mb-8">
+            <div class="relative">
+                <select id="food-select" class="w-full bg-slate-800 text-white p-4 rounded-2xl border border-slate-700 outline-none focus:ring-2 focus:ring-indigo-500 font-medium">
+                    <option value="" disabled selected>Select Food to Add...</option>
+                </select>
+            </div>
+            <button id="add-btn" class="w-full bg-white text-slate-900 font-black py-4 rounded-2xl shadow-lg active:scale-95 transition-all uppercase text-sm">Add to Log</button>
+        </div>
+
+        <div id="food-log" class="space-y-3 mb-8 min-h-[50px]"></div>
+
+        <div class="space-y-2">
+            <button id="export-btn" class="w-full bg-slate-800 text-emerald-400 text-[10px] uppercase font-black tracking-widest hover:bg-slate-700 py-4 rounded-2xl border border-slate-700 transition-all">Export History to CSV</button>
+            <button id="clear-btn" class="w-full text-slate-600 text-[10px] uppercase font-black tracking-widest hover:text-rose-500 py-4 transition-colors">Clear Day Log</button>
+        </div>
+    </div>
+
+    <script type="module">
+        const foodDb = {
+            'bake-believe-choc': { name: 'Bake Believe Sugar-Free Choc Chips', p: 6.67, f: 30, c: 60, cal: 400, def: 15, unit: 'gm', isUnit: false },
+            'kirkland-beef-patty': { name: 'Kirkland Grassfed Beef Patty', p: 25, f: 27.5, c: 0, cal: 313, def: 151, unit: 'gm', isUnit: false },
+            'darigold-half-half': { name: 'Darigold Half and Half', p: 3.33, f: 10, c: 3.33, cal: 133.33, def: 30, unit: 'gm', isUnit: false },
+            'chomps-beef': { name: 'Chomps Original Beef Stick', p: 31.25, f: 21.87, c: 0, cal: 312.5, def: 32, unit: 'gm', isUnit: false },
+            'tillamook-square': { name: 'Tillamook Cheddar Square', p: 23.81, f: 33.33, c: 4.76, cal: 428.57, def: 21, unit: 'gm', isUnit: false },
+            'ribeye': { name: 'Ribeye Steak', p: 32.5, f: 32.5, c: 0, cal: 349, def: 6, unit: 'oz', isUnit: false },
+            'chuck-roast': { name: 'Beef Chuck Roast', p: 31.25, f: 21, c: 0, cal: 265, def: 6, unit: 'oz', isUnit: false },
+            'egg-medium': { name: 'One Medium Egg', p: 6, f: 5.5, c: 0.65, cal: 77, def: 1, unit: 'units', isUnit: true },
+            'egg-large': { name: 'One Large Egg', p: 6.3, f: 6.5, c: 0.8, cal: 87, def: 1, unit: 'units', isUnit: true },
+            'hamburger-80': { name: '80% Lean Hamburger', p: 25, f: 27.5, c: 0, cal: 282, def: 6, unit: 'oz', isUnit: false },
+            'hamburger-90': { name: '90% Lean Hamburger', p: 30, f: 15, c: 0, cal: 203, def: 6, unit: 'oz', isUnit: false },
+            'pork-roast': { name: 'Pork Shoulder Roast', p: 32.5, f: 25, c: 0, cal: 248, def: 6, unit: 'oz', isUnit: false },
+            'chicken-breast': { name: 'Chicken Breast', p: 38.75, f: 5, c: 0, cal: 175, def: 6, unit: 'oz', isUnit: false },
+            'chicken-thigh': { name: 'Chicken Thigh', p: 32.5, f: 15, c: 0, cal: 218, def: 6, unit: 'oz', isUnit: false },
+            'peanut-butter': { name: 'Peanut Butter (1tbsp)', p: 24.5, f: 52.5, c: 21.87, cal: 682, def: 16, unit: 'gm', isUnit: false },
+            'cheddar-cheese': { name: 'Cheddar Cheese', p: 24, f: 34, c: 2, cal: 416, def: 2, unit: 'oz', isUnit: false },
+            'sour-cream': { name: 'Darigold Sour Cream', p: 3, f: 20, c: 3.75, cal: 200, def: 30, unit: 'gm', isUnit: false },
+            'kirkland-a2-milk': { name: 'Kirkland A2 Whole Milk', p: 3.53, f: 3.97, c: 4.85, cal: 70.5, def: 4, unit: 'oz', isUnit: false },
+            'lucerne-greek': { name: 'Lucerne Greek Yogurt', p: 8, f: 4, c: 4.7, cal: 88, def: 170, unit: 'gm', isUnit: false },
+            'wild-planet-sardines': { name: 'Wild Planet Sardines', p: 20.93, f: 12.79, c: 0, cal: 197.67, def: 1, unit: 'units', isUnit: true },
+            'kefir': { name: '15% Milkfat Kefir', p: 3.5, f: 15, c: 4.5, cal: 174, def: 4, unit: 'oz', isUnit: false },
+            'kirkland-peanuts': { name: 'Kirkland Peanuts (1/4 cup)', p: 26.67, f: 50, c: 20, cal: 566.67, def: 30, unit: 'gm', isUnit: false },
+            'levels-whey-dc': { name: 'Levels Whey - Dbl Choc', p: 75, f: 7.8, c: 12.5, cal: 412, def: 32, unit: 'gm', isUnit: false },
+            'ncost-whey-choc-pb': { name: 'Nutricost Whey - Choc PB', p: 65.8, f: 7.89, c: 10.53, cal: 368.42, def: 38, unit: 'gm', isUnit: false },
+            'ncost-whey-plain': { name: 'Nutricost Whey - Plain', p: 75.76, f: 6.06, c: 3.03, cal: 363.64, def: 33, unit: 'gm', isUnit: false },
+            'rx-bar-sea-salt': { name: 'RX Bar - Choc Sea Salt', p: 23, f: 14, c: 44, cal: 414, def: 1, unit: 'units', isUnit: true },
+            'rx-bar-pb-choc': { name: 'RX Bar - PB Choc', p: 23, f: 14, c: 44, cal: 414, def: 1, unit: 'units', isUnit: true },
+            'rx-bar-pb': { name: 'RX Bar - Peanut Butter', p: 23, f: 14, c: 44, cal: 414, def: 1, unit: 'units', isUnit: true }
+        };
+
+        let storage = JSON.parse(localStorage.getItem('macros_v36')) || {};
+        let activeDate = new Date().toISOString().split('T')[0];
+
+        const dateIn = document.getElementById('app-date-selector');
+        const foodSel = document.getElementById('food-select');
+        const foodLogUI = document.getElementById('food-log');
+        const weightIn = document.getElementById('input-weight');
+        const gplIn = document.getElementById('input-gpl');
+        const targetP = document.getElementById('target-p');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            dateIn.value = activeDate;
+            Object.keys(foodDb).sort((a,b) => foodDb[a].name.localeCompare(foodDb[b].name)).forEach(id => {
+                const opt = document.createElement('option'); opt.value = id; opt.textContent = foodDb[id].name; foodSel.appendChild(opt);
+            });
+            loadDate(activeDate);
+        });
+
+        function syncProtein() { const w = parseFloat(weightIn.value) || 0; const g = parseFloat(gplIn.value) || 0; targetP.value = Math.round(w * g); calc(); }
+        weightIn.oninput = syncProtein; gplIn.oninput = syncProtein;
+
+        function loadDate(date) { activeDate = date; foodLogUI.innerHTML = ''; (storage[date] || []).forEach((entry, idx) => renderRow(entry, idx)); calc(); }
+
+        function renderRow(entry, idx) {
+            const info = foodDb[entry.id];
+            const div = document.createElement('div');
+            div.className = "flex items-center gap-4 bg-slate-800/40 border border-slate-800 p-4 rounded-2xl";
+            
+            const unitDisplay = info.isUnit ? 
+                `<span class="text-[9px] text-slate-500 uppercase font-black tracking-widest">Units</span>` :
+                `<select class="unit-edit bg-transparent text-[9px] text-indigo-400 uppercase font-black tracking-widest outline-none border-none">
+                    <option value="gm" ${entry.unit === 'gm' ? 'selected' : ''}>gm</option>
+                    <option value="oz" ${entry.unit === 'oz' ? 'selected' : ''}>oz</option>
+                </select>`;
+
+            div.innerHTML = `
+                <div class="flex-grow">
+                    <p class="text-xs font-bold text-slate-100">${info.name}</p>
+                    <div class="flex items-center gap-2 mt-2">
+                        <input type="number" value="${entry.qty}" class="qty-input w-16 bg-slate-900 text-indigo-400 text-xs font-black p-2 rounded-lg border border-slate-700">
+                        ${unitDisplay}
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="text-white text-sm font-black"><span class="row-p">0</span><span class="text-[10px] text-slate-500 ml-0.5">g P</span></p>
+                    <p class="text-rose-400 text-[10px] font-bold"><span class="row-cal">0</span> cal</p>
+                </div>
+                <button class="remove-btn">✕</button>
+            `;
+            const qtyInput = div.querySelector('.qty-input');
+            qtyInput.oninput = () => { storage[activeDate][idx].qty = parseFloat(qtyInput.value) || 0; save(); calc(); };
+            
+            const unitEdit = div.querySelector('.unit-edit');
+            if(unitEdit) { unitEdit.onchange = () => { storage[activeDate][idx].unit = unitEdit.value; save(); calc(); }; }
+            
+            div.querySelector('.remove-btn').onclick = () => { storage[activeDate].splice(idx, 1); save(); loadDate(activeDate); };
+            foodLogUI.appendChild(div);
+        }
+
+        function calc() {
+            let t = { p:0, f:0, c:0, cal:0 };
+            const entries = storage[activeDate] || [];
+            entries.forEach((entry, idx) => {
+                const item = foodDb[entry.id]; if(!item) return;
+                let mult = entry.qty;
+                if(!item.isUnit) { let grams = entry.unit === 'oz' ? entry.qty * 28.35 : entry.qty; mult = grams / 100; }
+                const p = item.p * mult, f = item.f * mult, c = item.c * mult, cal = item.cal * mult;
+                t.p += p; t.f += f; t.c += c; t.cal += cal;
+                const row = foodLogUI.children[idx];
+                if(row) { row.querySelector('.row-p').textContent = p.toFixed(0); row.querySelector('.row-cal').textContent = Math.round(cal); }
+            });
+            updateUI(t);
+        }
+
+        function updateUI(t) {
+            const targets = { p: targetP.value, f: document.getElementById('target-f').value, c: document.getElementById('target-c').value, cal: document.getElementById('target-cal').value };
+            const set = (id, cur, tar) => { 
+                const textEl = document.getElementById(`${id}-text`); const barEl = document.getElementById(`${id}-bar`);
+                if(textEl) textEl.textContent = `${Math.round(cur)} / ${tar}`;
+                if(barEl) barEl.style.width = Math.min(100, (cur/tar)*100) + '%';
+            };
+            set('p', t.p, targets.p); set('f', t.f, targets.f); set('c', t.c, targets.c); set('cal', t.cal, targets.cal);
+            document.getElementById('smart-summary').textContent = `${Math.round(t.p)}g P / ${Math.round(t.cal)} Cal`;
+        }
+
+        function save() { localStorage.setItem('macros_v36', JSON.stringify(storage)); }
+
+        dateIn.onchange = (e) => loadDate(e.target.value);
+        document.getElementById('add-btn').onclick = () => {
+            const id = foodSel.value; if(!id) return;
+            if(!storage[activeDate]) storage[activeDate] = [];
+            storage[activeDate].push({ id, qty: foodDb[id].def, unit: foodDb[id].unit });
+            save(); loadDate(activeDate); foodSel.value = "";
+        };
+
+        document.getElementById('export-btn').onclick = () => {
+            if (Object.keys(storage).length === 0) { alert("No logs!"); return; }
+            let csv = "Date,Food,Quantity,Unit,Protein(g),Calories\n";
+            Object.keys(storage).sort().forEach(date => {
+                storage[date].forEach(entry => {
+                    const info = foodDb[entry.id]; if(!info) return;
+                    let mult = entry.qty; if(!info.isUnit) mult = (entry.unit === 'oz' ? entry.qty * 28.35 : entry.qty) / 100;
+                    csv += `${date},"${info.name}",${entry.qty},${entry.unit},${(info.p * mult).toFixed(1)},${Math.round(info.cal * mult)}\n`;
+                });
+            });
+            const blob = new Blob([csv], { type: 'text/csv' }); const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = `macro_history.csv`; a.click();
+        };
+
+        document.getElementById('clear-btn').onclick = () => { if(confirm("Clear " + activeDate + "?")) { storage[activeDate] = []; save(); loadDate(activeDate); } };
+        document.getElementById('toggle-settings').onclick = () => { document.getElementById('settings-content').classList.toggle('hidden'); document.getElementById('settings-chevron').classList.toggle('rotate-180'); };
+        document.getElementById('toggle-progress').onclick = () => document.getElementById('progress-content').classList.toggle('hidden');
+        ['target-p', 'target-f', 'target-c', 'target-cal'].forEach(id => document.getElementById(id).oninput = calc);
+    </script>
+</body>
+</html>
