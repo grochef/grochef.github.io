@@ -33,6 +33,30 @@
             padding: 0;
             line-height: 1.7;
         }
+		
+		    a { color: var(--accent); text-decoration: none; transition: 0.3s; }
+			a:hover { opacity: 0.8; }
+		/* ===== SHARED NAVIGATION ===== */
+		nav {
+			position: fixed;
+			top: 0; left: 0; right: 0;
+			background: rgba(255, 255, 248, 0.95);
+			backdrop-filter: blur(10px);
+			border-bottom: 1px solid var(--light-line);
+			z-index: 1000;
+			padding: 0.8rem 1rem;
+			font-family: 'Playfair Display', serif;
+		}
+		.nav-container {
+			max-width: 1100px;
+			margin: 0 auto;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+		.site-title a { color: var(--accent); font-size: 1.4rem; }
+		.nav-links { display: flex; gap: 1.5rem; }
+		.nav-links a { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text); }
 
         /* ==================== PARALLAX HERO HEADER ==================== */
         header {
@@ -51,7 +75,7 @@
             color: white;
             overflow: hidden;
         }
-
+		
         header::before {
             content: '';
             position: absolute;
@@ -152,11 +176,11 @@
         /* ==================== GRID & CARDS ==================== */
         main { padding: 20px; max-width: 1150px; margin: 0 auto; }
 
-.app-icon {
-    width: 128px;
-    height: 128px;
-    object-fit: contain;
-}
+		.app-icon {
+			width: 128px;
+			height: 128px;
+			object-fit: contain;
+		}
 
         .section-title {
             text-align: center;
