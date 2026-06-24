@@ -36,6 +36,7 @@
 		
 		    a { color: var(--accent); text-decoration: none; transition: 0.3s; }
 			a:hover { opacity: 0.8; }
+			.a2 { color: white; text-decoration: none; transition: 0.3s; }
 		/* ===== SHARED NAVIGATION ===== */
 		nav {
 			position: fixed;
@@ -205,6 +206,22 @@
             color: inherit;
         }
 
+		.button2 {
+            width: flex;
+            height: 30px;
+			color: white;
+            background-size: cover;
+            background-position: center;
+			background-color: #40ad1f;
+            border-radius: 12px;
+            /* box-shadow: 0 10px 25px rgba(0,0,0,0.12);*/
+            /* transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); */
+        }
+		
+		.button2:hover {
+			background-color: #1953e6;
+		}
+		
         .button {
             width: 200px;
             height: 200px;
@@ -214,7 +231,7 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.12);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-
+		
         .button-card:hover .button {
             transform: translateY(-12px);
             box-shadow: 0 20px 40px rgba(184, 92, 56, 0.25);
@@ -286,19 +303,25 @@
 			<img class="app-icon" src="images/macro_nut.png" alt="Fuel Tracker">
 			<h3>Macro Nut</h3>
 			<p>Keep track of nutritional macronutrients from your daily meals.</p>
-			<a href="https://github.com/grochef/MacroNut/releases/download/v1.4/Macro_Nutv1.4.apk" target="_blank">Download Macro Nut APK</a>
+			<button class="button2">
+			<a href="https://github.com/grochef/MacroNut/releases/download/v1.4/Macro_Nutv1.4.apk" class="a2" target="_blank">Download APK</a>
+			</button>
 		</div>		
 		<div class="app-card">
 			<img class="app-icon" src="images/WorkoutTrackerLogo.png" alt="Workout Companion">
 			<h3>Workout Companion</h3>
 			<p>Track your workouts and witness your gains.</p>
-			<a href="https://github.com/grochef/WorkoutTracker/releases/download/v1.2/WorkoutCompanionv1_2.apk" target="_blank">Download Workout Companion APK</a>
+			<button class="button2">
+			<a href="https://github.com/grochef/WorkoutTracker/releases/download/v1.2/WorkoutCompanionv1_2.apk" class="a2" target="_blank">Download APK</a>
+			</button>
 		</div>
 		<div class="app-card">
 			<img class="app-icon" src="images/fuel_tracker.png" alt="Fuel Tracker">
 			<h3>Fuel Tracker</h3>
 			<p>Track fuel economy, costs, and maintenance.</p>
-			<a href="https://github.com/grochef/FuelTracker/releases/download/v3.2/fuel_tracker_v3_2.apk" target="_blank">Download Fuel Tracker APK</a>
+			<button class="button2">
+			<a href="https://github.com/grochef/FuelTracker/releases/download/v3.2/fuel_tracker_v3_2.apk" class="a2" target="_blank">Download APK</a>
+			</button>
 		</div>
 		
 		</div>
