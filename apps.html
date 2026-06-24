@@ -152,6 +152,12 @@
         /* ==================== GRID & CARDS ==================== */
         main { padding: 20px; max-width: 1150px; margin: 0 auto; }
 
+.app-icon {
+    width: 128px;
+    height: 128px;
+    object-fit: contain;
+}
+
         .section-title {
             text-align: center;
             font-family: 'Playfair Display', serif;
@@ -245,12 +251,20 @@
 <hr style="border: 0; border-top: 1px solid var(--light-line); margin-bottom: 5rem;">
         <h2 class="section-title">Custom Android Applications</h2>
         <div class="grid">
-		    <img class="img-song" src="images/fuel_tracker.png" alt="Fuel Tracker artwork">
-            <a href="https://github.com/grochef/FuelTracker/releases/download/v3.2/fuel_tracker_v3_2.apk" target="_blank">Download Fuel Tracker APK</a>
-			
-			<img class="img-song" src="images/macro_nut.png" alt="Macro Nut artwork">
-			<a href="https://github.com/grochef/MacroNut/releases/download/v1.4/Macro_Nutv1.4.apk" target="_blank">Download Macro Nut APK</a>
-        </div> 
+		    
+		<div class="app-card">
+			<img class="app-icon" src="images/fuel_tracker.png" alt="Fuel Tracker">
+			<h3>Macro Nut</h3>
+			<p>Keep track of nutritional macronutrients from your daily meals.</p>
+			a href="https://github.com/grochef/MacroNut/releases/download/v1.4/Macro_Nutv1.4.apk" target="_blank">Download Macro Nut APK</a>
+		</div>		
+		
+		<div class="app-card">
+			<img class="app-icon" src="images/fuel_tracker.png" alt="Fuel Tracker">
+			<h3>Fuel Tracker</h3>
+			<p>Track fuel economy, costs, and maintenance.</p>
+			<a href="https://github.com/grochef/FuelTracker/releases/download/v3.2/fuel_tracker_v3_2.apk" target="_blank">Download Fuel Tracker APK</a>
+		</div>
 
     </main>
 
