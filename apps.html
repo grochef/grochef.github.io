@@ -34,7 +34,7 @@
             line-height: 1.7;
         }
 		
-			h2 {color: #bf2228; border-bottom: 1px solid;}
+			/* h2 {color: #bf2228; border-bottom: 1px solid;} */
 		    a { color: var(--accent); text-decoration: none; transition: 0.3s; }
 			a:hover { opacity: 0.8; }
 			.a2 { color: white; text-decoration: none; transition: 0.3s; }
@@ -60,50 +60,31 @@
 		.nav-links { display: flex; gap: 1.5rem; }
 		.nav-links a { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text); }
 
-        /* ==================== PARALLAX HERO HEADER ==================== */
-        header {
-            position: relative;
-            height: 70vh;
-            min-height: 500px;
-            background-image: url('images/AppsByGrochef.png'); 
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: white;
-            overflow: hidden;
-        }
-		
-        header::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 100%);
-        }
-
-        .header-content {
-            position: relative;
-            z-index: 2;
-            padding: 20px;
-            max-width: 900px;
-        }
-
-        .header-content h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 5rem;
-            margin: 0 0 10px 0;
-            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
-        }
-
-        .header-content p {
-            font-size: 1.6rem;
-            font-style: italic;
-            opacity: 0.95;
-        }
+        /* ——— PARALLAX HEADER ——— */
+    header.hero {
+      position: relative;
+      height: 60vh;
+      min-height: 400px;
+      background-image: url('images/AppsByGrochef.png'); 
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: white;
+    }
+    header.hero::before {
+      content: '';
+      position: absolute;
+      /*inset: 0;*/
+	  top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 100%);
+    }
+    .header-content { position: relative; z-index: 2; padding: 20px; }
+    .header-content h1 { font-family: 'Playfair Display', serif; font-size: 4rem; margin: 0; }
+    .header-content p { font-style: italic; font-size: 1.4rem; opacity: 0.9; }
 
         /* ==================== ABOUT / BIO SECTION ==================== */
         .about-section {
@@ -282,9 +263,9 @@
       </div>
     </div>
   </nav>
-    <header>
+    <header class="hero">
         <div class="header-content">
-            <h1>Gregg Rocheford</h1>
+            <h1>Gregg's Android Applications</h1>
             <p>A 2026 Digital Portfolio: Coding, Music, and Visuals</p>
         </div>
     </header>
@@ -310,7 +291,7 @@
         <div class="grid">
 		    
 		<div class="app-card">
-			<img class="app-icon" src="images/macro_nut.png" alt="Fuel Tracker">
+			<img class="app-icon" src="images/macro_nut.jpg" alt="Fuel Tracker">
 			<h3>Macro Nut</h3>
 			<p>Keep track of nutritional macronutrients from your daily meals.</p>
 			<button class="button2">
@@ -319,7 +300,7 @@
 		</div>		
 		
 		<div class="app-card">
-			<img class="app-icon" src="images/WorkoutTrackerLogo.png" alt="Workout Companion">
+			<img class="app-icon" src="images/WorkoutTrackerLogo.jpg" alt="Workout Companion">
 			<h3>Workout Companion</h3>
 			<p>Track your workouts and witness your gains.</p>
 			<button class="button2">
@@ -328,7 +309,7 @@
 		</div>
 		
 		<div class="app-card">
-			<img class="app-icon" src="images/fuel_tracker.png" alt="Fuel Tracker">
+			<img class="app-icon" src="images/fuel_tracker.jpg" alt="Fuel Tracker">
 			<h3>Fuel Tracker</h3>
 			<p>Track fuel economy, costs, and maintenance. It even finds near-by stations to guide you to them and use the address in the fill record.</p>
 			<button class="button2">
@@ -337,7 +318,7 @@
 		</div>
 		
 		<div class="app-card">
-			<img class="app-icon" src="images/DiscGolfLogo.png" alt="Fuel Tracker">
+			<img class="app-icon" src="images/DiscGolfLogo.jpg" alt="Fuel Tracker">
 			<h3>Disc Golf Tracker</h3>
 			<p>Record disc golf scores for you or multiple players.</p>
 			<button class="button2">
