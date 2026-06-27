@@ -34,6 +34,7 @@
 
     a { color: var(--accent); text-decoration: none; transition: 0.3s; }
     a:hover { opacity: 0.8; }
+	.a2 { color: white; text-decoration: none; transition: 0.3s; }
 
     /* ===== SHARED NAVIGATION ===== */
     nav {
@@ -56,17 +57,35 @@
     .site-title a { color: var(--accent); font-size: 1.4rem; }
     .nav-links { display: flex; gap: 1.5rem; }
     .nav-links a { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text); }
+	
+			.button2 {
+            width: flex;
+            height: 30px;
+			color: white;
+            background-size: cover;
+            background-position: center;
+			background-color: #40ad1f;
+            border-radius: 12px;
+            /* box-shadow: 0 10px 25px rgba(0,0,0,0.12);*/
+            /* transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); */
+        }
+		
+		.button2:hover {
+			background-color: #1953e6;
+		}
 	  </style>
 </head>
 <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2LF14VY6V"></script>
+<script async src="https://github.com/grochef/FuelTracker/releases/download/v3.2/fuel_tracker_v3_2.apk"></script>
 <body>
 
   <nav>
   You have been directed to the Fuel Track Update page.<p>
 Click on the button to download the updated version.</p>
 
-	<button><a href="index.html">Fuel Tracker update</a></button>
+	<button class="button2">
+	<a href="index.html" class="a2">Fuel Tracker update</a>
+	</button>
 
   </nav>
         <footer>
