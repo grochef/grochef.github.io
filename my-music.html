@@ -176,6 +176,32 @@
       padding-left: 2rem;
     }
 
+    .lyrics-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 130px;
+      margin: 1.5rem auto 0;
+      padding: 10px 22px;
+      border: 1px solid var(--accent);
+      border-radius: 30px;
+      background: transparent;
+      color: var(--accent);
+      cursor: pointer;
+      font-family: 'Playfair Display', serif;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+    .lyrics-toggle:hover,
+    .lyrics-toggle:focus-visible {
+      background: var(--accent);
+      color: white;
+    }
+    .lyrics-toggle:focus-visible {
+      outline: 3px solid rgba(184, 92, 56, 0.25);
+      outline-offset: 3px;
+    }
+
     .note {
       max-width: 600px;
       margin: 2rem auto 0;
@@ -1151,103 +1177,75 @@ The results are clear the Earth is now just a ball of sand.</div>
       <div class="note">A song about a relationship and an unwillingness to see its destructive nature. <br>I left the cues in the lyrics to show what it took to get Suno to replicate the true feeling of my thoughts in the music.</div>
       <div class="lyrics">
 [verse]
-[rich baritone male voice, conversational delivery, steel-string fingerpicking, soft cross-stick rhythm]
 I guess I know why I did it.
 A good idea at the time.
-The reality was prison
+The reality was prison,
 As if sentenced for crime.
 
 Some are just different.
-They make up the rules
+They make up the rules.
 They prey on the gullible,
 They play them like fools.
 
 [chorus]
-[rich baritone male voice, conversational delivery, steel-string fingerpicking, soft cross-stick rhythm]
-Am I flying
-Am I falling
-
-[Gentle female harmony vocals]...falling...
-
-[rich baritone male voice, conversational delivery, steel-string fingerpicking, soft cross-stick rhythm]
-Am I lost or found
-I know that I'm falling
-
-[Gentle female harmony vocals]...falling...
-
-[rich baritone male voice, conversational delivery, steel-string fingerpicking, soft cross-stick rhythm]
-When I crash to the ground
+Am I flying?
+Am I falling?
+...falling...
+Am I lost or found?
+I know that I'm falling...
+...falling...
+When I crash to the ground.
 
 [verse]
-[rich baritone male voice, conversational delivery, steel-string fingerpicking, soft cross-stick rhythm]
+
 Like a moth to a flame
 I was drawn by a need
 But the flame consumed me
 And that rose made me bleed
-[rich baritone male voice, conversational delivery, steel-string fingerpicking, soft cross-stick rhythm]
+
 She knew only black or white
 She gave only love or hate
 She was broken and she broke me
-[rich baritone male voice, conversational delivery, steel-string fingerpicking, soft cross-stick rhythm]
 Until I saw I was obdurate
 
 [chorus]
-[rich baritone male voice, conversational delivery, steel-string fingerpicking, soft cross-stick rhythm]
-Am I flying
-Am I falling
 
-[Gentle female harmony vocals]...falling...
-
-[rich baritone male voice, conversational delivery, steel-string fingerpicking, soft cross-stick rhythm]
-Am I lost or found
-I know that I'm falling
-
-[Gentle female harmony vocals]...falling...
-
-[rich baritone male voice, conversational delivery, steel-string fingerpicking, soft cross-stick rhythm]
-When I crash to the ground
+Am I flying?
+Am I falling?
+...falling...
+Am I lost or found?
+I know that I'm falling...
+...falling...
+When I crash to the ground.
 
 [bridge]
-[rich baritone male voice, conversational delivery, steel-string fingerpicking, soft cross-stick rhythm]
+
 With hindsight there's clarity
 Never seen when engaged
 Though I was free to make my choice
 Somehow I felt caged
 
 [verse]
-[rich baritone male voice, conversational delivery, steel-string fingerpicking, soft cross-stick rhythm]
+
 Once I hit bottom,
 I tried something new
 The knots in my gut unfurled
 No more feeling blue
-[rich baritone male voice, conversational delivery, steel-string fingerpicking, soft cross-stick rhythm]
+
 It's a learning experience
 I need never repeat
 I know what I won't accept
-[rich baritone male voice, conversational delivery, steel-string fingerpicking, soft cross-stick rhythm]
 I am back on my feet
 
 [chorus]
-[rich baritone male voice, conversational delivery, steel-string fingerpicking, soft cross-stick rhythm]
-Am I flying
-Am I falling
 
-[Gentle female harmony vocals]...falling...
-
-[rich baritone male voice, conversational delivery, steel-string fingerpicking, soft cross-stick rhythm]
-Am I lost or found
-I know that I'm falling
-
-[Gentle female harmony vocals]...falling...
-
-[rich baritone male voice, conversational delivery, steel-string fingerpicking, soft cross-stick rhythm]
-When I crash to the ground
-
-Style
-Warm late-1970s and early-1980s acoustic folk-rock ballad, thoughtful singer-songwriter style, clear low male tenor with light baritone warmth, natural chest voice throughout, relaxed conversational phrasing, grounded midrange melody, sincere understated delivery, acoustic guitar with articulate fingerpicking, gentle cross-stick snare rim clicks, light kick drum, warm bass, subtle percussion, intimate verses, choruses with a measured emotional lift, restrained backing harmonies, natural live-room sound, gentle resolved ending
-
-Exclude
-screaming, shouting, yelling, belting, strained vocals, raspy vocals, vocal distortion, high notes, power vocals, hard rock, arena rock, metal, power ballad, anthemic climax, dramatic crescendo, key change, gospel choir, explosive drums
+Am I flying?
+Am I falling?
+...falling...
+Am I lost or found?
+I know that I'm falling...
+...falling...
+When I crash to the ground.
 </div>
     </section>
   </main>
@@ -1260,6 +1258,28 @@ screaming, shouting, yelling, belting, strained vocals, raspy vocals, vocal dist
     </footer>
 
   <script>
+    document.querySelectorAll('.lyrics').forEach((lyrics, index) => {
+      const lyricsId = lyrics.id || `song-lyrics-${index + 1}`;
+      lyrics.id = lyricsId;
+      lyrics.hidden = true;
+
+      const toggle = document.createElement('button');
+      toggle.type = 'button';
+      toggle.className = 'lyrics-toggle';
+      toggle.textContent = 'Show lyrics';
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-controls', lyricsId);
+
+      toggle.addEventListener('click', () => {
+        const willShow = lyrics.hidden;
+        lyrics.hidden = !willShow;
+        toggle.textContent = willShow ? 'Hide lyrics' : 'Show lyrics';
+        toggle.setAttribute('aria-expanded', String(willShow));
+      });
+
+      lyrics.before(toggle);
+    });
+
     const topBtn = document.getElementById("backToTop");
     window.onscroll = function() {
       if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
