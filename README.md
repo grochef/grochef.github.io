@@ -1,2 +1,2 @@
 # grochef.github.io
-An attempt at hosting my webpages on this convoluted heap.
+Github hosted space for my website.
