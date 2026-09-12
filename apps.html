@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-7PM7Z3RF7Z');
+</script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Applications for Android</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg: #fffff8;
+            --text: #2c1a0d;
+            --accent: #b85c38;
+            --light-line: #e8e0d8;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Crimson Text', Georgia, serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            line-height: 1.7;
+        }
+		
+			/* h2 {color: #bf2228; border-bottom: 1px solid;} */
+		    a { color: var(--accent); text-decoration: none; transition: 0.3s; }
+			a:hover { opacity: 0.8; }
+			.a2 { color: white; text-decoration: none; transition: 0.3s; }
+		/* ===== SHARED NAVIGATION ===== */
+		nav {
+			position: fixed;
+			top: 0; left: 0; right: 0;
+			background: rgba(255, 255, 248, 0.95);
+			backdrop-filter: blur(10px);
+			border-bottom: 1px solid var(--light-line);
+			z-index: 1000;
+			padding: 0.8rem 1rem;
+			font-family: 'Playfair Display', serif;
+		}
+		.nav-container {
+			max-width: 1100px;
+			margin: 0 auto;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+		.site-title a { color: var(--accent); font-size: 1.4rem; }
+		.nav-links { display: flex; gap: 1.5rem; }
+		.nav-links a { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text); }
+
+        /* ——— PARALLAX HEADER ——— */
+    header.hero {
+      position: relative;
+      height: 60vh;
+      min-height: 400px;
+      background-image: url('images/AppsByGrochef.png'); 
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: white;
+    }
+    header.hero::before {
+      content: '';
+      position: absolute;
+      /*inset: 0;*/
+	  top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 100%);
+    }
+    .header-content { position: relative; z-index: 2; padding: 20px; }
+    .header-content h1 { font-family: 'Playfair Display', serif; font-size: 4rem; margin: 0; }
+    .header-content p { font-style: italic; font-size: 1.4rem; opacity: 0.9; }
+
+        /* ==================== ABOUT / BIO SECTION ==================== */
+        .about-section {
+            max-width: 1000px;
+            margin: -60px auto 60px;
+            background: white;
+            position: relative;
+            z-index: 10;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border: 1px solid var(--light-line);
+            display: flex;
+            flex-wrap: wrap;
+            overflow: hidden;
+        }
+
+        .bio-text {
+            flex: 1;
+            min-width: 300px;
+            padding: 3rem;
+        }
+
+        .bio-sidebar {
+            flex: 0 0 350px;
+            background: rgba(184, 92, 56, 0.05);
+            padding: 3rem;
+            border-left: 1px solid var(--light-line);
+        }
+
+        .about-section h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--accent);
+            margin-top: 0;
+        }
+
+        .sidebar-stat {
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar-stat label {
+            display: block;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        /* ==================== TECH TOOLKIT ==================== */
+        .tech-section {
+            max-width: 1000px;
+            margin: 0 auto 6rem;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3rem;
+            text-align: left;
+        }
+
+        .tech-item h4 {
+            font-family: 'Playfair Display', serif;
+            color: var(--accent);
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* ==================== GRID & CARDS ==================== */
+        main { padding: 20px; max-width: 1150px; margin: 0 auto; }
+
+		.app-icon {
+			width: 128px;
+			height: 128px;
+			object-fit: contain;
+		}
+
+        .section-title {
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            color: var(--text);
+            margin-bottom: 3rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 40px;
+            margin-bottom: 6rem;
+        }
+
+        .button-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: inherit;
+        }
+
+		.button2 {
+            width: flex;
+            height: 30px;
+			color: white;
+            background-size: cover;
+            background-position: center;
+			background-color: #40ad1f;
+            border-radius: 12px;
+            /* box-shadow: 0 10px 25px rgba(0,0,0,0.12);*/
+            /* transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); */
+        }
+		
+		.button2:hover {
+			background-color: #1953e6;
+		}
+		
+        .button {
+            width: 200px;
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+		
+        .button-card:hover .button {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 40px rgba(184, 92, 56, 0.25);
+        }
+
+        .title {
+            margin-top: 18px;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.15rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        footer {
+            text-align: center;
+            padding: 80px 20px;
+            color: #888;
+            font-size: 0.9rem;
+            background: white;
+            border-top: 1px solid var(--light-line);
+        }
+
+        @media (max-width: 768px) {
+            header { height: 50vh; background-attachment: scroll; }
+            .header-content h1 { font-size: 3rem; }
+            .bio-sidebar { border-left: none; border-top: 1px solid var(--light-line); flex: 1 1 100%; }
+        }
+    </style>
+</head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2LF14VY6V"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-V2LF14VY6V');
+</script>
+<body>
+  <nav>
+    <div class="nav-container">
+      <h2 class="site-title"><a href="index.html">Gregg's Home</a></h2>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+		<a href="my-music.html">Music</a>
+        <a href="videos.html">Videos</a>
+      </div>
+    </div>
+  </nav>
+    <header class="hero">
+        <div class="header-content">
+            <h1>Gregg's Android Applications</h1>
+            <p>A 2026 Digital Portfolio: Coding, Music, and Visuals</p>
+        </div>
+    </header>
+
+    <main>
+        <section class="about-section">
+            <div class="bio-text">
+                <h2>The Creative Vision</h2>
+                <p>I am a 66-year-old creator driven by a lifelong curiosity for how things work—and how they can work better. My journey into AI isn't about replacing the human touch; it's about amplifying it. </p>
+                <p>From designing local HTML applications for disc golf and fitness to composing original music and cinematic shorts, I treat AI as a master-class apprentice. I provide the intent, the lyrics, and the sketches; the technology provides the canvas to bring those visions to life in high fidelity.</p>
+            </div>
+        </section>
+
+        <section class="tech-section">
+            <h2 class="section-title">Custom Android Applications</h2>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <h4>APK application downloads for Android. More to come!</h4>
+                    <p>Hand-crafted tools for <strong>Disc Golf</strong>, <strong>Fitness</strong>, <strong>Nutrition</strong>, <strong>Auto Fuel and Sevice</strong>, <strong>Sound File Player</strong>, <strong>Soap-making</strong> and even a <strong>Realtor Cost Tracker</strong>.</p>
+                </div>
+            </div>
+        </section>
+        <div class="grid">
+		    
+		<div class="app-card">
+			<img class="app-icon" src="images/macro_nut.jpg" alt="Macro Nut">
+			<h3>Macro Nut</h3>
+			<p>Keep track of nutritional macronutrients from your daily meals.</p>
+			<button class="button2">
+			<a href="https://docs.google.com/forms/d/e/1FAIpQLSe2SG3IfrtLgpDUYIMypW3ydpAaSBYS6d4sUKwsnkyi626bHQ/viewform?usp=publish-editor" class="a2">Download APK</a>
+			</button>
+		</div>		
+		
+		<div class="app-card">
+			<img class="app-icon" src="images/WorkoutTrackerLogo.jpg" alt="Workout Companion">
+			<h3>Workout Companion</h3>
+			<p>Track your workouts and witness your gains.</p>
+			<button class="button2">
+			<a href="https://docs.google.com/forms/d/e/1FAIpQLSefH5hsb3Q8fuJUEA72WYb8CoergnwYVuELZmFwkjju7LAKSA/viewform?usp=publish-editor" class="a2">Download APK</a>
+			</button>
+		</div>
+		
+		<div class="app-card">
+			<img class="app-icon" src="images/fuel_tracker.jpg" alt="Fuel Tracker">
+			<h3>Fuel Tracker</h3>
+			<p>Track fuel economy, costs, and maintenance. It even finds near-by stations to guide you to them and use the address in the fill record.</p>
+			<button class="button2">
+			<a href="https://docs.google.com/forms/d/e/1FAIpQLSeY3cdSDHbH2feI-D5lXhf6i-b2Xy1ktvUb3DdqZOXIrqsa7g/viewform?usp=publish-editor" class="a2">Download APK</a>
+			</button>
+		</div>
+		
+		<div class="app-card">
+			<img class="app-icon" src="images/DiscGolfLogo.jpg" alt="Disc Golf Tracker">
+			<h3>Disc Golf Tracker</h3>
+			<p>Record disc golf scores for you or multiple players.</p>
+			<button class="button2">
+			<a href="https://docs.google.com/forms/d/e/1FAIpQLScKX1hu6YAQtn7rlp2Y9lulaRMeTJoHta_pvzD0lqD7dCmTpQ/viewform?usp=publish-editor" class="a2">Download APK</a>
+			</button>
+		</div>
+		
+		</div>
+		<section class="install-notes">
+			<h2>A Quick Note About Installation</h2>
+
+			<p>
+				The apps on this page are my own personal projects and are not available
+				through the Google Play Store.
+			</p>
+
+			<p>To install one:</p>
+
+			<ul>
+				<li>Tap the <strong>Download APK</strong> button.</li>
+				<li>Open the downloaded file.</li>
+				<li>If Android asks for permission to install apps from your browser, choose <strong>Allow</strong>.</li>
+				<li>Tap <strong>Install</strong>.</li>
+			</ul>
+
+			<p>
+				Android may warn you that the application comes from outside the Play Store.
+				That's expected. These apps were developed by me and are offered here for
+				anyone who would like to try them.
+			</p>
+
+			<p>
+				I hope you find them useful. Enjoy!
+			</p>
+			<hr style="border: 0; border-top: 1px solid #bf2228; margin-bottom: 5rem;">
+		</section>
+
+
+    </main>
+
+        <footer>
+        © 2025-2026 Gregg Rocheford • All tools are 100% local HTML apps.<br>
+        Crafted with intent and assisted by AI.
+    </footer>
+</body>
+</html>
