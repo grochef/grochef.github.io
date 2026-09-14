@@ -131,7 +131,7 @@
       width: 200px;
       height: 200px;
       object-fit: cover;
-      border-radius: 50%;
+      border-radius: 16px;
       box-shadow: 0 8px 25px rgba(0,0,0,0.15);
       margin: 0 auto;
     }
@@ -167,6 +167,24 @@
     }
     .video-link::before { content: '▶'; font-size: 0.7rem; }
 
+    .lyrics-toggle {
+      max-width: 600px;
+      margin: 2rem auto;
+      text-align: left;
+      border: 1px solid var(--light-line);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .lyrics-toggle summary {
+      padding: 0.8rem 1.2rem;
+      color: var(--accent);
+      font-weight: 600;
+      cursor: pointer;
+      background: rgba(184, 92, 56, 0.03);
+    }
+    .lyrics-toggle summary:hover { background: rgba(184, 92, 56, 0.08); }
+    .lyrics-toggle summary:focus-visible { outline: 2px solid var(--accent); outline-offset: -3px; }
+    .lyrics-toggle .lyrics { margin: 1rem; padding-left: 1rem; }
     .lyrics {
       font-size: 1.1rem;
       max-width: 600px;
@@ -259,7 +277,7 @@
     </div>
 
     <section class="song" id="beaverton-angel">
-      <img class="img-song" src="images/beaverton-angel.jpg" alt="Beaverton Angel artwork"> 
+      <img class="img-song" src="images/BeavertonAngel.png" alt="Beaverton Angel artwork"> 
       <h2>Beaverton Angel</h2>
       <div class="meta">2025/2026 (Remix) • Folk/Bluegrass</div>
       <div class="audio-container">
@@ -268,7 +286,9 @@
         </audio>
       </div>
       <div class="note">My first song. Written for Elaine, who lived in Beaverton, Oregon as a child.</div>
-      <div class="lyrics">
+      <details class="lyrics-toggle">
+        <summary>Lyrics</summary>
+        <div class="lyrics">
 Verse 1:
 This stretch of highway
 printed on the Wyoming plain
@@ -325,6 +345,7 @@ Beaverton Angel
 How could I repay
 My Beaverton Angel
 You save my life each day</div>
+      </details>
     </section>
 
     <section class="song" id="hunk-of-steel">
@@ -338,7 +359,9 @@ You save my life each day</div>
         </audio>
       </div>
       <div class="note">Another song for Elaine. Originally written with a Blues tune in mind. This remixed version really sounds great.</div>
-      <div class="lyrics">
+      <details class="lyrics-toggle">
+        <summary>Lyrics</summary>
+        <div class="lyrics">
 [Verse]
 Hey now baby, I need you to know.
 Unless you ask me to, I won’t go.
@@ -380,6 +403,7 @@ My baby
 Cupid's wound will never heal
 You’re my magnet,
 I’m your hunk of steel</div>
+      </details>
     </section>
 
     <section class="song" id="open-road">
@@ -392,7 +416,9 @@ I’m your hunk of steel</div>
         </audio>
       </div>
       <div class="note">I wrote this for myself. Being a "Boomer", I grew up with cars. I love to drive and I love nature, away from people. For the Remix, I used the original to capture the melody.</div>
-      <div class="lyrics">
+      <details class="lyrics-toggle">
+        <summary>Lyrics</summary>
+        <div class="lyrics">
 [Verse]
 For those with social leanings
 the night life hustle calls
@@ -453,6 +479,7 @@ If there's a destination
 Then I might drive straight through
 But I won't miss the exit
 that leads me home to you</div>
+      </details>
     </section>
 
     <section class="song" id="outside-in">
@@ -465,7 +492,9 @@ that leads me home to you</div>
         </audio>
       </div>
       <div class="note">This is mostly reminiscent of my many heartbreaks in my previous life. Again, I used the original to keep the melody and the emotion.</div>
-      <div class="lyrics">
+      <details class="lyrics-toggle">
+        <summary>Lyrics</summary>
+        <div class="lyrics">
 [Verse]
 I punch the snooze
 Crawl out of bed
@@ -522,6 +551,7 @@ from the outside in
 Not really sure where I am goin'
 But I wanna go back 
 to where I've been</div>
+      </details>
     </section>
 
     <section class="song" id="shackles-of-love">
@@ -534,7 +564,9 @@ to where I've been</div>
         </audio>
       </div>
       <div class="note">I heard this clearly in my head as an old gospel tune.  The remix really rocks the house!</div>
-      <div class="lyrics">
+      <details class="lyrics-toggle">
+        <summary>Lyrics</summary>
+        <div class="lyrics">
 [Verse]
 I said now baby
 I'll be gone for a while
@@ -614,6 +646,7 @@ Yes, we are
 bound by...
 bound by...
 the shackles of love</div>
+      </details>
     </section>
 
     <section class="song" id="trapped-in-a-dream">
@@ -627,7 +660,9 @@ the shackles of love</div>
         </audio>        
       </div>
       <div class="note">I liked the original Big Band version since that is what I was looking to create.  The Remix really captures a Harry Connick Jr. vibe.</div>
-      <div class="lyrics">
+      <details class="lyrics-toggle">
+        <summary>Lyrics</summary>
+        <div class="lyrics">
 [Verse]
 Something is strange here,
 I don't understand.
@@ -705,6 +740,7 @@ Some sort of evil.
 Some nefarious scheme.
 Someone please help me.
 I'm trapped in a dream!</div>
+      </details>
     </section>
 
     <section class="song" id="survival">
@@ -717,7 +753,9 @@ I'm trapped in a dream!</div>
         </audio>
       </div>
       <div class="note">Great lyrics and another ode to Elaine, "My shining pulsar".  The original version ended oddly and prematurely.  I used the original for the melody and emotion.  The Remix result is very good.</div>
-      <div class="lyrics">
+      <details class="lyrics-toggle">
+        <summary>Lyrics</summary>
+        <div class="lyrics">
 [verse]
 The Phoenix of the forest
 Conifers need flame
@@ -789,6 +827,7 @@ I'm driven toward survival
 My fears, they melt away
 Knowing you're beside me
 I head into the fray.</div>
+      </details>
     </section>
 <!--
     <section class="song" id="rap-is-crap">
@@ -801,7 +840,9 @@ I head into the fray.</div>
         </audio>
       </div>
       <div class="note">I wrote this to gain some perspective while driving home my opinion on the genre.</div>
-      <div class="lyrics">
+      <details class="lyrics-toggle">
+        <summary>Lyrics</summary>
+        <div class="lyrics">
 [verse]
 If you think this is music, you're a moron
 A solicitation that I will close my door on
@@ -852,6 +893,7 @@ Please don't call rap art
 It's just the consequence of no fathers around
 Neighborhoods ripped apart
 A culture of hate that puts a life in the ground.</div>
+      </details>
     </section>-->
 
     <section class="song" id="everything-is-gone">
@@ -866,7 +908,9 @@ A culture of hate that puts a life in the ground.</div>
         <a href="videos.html#music-videos" class="video-link">Watch the Music Video</a>-->
       </div>
       <div class="note">Humanity is finally freed, from this awful mess. Inspired by "The Fourth Turning".</div>
-      <div class="lyrics">
+      <details class="lyrics-toggle">
+        <summary>Lyrics</summary>
+        <div class="lyrics">
 [verse]
 Lying deep in ambush on a Serengeti plain.
 Wearing sweat soaked pelts of leather and of mane.
@@ -943,6 +987,7 @@ Can we not remember?
 Can we not recall?
 This sequence in our genome,
 Will bring about our fall.</div>
+      </details>
     </section>
 
     <section class="song" id="minnehaha">
@@ -955,7 +1000,9 @@ Will bring about our fall.</div>
         </audio>
       </div>
       <div class="note">A song about my childhood and the Minnehaha creek that cuts through Minneapolis. I used the original as a template again.</div>
-      <div class="lyrics">
+      <details class="lyrics-toggle">
+        <summary>Lyrics</summary>
+        <div class="lyrics">
 [verse]
 When I was a Cub scout,
 I was stranded on a ledge.
@@ -1024,6 +1071,7 @@ The Mississippi takes her in
 And carries her along
 From Minnesota to the Gulf
 Where oceans sing her song</div>
+      </details>
     </section>
 	<section class="song" id="lousiana">
       <img class="img-song" src="images/louisiana-saturday-night.png" alt="Louisiana artwork">
@@ -1035,7 +1083,9 @@ Where oceans sing her song</div>
         </audio>
       </div>
       <div class="note">I heard some country music and I started thinking of silly lyrics.  This ended up being kind of a neat song.</div>
-      <div class="lyrics">
+      <details class="lyrics-toggle">
+        <summary>Lyrics</summary>
+        <div class="lyrics">
 [Verse]
 My name is Nancy, with a silent “N”
 If you don’t understand me, then I’ll say it again
@@ -1089,6 +1139,7 @@ Don’t mess with me
 I said,
 Don’t mess with me
 ‘Cause you gonna get beat</div>
+      </details>
     </section>
 	<section class="song" id="creature">
       <img class="img-song" src="images/TheCreatureCover.png" alt="Creature artwork">
@@ -1100,7 +1151,9 @@ Don’t mess with me
         </audio>
       </div>
       <div class="note">A bleak song about a possible future.  I wrote this at breakfast.  I tried it as Techno and then made it dark, and boy, that did the trick.</div>
-      <div class="lyrics">
+      <details class="lyrics-toggle">
+        <summary>Lyrics</summary>
+        <div class="lyrics">
 [Verse]
 The creature makes its way along the sterile bleak landscape
 Its shuffling feet kick up dust, its crusted mouth agape
@@ -1142,6 +1195,7 @@ Did they ever think about the power they possessed?
 Bravado and control issues no matter how they dressed.
 They pushed each other to the brink just to make a stand.
 The results are clear the Earth is now just a ball of sand.</div>
+      </details>
     </section>
 	<section class="song" id="betryal">
       <img class="img-song" src="images/BetrayalOfBeautyCover.png" alt="Betrayal artwork">
@@ -1153,7 +1207,9 @@ The results are clear the Earth is now just a ball of sand.</div>
         </audio>
       </div>
       <div class="note">I wanted to bring the horrible power of a tornado to life in this song. I tried to use a male four-part ensamble with orchestra, but Suno could not deliver the quartet as I intended.  This version finally produced something very close my intent.</div>
-      <div class="lyrics">
+      <details class="lyrics-toggle">
+        <summary>Lyrics</summary>
+        <div class="lyrics">
 [Verse]
 Heat and moisture rise from the plain
 A tempest is building with the roar of a train
@@ -1220,6 +1276,7 @@ The sun shows its path
 A betrayal of beauty
 In the storm's aftermath
 </div>
+      </details>
     </section>
 	<section class="song" id="sahara">
       <img class="img-song" src="images/Sahara-cover.png" alt="Sahara artwork">
@@ -1230,8 +1287,10 @@ In the storm's aftermath
           <source src="audio/Sahara.mp3" type="audio/mpeg">
         </audio>
       </div>
-      <div class="note">The second in a nature based theme.  This song was written on a Sunday as the fall rains began falling in Washington state.</div>
-      <div class="lyrics">
+      <div class="note">The second in a nature based theme.  This song was written on a Sunday as the fall rains began in Washington state.</div>
+      <details class="lyrics-toggle">
+        <summary>Lyrics</summary>
+        <div class="lyrics">
 [Verse]
 An orange globe sinks slowly into endless waves of heat
 A tension builds in preparation of the sun's retreat
@@ -1286,6 +1345,7 @@ Two worlds, a daily fight
 Sahara
 The heat of day, the chill of night
 </div>
+      </details>
     </section>
   </main>
 
