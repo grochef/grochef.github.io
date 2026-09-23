@@ -136,7 +136,8 @@ header.hero::before,
 .category-title,
 .section-title,
 .section-heading h2 {
-  color: var(--teal) !important;
+color: var(--teal) !important;}
+.intro h2 {color: var(--teal) !important;}
 }
 
 a {
