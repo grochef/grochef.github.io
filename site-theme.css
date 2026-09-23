@@ -1,36 +1,95 @@
-/* Shared bright theme for Gregg Rocheford's portfolio.
-   Each page keeps its own content and functionality. */
+/* ========================================================================== 
+   GREGG'S SITE — CENTRAL DESIGN CONTROLS
+   --------------------------------------------------------------------------
+   This is the only file you need to edit to try a new color palette or
+   site-wide fonts. The four HTML pages retain their page-specific layout,
+   content, music players, videos, and interactive controls.
+
+   Tip: change ONE value in the palette below, save this file, then refresh
+   the browser. Every matching element across the site will update together.
+   ========================================================================== */
+
+/* ========================================================================== 
+   1. PALETTE — CHANGE THESE FIRST
+   --------------------------------------------------------------------------
+   Current mood: warm, light, creative, and outdoorsy.
+
+   To test a color, replace its hex value only. A # begins every hex color.
+   Good free color-pickers include the browser's built-in CSS inspector.
+   ========================================================================== */
 
 :root {
-  --bg: #fffaf1;
-  --paper: #fffdf8;
-  --text: #213b4a;
-  --muted: #63737d;
-  --accent: #db6d52;
-  --teal: #187b80;
-  --sun: #f1b64b;
-  --line: #e8dcca;
+  /* Page surfaces */
+  --site-background: #fffaf1;  /* Main warm-ivory page background */
+  --site-card: #fffdf8;        /* White/ivory content cards */
+  --site-footer: #f3ece1;      /* Slightly deeper footer background */
+  --site-line: #e8dcca;        /* Soft borders and dividers */
+
+  /* Text */
+  --site-ink: #213b4a;         /* Main dark-blue text */
+  --site-muted: #63737d;       /* Notes, dates, and supporting text */
+
+  /* Accents */
+  --site-teal: #187b80;        /* Main headings and links */
+  --site-coral: #db6d52;       /* Buttons and warm highlights */
+  --site-gold: #f1b64b;        /* Small sunny highlight areas */
+  --site-green: #5b9b43;       /* Success/status labels, such as app badges */
+
+  /* Hero overlay. Lower the first number (0.70) to reveal more photo. */
+  --hero-teal-overlay: rgba(22, 86, 93, 0.20);
+  --hero-coral-overlay: rgba(219, 109, 82, 0.34);
+
+  /* Fonts. You may replace these with another installed or imported font. */
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Crimson Text', Georgia, serif;
+
+  /* ----------------------------------------------------------------------
+     Compatibility aliases
+     The original pages use short names such as --accent and --bg. Keeping
+     these aliases prevents a page's older embedded CSS from fighting the
+     central palette above. Do not usually edit this group directly.
+     ---------------------------------------------------------------------- */
+  --bg: var(--site-background);
+  --paper: var(--site-card);
+  --white: var(--site-card);
+  --text: var(--site-ink);
+  --ink: var(--site-ink);
+  --muted: var(--site-muted);
+  --accent: var(--site-coral);
+  --green: var(--site-green);
+  --light-line: var(--site-line);
+  --line: var(--site-line);
 }
 
-html {
-  scroll-behavior: smooth;
-}
+/* ========================================================================== 
+   2. SITE-WIDE BASICS
+   ========================================================================== */
+
+html { scroll-behavior: smooth; }
 
 body {
-  background: var(--bg) !important;
-  color: var(--text) !important;
-  font-family: Georgia, 'Times New Roman', serif !important;
+  background: var(--site-background) !important;
+  color: var(--site-ink) !important;
+  font-family: var(--font-body) !important;
   line-height: 1.7 !important;
 }
 
-/* Shared navigation */
+a { color: var(--site-teal) !important; }
+
+/* ========================================================================== 
+   3. TOP NAVIGATION
+   --------------------------------------------------------------------------
+   All pages use the same visual navigation. On a phone, the title moves to
+   its own centered line and Apps/Music/Videos remain visible below it.
+   ========================================================================== */
+
 nav {
   position: fixed !important;
   inset: 0 0 auto 0 !important;
   z-index: 1000 !important;
   padding: 0.8rem 1rem !important;
-  background: rgba(255, 253, 248, 0.92) !important;
-  border-bottom: 1px solid var(--line) !important;
+  background: rgba(255, 253, 248, 0.94) !important;
+  border-bottom: 1px solid var(--site-line) !important;
   box-shadow: 0 3px 18px rgba(33, 59, 74, 0.08) !important;
   backdrop-filter: blur(12px) !important;
 }
@@ -39,121 +98,89 @@ nav {
 .nav-inner {
   display: flex !important;
   width: 100% !important;
-  max-width: 1120px !important;
-  min-height: 48px !important;
+  max-width: 1100px !important;
+  min-height: 42px !important;
   margin: 0 auto !important;
   align-items: center !important;
   justify-content: space-between !important;
 }
 
-.site-title a,
-.brand {
-  color: var(--teal) !important;
-  font-family: 'Playfair Display', Georgia, serif !important;
-  font-size: 1.25rem !important;
-  font-weight: 700 !important;
-  letter-spacing: 0 !important;
-  text-decoration: none !important;
-}
-
 .site-title,
 .brand {
   margin: 0 !important;
-}
-
-.brand span,
-.nav-links a:hover,
-.links a:hover {
-  color: var(--accent) !important;
-}
-
-.nav-links a,
-.links a {
-  color: var(--text) !important;
-  font-family: 'DM Sans', Arial, sans-serif !important;
-  font-size: 0.78rem !important;
-  font-weight: 700 !important;
-  letter-spacing: 0.08em !important;
+  color: var(--site-teal) !important;
+  font-family: var(--font-display) !important;
+  font-size: 1.4rem !important;
+  line-height: 1.2 !important;
   text-decoration: none !important;
-  text-transform: uppercase !important;
+}
+
+.site-title a,
+.brand,
+.brand span {
+  color: var(--site-teal) !important;
+  text-decoration: none !important;
 }
 
 .nav-links,
 .links {
   display: flex !important;
+  gap: 1.5rem !important;
   align-items: center !important;
-  gap: 1.25rem !important;
 }
 
-/* Shared sliding hero. The fixed attachment creates the slow movement on desktop. */
-header,
+.nav-links a,
+.links a {
+  display: inline-block !important;
+  color: var(--site-ink) !important;
+  font-family: var(--font-display) !important;
+  font-size: 0.9rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 1px !important;
+  text-decoration: none !important;
+  text-transform: uppercase !important;
+}
+
+.nav-links a:hover,
+.links a:hover { color: var(--site-coral) !important; }
+
+/* ========================================================================== 
+   4. LARGE IMAGE / PARALLAX HEADERS
+   --------------------------------------------------------------------------
+   Keep each page's own header image. This section only gives all headers the
+   same height, overlay, and desktop sliding behavior.
+   ========================================================================== */
+
+/* header,
 header.hero,
 .hero {
   min-height: 480px !important;
   height: 62vh !important;
   background-attachment: fixed !important;
   background-position: center !important;
+}*/
+
+header,
+header.hero,
+.hero {
+  min-height: 360px !important;
+  height: clamp(360px, 33.333vw, 680px) !important;
+  background-attachment: fixed !important;
+  background-size: 125% auto !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
 }
 
 header::before,
 header.hero::before,
 .hero::before {
-  background: linear-gradient(120deg, rgba(22, 86, 93, 0.70), rgba(219, 109, 82, 0.34)) !important;
+  background: linear-gradient(120deg, var(--hero-teal-overlay), var(--hero-coral-overlay)) !important;
 }
 
-.header-content,
-.hero-inner {
-  text-shadow: 0 3px 16px rgba(24, 45, 57, 0.42) !important;
-}
-
-.header-content h1,
-.hero h1 {
-  font-family: 'Playfair Display', Georgia, serif !important;
-}
-
-/* Light card system */
-.about-section,
-.tech-section,
-.intro,
-.app,
-.song,
-.video-card {
-  background: var(--paper) !important;
-  border-color: var(--line) !important;
-  box-shadow: 0 12px 30px rgba(33, 59, 74, 0.09) !important;
-}
-
-.about-section,
-.tech-section,
-.intro {
-  border-radius: 18px !important;
-}
-
-.about-section h2,
-.tech-section h2,
-.tech-item h4,
-.song h2,
-.category-title,
-.section-title,
-.section-heading h2 {
-color: var(--teal) !important;}
-.intro h2 {color: var(--teal) !important;}
-}
-
-a {
-  color: var(--teal) !important;
-}
-
-/* Applications */
-.hero .eyebrow {
-  background: rgba(255, 253, 248, 0.20) !important;
-  border-color: rgba(255, 253, 248, 0.55) !important;
-  color: white !important;
-}
-
+/* The Apps page has a plain hero rather than a pseudo-element overlay. */
 .apps-page .hero {
   background:
-    linear-gradient(120deg, rgba(24, 123, 128, 0.72), rgba(219, 109, 82, 0.38)),
+    linear-gradient(120deg, var(--hero-teal-overlay), var(--hero-coral-overlay)),
     url('images/AppsByGrochef.png') center / cover !important;
   background-attachment: fixed !important;
   display: flex !important;
@@ -173,73 +200,88 @@ a {
   margin-left: auto !important;
 }
 
-.apps {
-  gap: 32px !important;
+.header-content,
+.hero-inner { text-shadow: 0 3px 16px rgba(24, 45, 57, 0.42) !important; }
+
+.header-content h1,
+.hero h1 { font-family: var(--font-display) !important; }
+
+/* ========================================================================== 
+   5. CARDS, HEADINGS, AND BUTTONS
+   ========================================================================== */
+
+.about-section,
+.tech-section,
+.intro,
+.app,
+.song,
+.video-card {
+  background: var(--site-card) !important;
+  border-color: var(--site-line) !important;
+  box-shadow: 0 12px 30px rgba(33, 59, 74, 0.09) !important;
 }
 
-.app {
-  border-radius: 20px !important;
-}
+.about-section,
+.tech-section,
+.intro { border-radius: 18px !important; }
 
-.screens {
-  background: linear-gradient(145deg, #d7f0eb, #dcebf5) !important;
-}
+.about-section h2,
+.tech-section h2,
+.tech-item h4,
+.song h2,
+.category-title,
+.section-title,
+.section-heading h2,
+.intro h2,
+.app h3 { color: var(--site-teal) !important; }
 
-.screen-link::after {
-  color: var(--teal) !important;
-}
-
-.badge {
-  color: var(--accent) !important;
-}
-
-.app h3 {
-  color: var(--teal) !important;
-}
+.badge { color: var(--site-green) !important; }
 
 .app p,
 .section-heading p,
-.intro p {
-  color: var(--muted) !important;
-}
+.intro p,
+.note,
+.meta { color: var(--site-muted) !important; }
 
 .download {
-  background: var(--accent) !important;
+  background: var(--site-coral) !important;
   color: white !important;
   box-shadow: 0 6px 14px rgba(219, 109, 82, 0.25) !important;
 }
 
-.download:hover {
-  background: var(--teal) !important;
-}
+.download:hover { background: var(--site-teal) !important; }
+
+/* ========================================================================== 
+   6. APPS PAGE SCREENSHOTS AND INSTALLATION NOTE
+   ========================================================================== */
+
+.screens { background: linear-gradient(145deg, #d7f0eb, #dcebf5) !important; }
+.screen-link::after { color: var(--site-teal) !important; }
 
 .notice {
   background: #fff1cf !important;
   border-color: #efd28a !important;
-  border-left-color: var(--sun) !important;
+  border-left-color: var(--site-gold) !important;
 }
 
-.notice p {
-  color: #64522f !important;
-}
+.notice p { color: #64522f !important; }
 
-/* Music page: keeps audio controls, song anchors, and native details/summary lyric toggles. */
-.song {
-  padding-top: 2.25rem !important;
-}
+/* ========================================================================== 
+   7. MUSIC PAGE
+   --------------------------------------------------------------------------
+   These rules only style existing working controls. They do not change the
+   song directory, audio player, lyric expander, or Back-to-Top behavior.
+   ========================================================================== */
 
-.img-song {
-  margin-top: 0 !important;
-}
+.song { padding-top: 2.25rem !important; }
+.img-song { margin-top: 0 !important; }
 
 .song-nav {
   background: #e8f5f3 !important;
   border-color: #c9e4df !important;
 }
 
-.song-nav-links a {
-  color: var(--teal) !important;
-}
+.song-nav-links a { color: var(--site-teal) !important; }
 
 .audio-container,
 .lyrics-toggle summary {
@@ -247,40 +289,38 @@ a {
   border-color: #f0d8bf !important;
 }
 
-.lyrics-toggle summary:hover {
-  background: #ffe9d6 !important;
-}
+.lyrics-toggle summary:hover { background: #ffe9d6 !important; }
+audio { accent-color: var(--site-teal); }
 
-.note,
-.meta {
-  color: var(--muted) !important;
-}
+/* ========================================================================== 
+   8. VIDEOS, FOOTER, AND BACK-TO-TOP BUTTON
+   ========================================================================== */
 
-audio {
-  accent-color: var(--teal);
-}
-
-/* Videos */
 .audio-link {
   background: #eaf6f4 !important;
-  border-color: var(--teal) !important;
-  color: var(--teal) !important;
+  border-color: var(--site-teal) !important;
+  color: var(--site-teal) !important;
 }
 
 .audio-link:hover {
-  background: var(--teal) !important;
+  background: var(--site-teal) !important;
   color: white !important;
 }
 
-#backToTop {
-  background: var(--accent) !important;
-}
+#backToTop { background: var(--site-coral) !important; }
 
 footer {
-  background: #f3ece1 !important;
-  border-top-color: var(--line) !important;
-  color: #67737a !important;
+  background: var(--site-footer) !important;
+  border-top-color: var(--site-line) !important;
+  color: var(--site-muted) !important;
 }
+
+/* ========================================================================== 
+   9. PHONE AND SMALL-SCREEN RULES
+   --------------------------------------------------------------------------
+   Parallax is disabled on phones because mobile browsers handle fixed
+   backgrounds inconsistently. The header image remains visible and normal.
+   ========================================================================== */
 
 @media (max-width: 768px) {
   header,
@@ -290,89 +330,10 @@ footer {
     height: 48vh !important;
     background-attachment: scroll !important;
   }
-
-  nav {
-    padding: 0.55rem 0.75rem !important;
-  }
-
-  .nav-container,
-  .nav-inner {
-    flex-wrap: wrap !important;
-    justify-content: center !important;
-  }
-
-  .site-title,
-  .brand {
-    width: 100% !important;
-    text-align: center !important;
-  }
-
-  .nav-links,
-  .links {
-    display: flex !important;
-    width: 100% !important;
-    justify-content: center !important;
-    gap: 0.85rem !important;
-  }
-
-  .nav-links a,
-  .links a,
-  .links a:not(:last-child) {
-    display: inline-block !important;
-    font-size: 0.7rem !important;
-    letter-spacing: 0.04em !important;
-  }
-}
-
-/* Final shared navigation: identical markup and typography on every page. */
-.nav-container,
-.nav-inner {
-  display: flex !important;
-  width: 100% !important;
-  max-width: 1100px !important;
-  min-height: 42px !important;
-  margin: 0 auto !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-}
-
-.site-title,
-.brand {
-  margin: 0 !important;
-  font-family: 'Playfair Display', Georgia, serif !important;
-  font-size: 1.4rem !important;
-  line-height: 1.2 !important;
-}
-
-.site-title a,
-.brand {
-  color: var(--teal) !important;
-  text-decoration: none !important;
-}
-
-.nav-links,
-.links {
-  display: flex !important;
-  align-items: center !important;
-  gap: 1.5rem !important;
-}
-
-.nav-links a,
-.links a {
-  display: inline-block !important;
-  color: var(--text) !important;
-  font-family: 'Playfair Display', Georgia, serif !important;
-  font-size: 0.9rem !important;
-  font-weight: 700 !important;
-  letter-spacing: 1px !important;
-  text-decoration: none !important;
-  text-transform: uppercase !important;
 }
 
 @media (max-width: 640px) {
-  nav {
-    padding: 0.55rem 0.75rem !important;
-  }
+  nav { padding: 0.55rem 0.75rem !important; }
 
   .nav-container,
   .nav-inner {
