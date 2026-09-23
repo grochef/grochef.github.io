@@ -148,7 +148,7 @@ nav {
    4. LARGE IMAGE / PARALLAX HEADERS
    --------------------------------------------------------------------------
    Keep each page's own header image. This section only gives all headers the
-   same height, overlay, and sliding behavior on desktop and phones.
+   same height and overlay, with desktop parallax and a mobile image-fit rule.
    ========================================================================== */
 
 /* header,
@@ -318,9 +318,10 @@ footer {
 /* ========================================================================== 
    9. PHONE AND SMALL-SCREEN RULES
    --------------------------------------------------------------------------
-   Parallax stays enabled on phones, matching the Apps page. The shared
-   fixed-background rule above overrides the older mobile rules in the HTML.
-   These small-screen rules adjust only the hero dimensions and navigation.
+   Phone backgrounds fill the hero using cover and scroll with the page.
+   This avoids gaps and fixed-background positioning problems. Cover keeps
+   the photo proportional but may crop its sides in portrait orientation.
+   Desktop parallax and the 125% desktop image size remain above.
    ========================================================================== */
 
 @media (max-width: 768px) {
@@ -329,7 +330,23 @@ footer {
   .hero {
     min-height: 360px !important;
     height: 48vh !important;
-    /* Keep the shared fixed background so all four pages use parallax. */
+    /* Image fitting is handled by the mobile rule below. */
+  }
+}
+
+/* Narrow screens and touch devices (including landscape phones).
+   The Apps selector must be included: it matches the specificity of the
+   Apps background rule above, so Apps follows the same mobile behavior.
+   Change center to, for example, 60% center to shift the visible crop. */
+@media (max-width: 768px), (hover: none) and (pointer: coarse) {
+  header,
+  header.hero,
+  .hero,
+  .apps-page .hero {
+    background-attachment: scroll !important;
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
   }
 }
 
