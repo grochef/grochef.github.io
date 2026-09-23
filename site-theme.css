@@ -1,0 +1,403 @@
+/* Shared bright theme for Gregg Rocheford's portfolio.
+   Each page keeps its own content and functionality. */
+
+:root {
+  --bg: #fffaf1;
+  --paper: #fffdf8;
+  --text: #213b4a;
+  --muted: #63737d;
+  --accent: #db6d52;
+  --teal: #187b80;
+  --sun: #f1b64b;
+  --line: #e8dcca;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+  font-family: Georgia, 'Times New Roman', serif !important;
+  line-height: 1.7 !important;
+}
+
+/* Shared navigation */
+nav {
+  position: fixed !important;
+  inset: 0 0 auto 0 !important;
+  z-index: 1000 !important;
+  padding: 0.8rem 1rem !important;
+  background: rgba(255, 253, 248, 0.92) !important;
+  border-bottom: 1px solid var(--line) !important;
+  box-shadow: 0 3px 18px rgba(33, 59, 74, 0.08) !important;
+  backdrop-filter: blur(12px) !important;
+}
+
+.nav-container,
+.nav-inner {
+  display: flex !important;
+  width: 100% !important;
+  max-width: 1120px !important;
+  min-height: 48px !important;
+  margin: 0 auto !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+.site-title a,
+.brand {
+  color: var(--teal) !important;
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0 !important;
+  text-decoration: none !important;
+}
+
+.site-title,
+.brand {
+  margin: 0 !important;
+}
+
+.brand span,
+.nav-links a:hover,
+.links a:hover {
+  color: var(--accent) !important;
+}
+
+.nav-links a,
+.links a {
+  color: var(--text) !important;
+  font-family: 'DM Sans', Arial, sans-serif !important;
+  font-size: 0.78rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  text-decoration: none !important;
+  text-transform: uppercase !important;
+}
+
+.nav-links,
+.links {
+  display: flex !important;
+  align-items: center !important;
+  gap: 1.25rem !important;
+}
+
+/* Shared sliding hero. The fixed attachment creates the slow movement on desktop. */
+header,
+header.hero,
+.hero {
+  min-height: 480px !important;
+  height: 62vh !important;
+  background-attachment: fixed !important;
+  background-position: center !important;
+}
+
+header::before,
+header.hero::before,
+.hero::before {
+  background: linear-gradient(120deg, rgba(22, 86, 93, 0.70), rgba(219, 109, 82, 0.34)) !important;
+}
+
+.header-content,
+.hero-inner {
+  text-shadow: 0 3px 16px rgba(24, 45, 57, 0.42) !important;
+}
+
+.header-content h1,
+.hero h1 {
+  font-family: 'Playfair Display', Georgia, serif !important;
+}
+
+/* Light card system */
+.about-section,
+.tech-section,
+.intro,
+.app,
+.song,
+.video-card {
+  background: var(--paper) !important;
+  border-color: var(--line) !important;
+  box-shadow: 0 12px 30px rgba(33, 59, 74, 0.09) !important;
+}
+
+.about-section,
+.tech-section,
+.intro {
+  border-radius: 18px !important;
+}
+
+.about-section h2,
+.tech-section h2,
+.tech-item h4,
+.song h2,
+.category-title,
+.section-title,
+.section-heading h2 {
+  color: var(--teal) !important;
+}
+
+a {
+  color: var(--teal) !important;
+}
+
+/* Applications */
+.hero .eyebrow {
+  background: rgba(255, 253, 248, 0.20) !important;
+  border-color: rgba(255, 253, 248, 0.55) !important;
+  color: white !important;
+}
+
+.apps-page .hero {
+  background:
+    linear-gradient(120deg, rgba(24, 123, 128, 0.72), rgba(219, 109, 82, 0.38)),
+    url('images/AppsByGrochef.png') center / cover !important;
+  background-attachment: fixed !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+.apps-page .hero-inner {
+  max-width: 860px !important;
+  margin: 0 auto !important;
+}
+
+.apps-page .hero h1,
+.apps-page .hero p {
+  margin-right: auto !important;
+  margin-left: auto !important;
+}
+
+.apps {
+  gap: 32px !important;
+}
+
+.app {
+  border-radius: 20px !important;
+}
+
+.screens {
+  background: linear-gradient(145deg, #d7f0eb, #dcebf5) !important;
+}
+
+.screen-link::after {
+  color: var(--teal) !important;
+}
+
+.badge {
+  color: var(--accent) !important;
+}
+
+.app h3 {
+  color: var(--teal) !important;
+}
+
+.app p,
+.section-heading p,
+.intro p {
+  color: var(--muted) !important;
+}
+
+.download {
+  background: var(--accent) !important;
+  color: white !important;
+  box-shadow: 0 6px 14px rgba(219, 109, 82, 0.25) !important;
+}
+
+.download:hover {
+  background: var(--teal) !important;
+}
+
+.notice {
+  background: #fff1cf !important;
+  border-color: #efd28a !important;
+  border-left-color: var(--sun) !important;
+}
+
+.notice p {
+  color: #64522f !important;
+}
+
+/* Music page: keeps audio controls, song anchors, and native details/summary lyric toggles. */
+.song {
+  padding-top: 2.25rem !important;
+}
+
+.img-song {
+  margin-top: 0 !important;
+}
+
+.song-nav {
+  background: #e8f5f3 !important;
+  border-color: #c9e4df !important;
+}
+
+.song-nav-links a {
+  color: var(--teal) !important;
+}
+
+.audio-container,
+.lyrics-toggle summary {
+  background: #fff4e8 !important;
+  border-color: #f0d8bf !important;
+}
+
+.lyrics-toggle summary:hover {
+  background: #ffe9d6 !important;
+}
+
+.note,
+.meta {
+  color: var(--muted) !important;
+}
+
+audio {
+  accent-color: var(--teal);
+}
+
+/* Videos */
+.audio-link {
+  background: #eaf6f4 !important;
+  border-color: var(--teal) !important;
+  color: var(--teal) !important;
+}
+
+.audio-link:hover {
+  background: var(--teal) !important;
+  color: white !important;
+}
+
+#backToTop {
+  background: var(--accent) !important;
+}
+
+footer {
+  background: #f3ece1 !important;
+  border-top-color: var(--line) !important;
+  color: #67737a !important;
+}
+
+@media (max-width: 768px) {
+  header,
+  header.hero,
+  .hero {
+    min-height: 360px !important;
+    height: 48vh !important;
+    background-attachment: scroll !important;
+  }
+
+  nav {
+    padding: 0.55rem 0.75rem !important;
+  }
+
+  .nav-container,
+  .nav-inner {
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+  }
+
+  .site-title,
+  .brand {
+    width: 100% !important;
+    text-align: center !important;
+  }
+
+  .nav-links,
+  .links {
+    display: flex !important;
+    width: 100% !important;
+    justify-content: center !important;
+    gap: 0.85rem !important;
+  }
+
+  .nav-links a,
+  .links a,
+  .links a:not(:last-child) {
+    display: inline-block !important;
+    font-size: 0.7rem !important;
+    letter-spacing: 0.04em !important;
+  }
+}
+
+/* Final shared navigation: identical markup and typography on every page. */
+.nav-container,
+.nav-inner {
+  display: flex !important;
+  width: 100% !important;
+  max-width: 1100px !important;
+  min-height: 42px !important;
+  margin: 0 auto !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+.site-title,
+.brand {
+  margin: 0 !important;
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-size: 1.4rem !important;
+  line-height: 1.2 !important;
+}
+
+.site-title a,
+.brand {
+  color: var(--teal) !important;
+  text-decoration: none !important;
+}
+
+.nav-links,
+.links {
+  display: flex !important;
+  align-items: center !important;
+  gap: 1.5rem !important;
+}
+
+.nav-links a,
+.links a {
+  display: inline-block !important;
+  color: var(--text) !important;
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-size: 0.9rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 1px !important;
+  text-decoration: none !important;
+  text-transform: uppercase !important;
+}
+
+@media (max-width: 640px) {
+  nav {
+    padding: 0.55rem 0.75rem !important;
+  }
+
+  .nav-container,
+  .nav-inner {
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+  }
+
+  .site-title,
+  .brand {
+    width: 100% !important;
+    text-align: center !important;
+  }
+
+  .nav-links,
+  .links {
+    display: flex !important;
+    width: 100% !important;
+    justify-content: center !important;
+    gap: 0.95rem !important;
+  }
+
+  .nav-links a,
+  .links a,
+  .links a:not(:last-child) {
+    display: inline-block !important;
+    font-size: 0.72rem !important;
+    letter-spacing: 0.6px !important;
+  }
+}
