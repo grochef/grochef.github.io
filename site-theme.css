@@ -30,7 +30,8 @@
   --site-muted: #63737d;       /* Notes, dates, and supporting text */
 
   /* Accents */
-  --site-teal: #187b80;        /* Main headings and links */
+  --site-teal: #8C4A11;		   /* Originally teal text site-wide.  I do not like teal. So I changed the color to ~rust. */
+  /*--site-teal: #187b80;      /* Main headings and links */
   --site-coral: #db6d52;       /* Buttons and warm highlights */
   --site-gold: #f1b64b;        /* Small sunny highlight areas */
   --site-green: #5b9b43;       /* Success/status labels, such as app badges */
@@ -227,13 +228,15 @@ header.hero::before,
 
 .about-section h2,
 .tech-section h2,
-.tech-item h4,
+/*.tech-item h4,*/
 .song h2,
 .category-title,
 .section-title,
 .section-heading h2,
 .intro h2,
 .app h3 { color: var(--site-teal) !important; }
+
+.tech-item h4 { color: var(--site-ink) !important; }
 
 .badge { color: var(--site-green) !important; }
 
