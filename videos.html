@@ -136,6 +136,18 @@
       display: block;
     }
 
+    /* Fit embedded YouTube players inside narrow phone screens.
+       Keep the original 560px desktop width and 16:9 proportions.
+       This prevents horizontal overflow that can throw off page alignment. */
+    .video-card iframe {
+      display: block;
+      width: 100%;
+      max-width: 560px;
+      height: auto;
+      aspect-ratio: 16 / 9;
+      margin: 0 auto;
+    }
+
     /* ——— AUDIO LINK BUTTON ——— */
     .audio-link {
       display: inline-flex;
