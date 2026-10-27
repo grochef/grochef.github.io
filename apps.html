@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Custom Applications for Android</title>
+<title>Apps by Gregg Rocheford | Android and Windows</title>
 <!-- Google Analytics retained from the original Apps page. -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-V2LF14VY6V">
 </script>
@@ -14,14 +14,10 @@ dataLayer.push(arguments);
 }
 gtag('js', new Date());
 gtag('config', 'G-7PM7Z3RF7Z');
-gtag('config', 'G-V2LF14VY6V');
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;
-500;
-600;
-700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 <style>
     :root {
 --ink:#f4eee3;
@@ -207,6 +203,28 @@ text-transform:uppercase;
 transform:none;
 opacity:1;
 }
+.desktop-app {
+grid-template-columns:minmax(0,1.2fr) minmax(0,.9fr);
+}
+.desktop-preview {
+min-height:0;
+padding:20px;
+background:radial-gradient(circle at 35% 20%,#273326,#111510 75%);
+}
+.desktop-preview .screen-link {
+width:100%;
+}
+.desktop-screen {
+display:block;
+width:100%;
+height:auto;
+aspect-ratio:auto;
+object-fit:contain;
+border:1px solid #333b32;
+border-radius:10px;
+box-shadow:0 14px 28px rgba(0,0,0,.5);
+background:#080a08;
+}
 .app-content {
 padding:36px;
 display:flex;
@@ -238,6 +256,10 @@ color:#16130c;
 font-weight:700;
 text-decoration:none;
 box-shadow:0 5px 12px rgba(255,185,77,.17);
+}
+.download-note {
+margin:12px 0 0 !important;
+font-size:13px;
 }
 .download:hover {
 background:#ffd06e;
@@ -271,9 +293,7 @@ font-size:14px;
 .links {
 gap:13px;
 }
-.links a:not(:last-child) {
-display:none;
-}
+
 .hero {
 padding:66px 24px 68px;
 }
@@ -318,7 +338,7 @@ padding:25px;
 </nav>
 <header class="hero">
 <div class="hero-inner">
-<div class="eyebrow">Independent Android apps</div>
+<div class="eyebrow">Independent Android and Windows apps</div>
 <h1>Useful tools, made with care.</h1>
 <p>Personal Android apps for healthier routines, smarter tracking, and more time doing what you enjoy.</p>
 </div>
@@ -423,28 +443,52 @@ padding:25px;
 <li>A Media Player for music and voice files with a fun, retro single track player screen.</li>
 <li>Group your track list by groupings including Genre, Artist, Album, Tracks, Folders, Playlists and Queue.</li>
 <li>Need help getting to sleep? Set the sleep timer and let your favorite track guide you to dreamland.</li>
-<li>Full Android Auto support.</li></ul>
+<li>Full Android Auto support.</li>
+<li>Now with a Windows (x64) companion application - My Media Library Manager (See Below)</li></ul>
 <a class="download" href="https://docs.google.com/forms/d/e/1FAIpQLSdaQ3AE6K-u5XjSXhwOsnGiMlFPjg9_yqh0Fk_ulWKi8A-WdA/viewform?usp=publish-editor">Download APK</a>
+</div>
+</section>
+<div class="section-heading">
+<h2>Windows applications</h2>
+</div>
+<section class="apps">
+<article class="app desktop-app">
+<div class="screens desktop-preview">
+<a class="screen-link" href="images/MyMediaLibraryManager.png" target="_blank" rel="noopener">
+<img class="desktop-screen" src="images/MyMediaLibraryManager.png" alt="My Media Library Manager for Windows, showing the library browser, issue filters, and track list">
+</a>
+</div>
+<div class="app-content">
+<div class="badge">Windows · 64-bit</div>
+<h3>My Media Library Manager</h3>
+<ul>
+<li>The Windows companion to My Media Player for Android.</li>
+<li>Play and organize your music library with WinAmp-inspired library browsing.</li>
+<li>Find tracks with missing artwork or tags, and review suspected duplicates.</li>
+<li>Make manual single-track or batch tag edits with a preview before saving.</li>
+</ul>
+<a class="download" href="https://github.com/grochef/MyMediaLibraryManager/releases/latest/download/MyMediaLibraryManagerSetup-x64.msi">Download for Windows (64-bit)</a>
+<p class="download-note">The installer is not code-signed, so Windows may show an Unknown Publisher or SmartScreen notice.</p>
 </div>
 </article>
 </section>
 <section class="notice">
-<h2>Installing an APK</h2>
+<h2>Installing an Android APK</h2>
 <p>
 These apps are provided as Android APK files and are not available through the Google Play Store.</p>
 <ol>
-<li>Select **Download APK** for the app you want.</li>
+<li>Select <strong>Download APK</strong> for the Android app you want.</li>
 <li>Complete the short download form, then download the APK file.</li>
-<li>If your phone uses **Auto Blocker**, open **Settings** → **Security and privacy** → **Auto Blocker**, then turn it off temporarily.</li>
-<li>Open the downloaded APK from your browser’s download list or the **Downloads** folder.</li>
-<li>If Android asks for permission to install apps from your browser, choose **Allow**.</li>
-<li>Select **Install**.</li>
-<li>When installation finishes, select **Open** to start the app.</li>
+<li>If your phone uses <strong>Auto Blocker</strong>, open <strong>Settings</strong> → <strong>Security and privacy</strong> → <strong>Auto Blocker</strong>, then turn it off temporarily.</li>
+<li>Open the downloaded APK from your browser’s download list or the <strong>Downloads</strong> folder.</li>
+<li>If Android asks for permission to install apps from your browser, choose <strong>Allow</strong>.</li>
+<li>Select <strong>Install</strong>.</li>
+<li>When installation finishes, select <strong>Open</strong> to start the app.</li>
 </ol>
 <p>
 Android may display a warning because the app was downloaded outside the Play Store. That is expected—these are independently developed apps offered here for anyone who would like to try them.</p>
 </section>
 </main>
-<footer>© 2025–2026 Gregg Rocheford · Independently made Android apps</footer>
+<footer>© 2025–2026 Gregg Rocheford · Independently made apps</footer>
 </body>
 </html>
