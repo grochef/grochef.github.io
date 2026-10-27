@@ -148,11 +148,34 @@ max-width:380px;
 margin:0;
 color:var(--muted);
 }
+.song-nav {
+max-width:1000px;
+margin:0 auto 4rem;
+text-align:center;
+padding:1rem;
+border-top:1px solid var(--line);
+border-bottom:1px solid var(--line);
+}
+.song-nav-links {
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+gap:1rem;
+font-size:.9rem;
+}
+.song-nav-links a {
+color:var(--accent);
+text-decoration:none;
+}
+.song-nav-links a:hover {
+text-decoration:underline;
+}
 .apps {
 display:grid;
 gap:24px;
 }
 .app {
+scroll-margin-top:84px;
 display:grid;
 grid-template-columns:minmax(430px,50%) 1fr;
 overflow:hidden;
@@ -344,35 +367,94 @@ padding:25px;
 </div>
 </header>
 <main>
+
+<!-- Not needed -->
+<!--
 <section class="intro">
 <h2>Built for everyday life</h2>
 <p>These are hands-on, independently made Android applications that offer solutions to needs that I wanted addressed. I have spent hours using and polishing each application.</p>
 </section>
+-->
+
+<div class="song-nav" role="navigation" aria-label="Jump to an app">
+<div class="song-nav-links">
+<a href="#my-media-player">My Media Player</a> •
+<a href="#fuel-tracker">Fuel Tracker</a> •
+<a href="#disc-golf-tracker">Disc Golf Tracker</a> •
+<a href="#workout-companion">Workout Companion</a> •
+<a href="#macro-nut">Macro Nut</a> •
+<a href="#my-media-library-manager">My Media Library Manager</a>
+</div>
+</div>
+
 <div class="section-heading">
 <h2>Explore the apps</h2>
+<!-- Not needed -->
+<!--
 <p>Each card pairs a short description with two in-app screen previews.</p>
+-->
 </div>
 <section class="apps">
-<!-- Replace image sources below with real phone screenshots when available. -->
-<article class="app">
+<article class="app" id="my-media-player">
 <div class="screens">
-<a class="screen-link" href="images/MacroNutDay.jpg" target="_blank">
-<img class="phone" src="images/MacroNutDay.jpg" alt="Macro Nut daily macro overview">
+<a class="screen-link" href="images/MyMediaMain.jpg" target="_blank">
+<img class="phone" src="images/MyMediaMain.jpg" alt="My Media Player Main Screen">
 </a>
-<a class="screen-link" href="images/MacroNutMeal.jpg" target="_blank">
-<img class="phone second" src="images/MacroNutMeal.jpg" alt="Macro Nut food log">
+<a class="screen-link" href="images/MyMediaPlayerDeckView.jpg" target="_blank">
+<img class="phone second" src="images/MyMediaPlayerDeckView.jpg" alt="My Media Player Track Play View">
 </a>
 </div>
 <div class="app-content">
-<div class="badge">Nutrition</div>
-<h3>Macro Nut</h3>
+<div class="badge">Audio</div>
+<h3>My Media Player</h3>
 <ul>
-<li>Keep track of the nutritional macronutrients in your daily meals, with your carbohydrate, protein, and fat goals always within reach.</li>
-<li>Create foods, scan barcodes, edit saved foods and manage which foods appear in your meal log.</li></ul>
-<a class="download" href="https://docs.google.com/forms/d/e/1FAIpQLSe2SG3IfrtLgpDUYIMypW3ydpAaSBYS6d4sUKwsnkyi626bHQ/viewform?usp=publish-editor">Download APK</a>
+<li>A Media Player for music and voice files with a fun, retro single track player screen.</li>
+<li>Group your track list by groupings including Genre, Artist, Album, Tracks, Folders, Playlists and Queue.</li>
+<li>Need help getting to sleep? Set the sleep timer and let your favorite track guide you to dreamland.</li>
+<li>Full Android Auto support.</li>
+<li>Now with <a href="#my-media-library-manager">My Media Library Manager</a>, a Windows (x64) companion application.</li></ul>
+<a class="download" href="https://docs.google.com/forms/d/e/1FAIpQLSdaQ3AE6K-u5XjSXhwOsnGiMlFPjg9_yqh0Fk_ulWKi8A-WdA/viewform?usp=publish-editor">Download APK</a>
+</div></article>
+
+<article class="app" id="fuel-tracker">
+<div class="screens">
+<a class="screen-link" href="images/FuelTrackerMain.jpg" target="_blank">
+<img class="phone" src="images/FuelTrackerMain.jpg" alt="Fuel Tracker dashboard">
+</a>
+<a class="screen-link" href="images/FuelTrackerAnalytics.jpg" target="_blank">
+<img class="phone second" src="images/FuelTrackerAnalytics.jpg" alt="Fuel Tracker analytics">
+</a>
+</div>
+<div class="app-content">
+<div class="badge">Auto care</div>
+<h3>Fuel Tracker</h3>
+<ul>
+<li>Track fuel economy, costs, and maintenance.</li>
+<li>Nearby stations search can guide you to the pump and also auto fill in your fuel record while at the pump.</li></ul>
+<a class="download" href="https://docs.google.com/forms/d/e/1FAIpQLSeY3cdSDHbH2feI-D5lXhf6i-b2Xy1ktvUb3DdqZOXIrqsa7g/viewform?usp=publish-editor">Download APK</a>
 </div>
 </article>
-<article class="app">
+
+<article class="app" id="disc-golf-tracker">
+<div class="screens">
+<a class="screen-link" href="images/DiscGolfMain.jpg" target="_blank">
+<img class="phone" src="images/DiscGolfMain.jpg" alt="Disc Golf Tracker round setup">
+</a>
+<a class="screen-link" href="images/DiscGolfStats.jpg" target="_blank">
+<img class="phone second" src="images/DiscGolfStats.jpg" alt="Disc Golf Tracker stats and records">
+</a>
+</div>
+<div class="app-content">
+<div class="badge">Recreation</div>
+<h3>Disc Golf Tracker</h3>
+<ul>
+<li>Record scores for a solo round or with a group.</li>
+<li>Revisit course history and personal records when the round is done.</li></ul>
+<a class="download" href="https://docs.google.com/forms/d/e/1FAIpQLScKX1hu6YAQtn7rlp2Y9lulaRMeTJoHta_pvzD0lqD7dCmTpQ/viewform?usp=publish-editor">Download APK</a>
+</div>
+</article>
+
+<article class="app" id="workout-companion">
 <div class="screens">
 <a class="screen-link" href="images/WorkoutCompanionExercise.jpg" target="_blank">
 <img class="phone" src="images/WorkoutCompanionExercise.jpg" alt="Workout Companion exercise logging screen">
@@ -391,68 +473,31 @@ padding:25px;
 <a class="download" href="https://docs.google.com/forms/d/e/1FAIpQLSefH5hsb3Q8fuJUEA72WYb8CoergnwYVuELZmFwkjju7LAKSA/viewform?usp=publish-editor">Download APK</a>
 </div>
 </article>
-<article class="app">
+
+<article class="app" id="macro-nut">
 <div class="screens">
-<a class="screen-link" href="images/FuelTrackerMain.jpg" target="_blank">
-<img class="phone" src="images/FuelTrackerMain.jpg" alt="Fuel Tracker dashboard">
+<a class="screen-link" href="images/MacroNutDay.jpg" target="_blank">
+<img class="phone" src="images/MacroNutDay.jpg" alt="Macro Nut daily macro overview">
 </a>
-<a class="screen-link" href="images/FuelTrackerAnalytics.jpg" target="_blank">
-<img class="phone second" src="images/FuelTrackerAnalytics.jpg" alt="Fuel Tracker analytics">
+<a class="screen-link" href="images/MacroNutMeal.jpg" target="_blank">
+<img class="phone second" src="images/MacroNutMeal.jpg" alt="Macro Nut food log">
 </a>
 </div>
 <div class="app-content">
-<div class="badge">Auto care</div>
-<h3>Fuel Tracker</h3>
+<div class="badge">Nutrition</div>
+<h3>Macro Nut</h3>
 <ul>
-<li>Track fuel economy, costs, and maintenance.</li>
-<li>Nearby stations search can guide you to the pump and also auto fill in your fuel record while at the pump.</li></ul>
-<a class="download" href="https://docs.google.com/forms/d/e/1FAIpQLSeY3cdSDHbH2feI-D5lXhf6i-b2Xy1ktvUb3DdqZOXIrqsa7g/viewform?usp=publish-editor">Download APK</a>
+<li>Keep track of the nutritional macronutrients in your daily meals, with your carbohydrate, protein, and fat goals always within reach.</li>
+<li>Create foods, scan barcodes, edit saved foods and manage which foods appear in your meal log.</li></ul>
+<a class="download" href="https://docs.google.com/forms/d/e/1FAIpQLSe2SG3IfrtLgpDUYIMypW3ydpAaSBYS6d4sUKwsnkyi626bHQ/viewform?usp=publish-editor">Download APK</a>
 </div>
 </article>
-<article class="app">
-<div class="screens">
-<a class="screen-link" href="images/DiscGolfMain.jpg" target="_blank">
-<img class="phone" src="images/DiscGolfMain.jpg" alt="Disc Golf Tracker round setup">
-</a>
-<a class="screen-link" href="images/DiscGolfStats.jpg" target="_blank">
-<img class="phone second" src="images/DiscGolfStats.jpg" alt="Disc Golf Tracker stats and records">
-</a>
-</div>
-<div class="app-content">
-<div class="badge">Recreation</div>
-<h3>Disc Golf Tracker</h3>
-<ul>
-<li>Record scores for a solo round or with a group.</li>
-<li>Revisit course history and personal records when the round is done.</li></ul>
-<a class="download" href="https://docs.google.com/forms/d/e/1FAIpQLScKX1hu6YAQtn7rlp2Y9lulaRMeTJoHta_pvzD0lqD7dCmTpQ/viewform?usp=publish-editor">Download APK</a>
-</div>
-</article>
-<article class="app">
-<div class="screens">
-<a class="screen-link" href="images/MyMediaMain.jpg" target="_blank">
-<img class="phone" src="images/MyMediaMain.jpg" alt="My Media Player Main Screen">
-</a>
-<a class="screen-link" href="images/MyMediaPlayerDeckView.jpg" target="_blank">
-<img class="phone second" src="images/MyMediaPlayerDeckView.jpg" alt="My Media Player Track Play View">
-</a>
-</div>
-<div class="app-content">
-<div class="badge">Audio</div>
-<h3>My Media Player</h3>
-<ul>
-<li>A Media Player for music and voice files with a fun, retro single track player screen.</li>
-<li>Group your track list by groupings including Genre, Artist, Album, Tracks, Folders, Playlists and Queue.</li>
-<li>Need help getting to sleep? Set the sleep timer and let your favorite track guide you to dreamland.</li>
-<li>Full Android Auto support.</li>
-<li>Now with a Windows (x64) companion application - My Media Library Manager (See Below)</li></ul>
-<a class="download" href="https://docs.google.com/forms/d/e/1FAIpQLSdaQ3AE6K-u5XjSXhwOsnGiMlFPjg9_yqh0Fk_ulWKi8A-WdA/viewform?usp=publish-editor">Download APK</a>
-</div>
 </section>
 <div class="section-heading">
 <h2>Windows applications</h2>
 </div>
 <section class="apps">
-<article class="app desktop-app">
+<article class="app desktop-app" id="my-media-library-manager">
 <div class="screens desktop-preview">
 <a class="screen-link" href="images/MyMediaLibraryManager.png" target="_blank" rel="noopener">
 <img class="desktop-screen" src="images/MyMediaLibraryManager.png" alt="My Media Library Manager for Windows, showing the library browser, issue filters, and track list">
@@ -468,7 +513,7 @@ padding:25px;
 <li>Make manual single-track or batch tag edits with a preview before saving.</li>
 </ul>
 <a class="download" href="https://github.com/grochef/MyMediaLibraryManager/releases/latest/download/MyMediaLibraryManagerSetup-x64.msi">Download for Windows (64-bit)</a>
-<p class="download-note">The installer is not code-signed, so Windows may show an Unknown Publisher or SmartScreen notice.</p>
+<p class="download-note">** The installer is not code-signed, so Windows may show an Unknown Publisher or SmartScreen notice. **</p>
 </div>
 </article>
 </section>
