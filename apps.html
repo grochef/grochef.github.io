@@ -170,6 +170,16 @@ text-decoration:none;
 .song-nav-links a:hover {
 text-decoration:underline;
 }
+.app-jump-links h2 {
+margin:0 0 .5rem;
+font-size:1rem;
+}
+.app-jump-links .song-nav-links {
+display:block;
+}
+.app-jump-links .song-nav-links + h2 {
+margin-top:1.25rem;
+}
 .apps {
 display:grid;
 gap:24px;
@@ -376,17 +386,21 @@ padding:25px;
 </section>
 -->
 
-<div class="song-nav" role="navigation" aria-label="Jump to an app">
-<div class="song-nav-links">
-<a href="#my-media-player">My Media Player</a> •
-<a href="#fuel-tracker">Fuel Tracker</a> •
-<a href="#disc-golf-tracker">Disc Golf Tracker</a> •
-<a href="#workout-companion">Workout Companion</a> •
-<a href="#macro-nut">Macro Nut</a> •
-<a href="#vault-apk">Personal Vault (Android)</a> •
-<a href="#vault-msi">Personal Vault (Windows)</a> •
-<a href="#my-media-library-manager">My Media Library Manager</a>
-</div>
+<div class="song-nav app-jump-links" role="navigation" aria-label="Jump to an app">
+  <h2>Android Applications</h2>
+  <div class="song-nav-links">
+    <a href="#my-media-player">My Media Player</a> •
+    <a href="#fuel-tracker">Fuel Tracker</a> •
+    <a href="#disc-golf-tracker">Disc Golf Tracker</a> •
+    <a href="#workout-companion">Workout Companion</a> •
+    <a href="#macro-nut">Macro Nut</a> •
+    <a href="#vault-apk">Personal Vault (Android)</a>
+  </div>
+  <h2>Windows Applications</h2>
+  <div class="song-nav-links">
+    <a href="#vault-msi">Personal Vault (Windows)</a> •
+    <a href="#my-media-library-manager">My Media Library Manager (Windows)</a>
+  </div>
 </div>
 
 <div class="section-heading">
